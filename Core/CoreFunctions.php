@@ -13,7 +13,7 @@ class main
     public function url($url, $settings)
     {
         if (!array_key_exists($url ,$this->urls)) {
-            if ($settings['error404'] == true){
+            if ($settings['Error404'] == true){
                 dd("main page");
             }
             dd('error 404');

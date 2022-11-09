@@ -11,4 +11,10 @@ class GameController{
     public function index(){
         view("Game/Home", 'asas');
     }
+
+    public function play()
+    {
+        view("Game/Play", 'aasas');
+    }
+
 }

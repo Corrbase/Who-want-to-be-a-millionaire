@@ -8,10 +8,26 @@ $Routes = [
         'Controller' => 'AdminController',
         'function' => 'index',
     ],
+
+    // game
+
     'home' => [
         'Controller' => 'GameController',
         'function' => 'index',
+    ],
+    'play' => [
+        'Controller' => 'GameController',
+        'function' => 'play',
+    ],
+
+
+    // posts
+
+    'play/1' => [
+        'Controller' => 'GameController',
+        'function' => 'play_1',
     ]
+
 
 ];
 
