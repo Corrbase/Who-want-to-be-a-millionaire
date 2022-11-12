@@ -7,7 +7,14 @@ class main
     public function __construct($Routes, $settings)
     {
         $this->Route($Routes);
-        $this->url($_GET['url'], $settings);
+
+        if (isset($_GET['url'])){
+            $this->url($_GET['url'], $settings);
+        }else{
+
+            $homepage = $settings['Homepage'];
+            header("location: $homepage");
+        }
     }
 
     public function url($url, $settings)
@@ -54,11 +61,10 @@ function model($name, $settings){
     return new $name($settings);
 }
 
-function view($name, $array = null){
-    $ViewArray = $array;
-    include "View/Includes/main.php";
+function view($name, $view_array = null, $folder = null){
 
-    return $ViewArray;
+    include "View/Admin includes/main.php";
+
 }
 
 

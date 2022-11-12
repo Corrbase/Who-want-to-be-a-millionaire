@@ -1,12 +1,20 @@
 <?php
 $Routes = [
-    'admin/admin' => [
+    'test' => [
         'Controller' => 'AdminController',
-    'function' => 'index',
+        'function' => 'test',
+    ],
+    'admin/login' => [
+        'Controller' => 'AdminController',
+        'function' => 'login',
     ],
     'admin/home' => [
         'Controller' => 'AdminController',
         'function' => 'index',
+    ],
+    'r/admin/login' => [
+        'Controller' => 'AdminController',
+        'function' => 'login_request',
     ],
 
     // game
