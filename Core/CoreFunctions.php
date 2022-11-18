@@ -1,50 +1,168 @@
 <?php
 
-class main
-{
-    public $urls;
+class Route {
 
-    public function __construct($Routes, $settings)
+
+    public $settings;
+    public function __construct( $settings)
     {
-        $this->Route($Routes);
 
-        if (isset($_GET['url'])){
-            $this->url($_GET['url'], $settings);
-        }else{
-
+        if (!isset($_GET['url'])){
             $homepage = $settings['Homepage'];
             header("location: $homepage");
         }
+        $this->settings = $settings;
+
     }
 
-    public function url($url, $settings)
-    {
-        if (!array_key_exists($url ,$this->urls)) {
-            if ($settings['Error404'] == true){
-                dd("main page");
-            }
-            dd('error 404');
 
+    private function simpleRoute($file, $route){
+
+
+        //replacing first and last forward slashes
+        //$_REQUEST['url'] will be empty if req uri is /
+
+        if(!empty($_REQUEST['url'])){
+            $route = preg_replace("/(^\/)|(\/$)/","",$route);
+            $reqUrl =  preg_replace("/(^\/)|(\/$)/","",$_REQUEST['url']);
         }else{
-            $Route = $this->urls[$url];
-            if (file_exists('Controllers/' . $Route['Controller'] . '.php')){
+            $reqUrl = "/";
+        }
 
-                $Controller = $Route['Controller'];
-                include "Controllers/" . $Controller . '.php';
-                $cont = new $Controller($settings);
-                if (method_exists($cont, $Route['function'])){
-                    $cont->{$Route['function']}();
+        if($reqUrl == $route){
+            $params = [];
+            $file = explode('@', $file);
+
+            if (file_exists('Controllers/' . $file[0] . '.php')){
+
+                $Controller = $file[0];
+                include "Controllers/" . $file[0] . '.php';
+                $cont = new $Controller($this->settings);
+                if (method_exists($cont, $file[1])){
+                    $cont->{$file[1]}();
                 }else{
-                    dd("error 404");
+                    dd("function is not exists");
                 }
+            }else{
+                echo 'conroller is not exists';
+                die();
+            }
+            die();
+        }
+
+    }
+
+    function add($route,$file){
+
+
+
+        //will store all the parameters value in this array
+        $params = [];
+
+        //will store all the parameters names in this array
+        $paramKey = [];
+
+        //finding if there is any {?} parameter in $route
+        preg_match_all("/(?<={).+?(?=})/", $route, $paramMatches);
+
+        //if the route does not contain any param call simpleRoute();
+
+        if(empty($paramMatches[0])){
+            $this->simpleRoute($file,$route);
+            return;
+        }
+
+        //setting parameters names
+        foreach($paramMatches[0] as $key){
+            $paramKey[] = $key;
+        }
+
+
+        //replacing first and last forward slashes
+        //$_REQUEST['url'] will be empty if req uri is /
+
+        if(!empty($_REQUEST['url'])){
+            $route = preg_replace("/(^\/)|(\/$)/","",$route);
+            $reqUrl =  preg_replace("/(^\/)|(\/$)/","",$_REQUEST['url']);
+        }else{
+            $reqUrl = "/";
+        }
+        //exploding route address
+        $uri = explode("/", $route);
+
+        //will store index number where {?} parameter is required in the $route
+        $indexNum = [];
+
+        //storing index number, where {?} parameter is required with the help of regex
+        foreach($uri as $index => $param){
+            if(preg_match("/{.*}/", $param)){
+                $indexNum[] = $index;
             }
         }
+
+        //exploding request uri string to array to get
+        //the exact index number value of parameter from $_REQUEST['url']
+        $reqUrl = explode("/", $reqUrl);
+
+        //running for each loop to set the exact index number with reg expression
+        //this will help in matching route
+        foreach($indexNum as $key => $index){
+
+            //in case if req uri with param index is empty then return
+            //because url is not valid for this route
+            if(empty($reqUrl[$index])){
+                return;
+            }
+
+            //setting params with params names
+            $params[$paramKey[$key]] = $reqUrl[$index];
+
+            //this is to create a regex for comparing route address
+            $reqUrl[$index] = "{.*}";
+        }
+
+        //converting array to sting
+        $reqUrl = implode("/",$reqUrl);
+
+        //replace all / with \/ for reg expression
+        //regex to match route is ready !
+        $reqUrl = str_replace("/", '\\/', $reqUrl);
+
+        //now matching route with regex
+        if(preg_match("/$reqUrl/", $route))
+        {
+
+//            dd($indexNum);
+
+            $arg_name = explode("/", $route);
+            $arg = explode("/", $_REQUEST['url']);
+            foreach ($indexNum as $item){
+                $arg_name[$item] = trim($arg_name[$item], '{}');
+                $args[$arg_name[$item]] =  trim($arg[$item], '{}'); ;
+
+            }
+
+            $file = explode('@', $file);
+            if (file_exists('Controllers/' . $file[0] . '.php')){
+
+                $Controller = $file[0];
+                include "Controllers/" . $Controller . '.php';
+                $cont = new $Controller($this->settings);
+                if (method_exists($cont, $file[1])){
+                    $cont->{$file[1]}($args);
+                }else{
+                    dd("function is not exists");
+                }
+            }else{
+                echo 'controller is not exists';
+                die();
+            }
+            die();
+        }
     }
-
-    public function Route($Routes)
-    {
-        $this->urls = $Routes;
-
+    public function notFound($file){
+        echo 'error 4042';
+        exit();
     }
 
 }
@@ -61,13 +179,18 @@ function model($name, $settings){
     return new $name($settings);
 }
 
-function view($name, $view_array = null, $folder = null){
+function view($name,$includes = null ,$view_array = null, $folder = null){
 
-    include "View/Admin includes/main.php";
+    if ($includes == null){
+        include "View/Includes/main.php";
+    }else{
+        include "View/$includes includes/main.php";
+    }
+
 
 }
 
 
-
+?>
 
 

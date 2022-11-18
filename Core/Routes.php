@@ -1,44 +1,32 @@
 <?php
-$Routes = [
-    'test' => [
-        'Controller' => 'AdminController',
-        'function' => 'test',
-    ],
-    'admin/login' => [
-        'Controller' => 'AdminController',
-        'function' => 'login',
-    ],
-    'admin/home' => [
-        'Controller' => 'AdminController',
-        'function' => 'index',
-    ],
-    'r/admin/login' => [
-        'Controller' => 'AdminController',
-        'function' => 'login_request',
-    ],
-
-    // game
-
-    'home' => [
-        'Controller' => 'GameController',
-        'function' => 'index',
-    ],
-    'play' => [
-        'Controller' => 'GameController',
-        'function' => 'play',
-    ],
 
 
-    // posts
+$route = new Route($MainSettings);
 
-    'play/1' => [
-        'Controller' => 'GameController',
-        'function' => 'play_1',
-    ]
+$route->add('test', 'AdminController@test');
+
+$route->add("/user/{id}","user.php");
+
+//example route with multiple params
+$route->add("/download/{downID}/{filename}","download.php");
+$route->add('admin/login', 'AdminController@login');
+$route->add('admin/home', 'AdminController@index');
+$route->add('admin/questions', 'AdminController@questions');
+$route->add('admin/questions/{pagination}', 'AdminController@pagination');
+$route->add('admin/questions/edit/{id}', 'AdminController@edit_question');
+
+$route->add('home', 'GameController@index');
+$route->add('game', 'GameController@play');
 
 
-];
+$route->add('r/admin/login', 'AdminController@login_request');
+$route->add('r/admin/delete/user/{id}', 'AdminController@delete_user');
+$route->add('/r/admin/question/edit/{id}', 'AdminController@question_edit');
 
-$run = new main($Routes, $MainSettings);
+$route->add('play/name', 'GameController@play_name');
+$route->add('play/{level}', 'GameController@play_level');
 
-$run->Route('admin/home');
+
+// error404 page*
+
+$route->notFound("404.php");

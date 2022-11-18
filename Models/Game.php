@@ -6,4 +6,20 @@ class Game extends Core {
     {
         parent::__construct($settings);
     }
+
+    public function CheckPlay($level = null)
+    {
+        if ($level == null){
+            dd("you lost");
+        }
+        if (isset($_SESSION['play_run']))
+        {
+            $level = $level['level'];
+            $NowLevel = array_search(false, $_SESSION['play_run']);
+            $UrlLevel = "level_$level";
+            if ($NowLevel != $UrlLevel) {
+                dd("you lost");
+            }
+        }
+    }
 }
