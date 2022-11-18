@@ -1,4 +1,5 @@
 
+<div class="loading-refresh" style="z-index: 2000"></div>
 <div id="layoutSidenav_content">
     <main>
         <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
@@ -31,7 +32,7 @@
                     <div class="card mb-4">
                         <div class="card-header">Question Details</div>
                         <div class="card-body">
-                            <form enctype="multipart/form-data" data-id="<?php echo $question['id']?>" id="edit_question">
+                            <form enctype="multipart/form-data" method="POST" data-id="<?php echo $question['id']?>" id="edit_question">
                                 <div class="mb-3">
                                     <label class="small mb-1" for="inputQuestion">Question</label>
 
@@ -61,13 +62,18 @@
                                     <label class="small mb-1">difficulty</label>
                                     <select name="difficulty" class="form-select" aria-label="Default select example">
                                         <option selected="" disabled="">Select a role:</option>
-                                        <option name="easy" value="easy" selected="">Easy</option>
-                                        <option name="normal" value="normal">Normal</option>
-                                        <option name="hard" value="hard">Hard</option>
+
+                                        <option <?php if ($question['difficulty'] == 'easy'){ echo 'selected="selected"'; } ?>name="easy" value="easy" selected="">Easy</option>
+                                        <option <?php if ($question['difficulty'] == 'normal'){ echo 'selected="selected"'; } ?>name="normal" value="normal">Normal</option>
+                                        <option <?php if ($question['difficulty'] == 'hard'){ echo 'selected="selected"'; } ?>name="hard" value="hard">Hard</option>
                                     </select>
                                 </div>
                                 <!-- Submit button-->
                                 <button class="btn btn-primary" type="submit">Save changes</button>
+                                <div class="text-danger form-errors m-2">
+                                </div>
+                                <div class="text-green form-accept m-2">
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -85,13 +91,22 @@
             $.ajax({
                 type: "POST",
                 url: '/r/admin/question/edit/<?php echo $question['id']?>',
+                data: form.serialize(),
                 beforeSend:
                     function() {
-                        $('.loading_popup').addClass('show fade').css('display', 'block');
+                        $('.loading-refresh').addClass('loading-form');
                     },
                 success: function(data)
                 {
-                    $('.modal').removeClass("loading");
+                    $('.loading-refresh').removeClass('loading-form');
+                    console.log(data)
+                    if ($.trim(data)){
+                        $('.form-errors').text('please fill all');
+                        $('.form-accept').text('');
+                    }else {
+                        $('.form-errors').text('');
+                        $('.form-accept').text('Save chnages');
+                    }
                 }
             })
 

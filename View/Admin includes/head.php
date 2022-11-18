@@ -15,9 +15,6 @@
 </head>
 <body class="nav-fixed">
 
-<div class="loading">
-    <img src="../../assets/img/loading.gif" alt="">
-</div>
 
 <nav class="topnav navbar navbar-expand shadow justify-content-between justify-content-sm-start navbar-light bg-white" id="sidenavAccordion">
     <!-- Sidenav Toggle Button-->

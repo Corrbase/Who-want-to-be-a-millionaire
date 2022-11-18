@@ -15,6 +15,7 @@ $route->add('admin/questions', 'AdminController@questions');
 $route->add('admin/questions/{pagination}', 'AdminController@pagination');
 $route->add('admin/questions/edit/{id}', 'AdminController@edit_question');
 
+
 $route->add('home', 'GameController@index');
 $route->add('game', 'GameController@play');
 
@@ -24,7 +25,8 @@ $route->add('r/admin/delete/user/{id}', 'AdminController@delete_user');
 $route->add('/r/admin/question/edit/{id}', 'AdminController@question_edit');
 
 $route->add('play/name', 'GameController@play_name');
-$route->add('play/{level}', 'GameController@play_level');
+$route->add('play', 'GameController@play_game');
+$route->add('play/gone', 'GameController@play_gone');
 
 
 // error404 page*

@@ -212,13 +212,15 @@ class AdminController {
             $right_answer = $_POST['right_answer'];
             $diff = $_POST['difficulty'];
             $wrongs = "$wrong_answer_1" . ',' . "$wrong_answer_2" . ',' . "$wrong_answer_3";
+            if (!array_search('',$_POST)){
 
-            if ($question !== '' || $right_answer !== '' || $wrong_answer_1 !== '' || $wrong_answer_2 !==  '' || $wrong_answer_3 !== ''|| $diff !== ''){
+                mysqli_query($this->admin->conn, "UPDATE `questions` SET `question`= '$question', `right_answer`= '$right_answer', wrong_answer= '$wrongs', `difficulty`= '$diff' WHERE `id` = $id;");
 
-                $question = mysqli_query($this->admin->conn, "UPDATE `questions` SET `question`= '$question', wrong_answer= '$wrongs', `right_answer`= '$right_answer', `difficulty`= '$diff'   WHERE `id` = $id;");
                 return true;
             }else{
-
+                setcookie('edit_error', 'Please fill all', time() + 1, '/') ;
+                echo 0;
+                return false;
             }
         }
     }
