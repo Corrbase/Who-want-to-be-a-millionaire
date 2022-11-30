@@ -1,6 +1,6 @@
 
-<div class="loading-refresh" style="z-index: 2000"></div>
-<div id="layoutSidenav_content">
+
+
     <main>
         <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
             <div class="container-xl px-4">
@@ -81,40 +81,34 @@
     </main>
 
 
-    <script>
-        $("#edit_question").submit(function(e) {
+<script>
+    $("#edit_question").submit(function(e) {
 
-            e.preventDefault(); // avoid to execute the actual submit of the form.
+        e.preventDefault(); // avoid to execute the actual submit of the form.
 
-            var form = $(this);
+        var form = $(this);
 
-            $.ajax({
-                type: "POST",
-                url: '/r/admin/question/edit/<?php echo $question['id']?>',
-                data: form.serialize(),
-                beforeSend:
-                    function() {
-                        $('.loading-refresh').addClass('loading-form');
-                    },
-                success: function(data)
-                {
-                    $('.loading-refresh').removeClass('loading-form');
-                    console.log(data)
-                    if ($.trim(data)){
-                        $('.form-errors').text('please fill all');
-                        $('.form-accept').text('');
-                    }else {
-                        $('.form-errors').text('');
-                        $('.form-accept').text('Save chnages');
-                    }
+        $.ajax({
+            type: "POST",
+            url: '/r/admin/question/edit/<?php echo $question['id']?>',
+            data: form.serialize(),
+            beforeSend:
+                function() {
+                    $('.loading-refresh').addClass('loading-form');
+                },
+            success: function(data)
+            {
+                $('.loading-refresh').removeClass('loading-form');
+
+                if ($.trim(data)){
+                    $('.form-errors').text('please fill all');
+                    $('.form-accept').text('');
+                }else {
+                    $('.form-errors').text('');
+                    $('.form-accept').text('Save chnages');
                 }
-            })
-
+            }
         })
-    </script>
-</div>
-</div>
 
-
-
+    })
 </script>

@@ -43,6 +43,7 @@
             {
                 $('.loading-refresh').removeClass('loading-form');
                 let request_data = JSON.parse(data)
+                console.log(request_data)
                 if (request_data.status == 1){
                     $.ajax({
                         type: "GET",
@@ -54,7 +55,7 @@
                         //     }
                         // },
                         beforeSend: function (){
-                            console.log(data)
+
                             $(".answer-button[data-id="+request_data.question_num+"]").css('background-color', '#7de051');
                         },
                         success: function(data)
@@ -73,17 +74,43 @@
                         //     }
                         // },
                         beforeSend: function (){
+
                             $(question_id).css('background-color', '#f65c5c');
+                            $(".answer-button[data-answer="+request_data.right+"]").css('background-color', '#7de051');
                         },
                         success: function()
                         {
 
-                            $('.content').text('You lost your prize is ' + $('.NowFond').attr('data-price'));
+                            $('.content').html('<h1 class="text-center p-2">You lost your prize is ' + $('.NowFond').attr('data-price') + '</span>');
                         }
                     })
 
 
                 }
+            }
+        })
+
+    })
+    $(document).on('click', ".Bonus" ,function(e) {
+
+        let bonus_name = $(this).attr("data-id");
+        $.ajax({
+            type: "POST",
+            url: 'play/gone',
+            data: {
+                bonus: bonus_name,
+            },
+            beforeSend:
+                function() {
+                    $('.loading-refresh').addClass('loading-form');
+                },
+            success: function(data) {
+                $('.loading-refresh').removeClass('loading-form');
+
+                $('.bonus_request').text(data);
+
+
+
             }
         })
 

@@ -161,7 +161,7 @@ class Route {
         }
     }
     public function notFound($file){
-        echo 'error 4042';
+        include 'View/Errors/Error404.php';
         exit();
     }
 
@@ -182,9 +182,9 @@ function model($name, $settings){
 function view($name,$includes = null ,$view_array = null, $folder = null){
 
     if ($includes == null){
-        include "View/Includes/main.php";
+        include "View/Includes/Includes/main.php";
     }else{
-        include "View/$includes includes/main.php";
+        include "View/Includes/$includes includes/main.php";
     }
 
 

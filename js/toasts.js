@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded', event => {
     const toastBasicTrigger = document.getElementById('toastBasicTrigger');
     if (toastBasicTrigger) {
         toastBasicTrigger.addEventListener('click', event => {
-            console.log('asd');
+
             toastBasic.show();
         });
     }

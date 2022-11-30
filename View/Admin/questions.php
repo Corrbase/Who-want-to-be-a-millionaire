@@ -1,5 +1,4 @@
 
-<div id="layoutSidenav_content">
     <main>
         <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
             <div class="container-xl px-4">
@@ -10,7 +9,7 @@
                                 <div class="page-header-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div>
                                 Questions
                             </h1>
-                            <div class="page-header-subtitle">The custom page header supports and styles Bootstrap breadcrumbs</div>
+                            
                         </div>
                     </div>
                     <nav class="mt-4 rounded" aria-label="breadcrumb">
@@ -43,13 +42,6 @@
 
 
 
-
-
-</div>
-</div>
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
     $(document).on('click', '#ClickToPage', function (e){
         let a = $(this).attr("data-id");
@@ -65,15 +57,12 @@
                 },
             success: function (response) {
 
-                console.log(response);
+
                 if (response) {
                     $('.table-body').html(response);
                 }
 
             },
-            error: function (error) {
-                console.log(error);
-            }
         });
     })
     $.ajax({
@@ -87,13 +76,11 @@
                 $('.table-body').html('<table class="table table-hover"> <button type="button" class="btn btn-outline-success m-1"><</button> <button type="button" class="btn btn-outline-success m-1">></button><p>Page:</p><thead> <tr> <th># </th> <th> name </th> <th>level</th> <th>prize</th> <th>status</th> <th>action</th></tr> </thead> <tbody></tbody> </table> <div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
             },
         success: function (response) {
-            console.log(response);
             if (response) {
                 $('.table-body').html(response);
             }
         },
         error: function (error) {
-            console.log(error);
         }
     });
 

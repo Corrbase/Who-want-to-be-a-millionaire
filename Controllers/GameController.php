@@ -9,17 +9,19 @@ class GameController{
     }
 
     public function index(){
+        $this->checkplay();
         view("Home", null, '', 'Game');
     }
 
     public function play()
     {
-
+        $this->checkplay();
         view("Play", null, '', 'Game');
     }
 
     public function play_name()
     {
+
         if ($_POST){
             if (isset($_SESSION['play'])){
 
@@ -61,9 +63,9 @@ class GameController{
                     'level_30' => false,
                 ];
                 $_SESSION['play_run']['bonus'] = [
-                    '50/50' => false,
-                    'Call to friend' => false,
-                    '__' => false,
+                    '50' => false,
+                    'call_to_friend' => false,
+                    'Voice' => false,
                 ];
                 header('location: /play');
             }
@@ -86,7 +88,7 @@ class GameController{
     public function play_gone()
     {
         if (!isset($_SESSION['play'])){
-
+            // if user has session for playing
             header('Location: /');
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -96,20 +98,41 @@ class GameController{
             $NowLevel = $NowLevel[1];
             $question = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $NowLevel")->fetch_all(true);
             $question = $question[0];
-            if ($question['right_answer'] == $ajax['question_ans']){
-                $NowLevel = array_search(false, $_SESSION['play_run']['level']);
-                $_SESSION['play_run']['level'][$NowLevel] = true;
-                $ajax['status'] = true;
-                echo json_encode($ajax);
+            $wrongs = explode(',' , $question['wrong_answer']);
+            if (isset($ajax['bonus'])){
+                $this->bonus($ajax['bonus'], $question['right_answer'], $wrongs);
             }else{
-//                $previous_level_id = $NowLevel - 1;
-//                $question = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $previous_level_id");
-                $ajax['status'] = false;
-                echo json_encode($ajax);
-                unset($_SESSION['play']);
-                unset($_SESSION['play_run']);
+                if ($question['right_answer'] == $ajax['question_ans']){
+                    // check is user answer right
+                    $NowLevel = array_search(false, $_SESSION['play_run']['level']);
+                    $_SESSION['play_run']['level'][$NowLevel] = true;
+                    $ajax['status'] = true;
+
+                    echo json_encode($ajax);
+                }else{
+                    // if user answer false
+                    $previous_level_id = $NowLevel - 1;
+                    if ($NowLevel - 1 < 1){
+                        $previous_level_id = 1;
+                    }
+                    $question_last = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $previous_level_id")->fetch_all(true);
+                    $prize = $question_last[0]['price'];
+                    if (array_search(false, $_SESSION['play_run']['level']) == 'level_1'){
+                        $prize = 100;
+                    }
+                    $level = $question_last[0]['number'];
+                    $player = $_SESSION['play_run']['player'];
+                    mysqli_query($this->game->conn, "INSERT INTO `gamers` (name, level, prize, status) VALUES ('$player', $level, '$prize', 'waiting');");
+                    $ajax['status'] = false;
+                    $ajax['right'] = $question['right_answer'];
+                    echo json_encode($ajax);
+                    unset($_SESSION['play']);
+                    unset($_SESSION['play_run']);
+                }
             }
+
         }else{
+            // get function
             if (isset($_SESSION['play_run']))
             {
                 if (array_search(false, $_SESSION['play_run']['level']) == 'level_15'){
@@ -125,6 +148,7 @@ class GameController{
                     $question = $question[0];
                     $wrongs = explode(',' , $question['wrong_answer']);
 
+
                     $nextLvl = $NowLevel + 1;
                     $nextquestion = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $nextLvl")->fetch_all(true);
                     $nextquestion = $nextquestion[0];
@@ -136,6 +160,7 @@ class GameController{
 
                     $this->game->question_name($question['question']);
                     $this->game->random_answers($wrongs, $question['right_answer']);
+                    $this->game->bonuses();
                     $this->game->fond($ajax);
                 }
 
@@ -145,5 +170,31 @@ class GameController{
 
     }
 
+    public function bonus($bonus_name, $true, $false){
+        $exist = $_SESSION['play_run']['bonus'];
+                if ($exist[$bonus_name] == false) {
+                    if ($bonus_name == 'call_to_friend') {
+                        $rand = rand(1, 4);
+                        echo 'hi ' . $_SESSION['play_run']['player'] . ', i think it is ' . $true;
+                        $_SESSION['play_run']['bonus'][$bonus_name] = true;
+                    } elseif ($bonus_name == '50') {
+                        echo 'It is or ' . $true . ' or' . $false[1];
+                        $_SESSION['play_run']['bonus'][$bonus_name] = true;
+                    } elseif ($bonus_name == 'Voice') {
+                        echo 'Voice is think it is ' . $true;
+                        $_SESSION['play_run']['bonus'][$bonus_name] = true;
+                    }
+                }else{
+                    echo 'you cannot use the same bonus twice';
+                }
+
+    }
+
+    public function checkplay()
+    {
+        if (isset($_SESSION['play'])){
+            header('location: /play');
+        }
+    }
 
 }
