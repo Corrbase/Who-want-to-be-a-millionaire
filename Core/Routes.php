@@ -10,7 +10,9 @@ $route->add("/user/{id}","user.php");
 //example route with multiple params
 
 $route->add('/login', 'HomeController@login');
-        $route->add('/register', 'HomeController@register');
+$route->add('/register', 'HomeController@register');
+
+$route->add('/profile', 'UserController@profile');
 
 $route->add('/admin/home', 'AdminController@index');
 $route->add('/admin/questions', 'AdminController@questions');
@@ -32,6 +34,8 @@ $route->add('/r/admin/gamer/change_status/{id}', 'AdminController@change_gamer_s
 $route->add('/r/admin/logOut', 'AdminController@logout');
 
 $route->add('/r/user/register', 'HomeController@register_request');
+$route->add('/r/user/logOut', 'UserController@logout_user');
+$route->add('/r/user/login', 'UserController@login_user');
 
 $route->add('/play/name', 'GameController@play_name');
 $route->add('/play', 'GameController@play_game');

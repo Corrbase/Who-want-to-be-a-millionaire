@@ -19,7 +19,7 @@
                     </div>';
             }elseif (isset($_SESSION['user_profile']['profile']) == 1){
                 echo ' <div class="text-end">
-                        <a href="#" class="btn btn-outline-light me-2">Profile</a>
+                        <a href="/profile" class="btn btn-outline-light me-2">Profile</a>
                     </div>';
             }else{
                 echo '<div class="text-end">

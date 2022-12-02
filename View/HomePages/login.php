@@ -22,13 +22,13 @@
             </div>
             <div class="mb-3">
                 <label  class="form-label">Login</label>
-                <input type="login" value="" name="login" class="form-control" id="login" aria-describedby="emailHelp">
-                <div id="loginHelp" class="form-text">Admin panel username</div>
+                    <input type="login" value="" name="user_login" class="form-control" id="login" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+                <input type="password" name="user_password" class="form-control" id="exampleInputPassword1">
             </div>
+            <button class="btn btn-primary">Login</button>
             <div class="mb-3">
                 <div class="form-errors  form-label text-danger">
 
@@ -74,6 +74,33 @@
         $.ajax({
             type: "POST",
             url: 'r/admin/login',
+            data: form.serialize(),
+            beforeSend:
+                function() {
+                    $('.loading-refresh').addClass('loading-form');
+                },
+            success: function(data)
+            {
+                let request_data = JSON.parse(data)
+                $('.loading-refresh').removeClass('loading-form');
+                $('.form-error').html(request_data.error);
+                if (request_data.success === true){
+                    window.location.replace("/admin/home");
+                }
+
+            }
+        })
+
+    })
+    $("#UserLoginForm").submit(function(e) {
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+        var form = $(this);
+
+        $.ajax({
+            type: "POST",
+            url: 'r/user/login',
             data: form.serialize(),
             beforeSend:
                 function() {

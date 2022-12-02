@@ -287,6 +287,7 @@ class AdminController {
         }elseif (isset($_SESSION['user_profile']['profile']) == 1){
             header('location: /admin/home');
         }
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             $login = $_POST['admin_login'];
             $pass = $_POST['admin_password'];
@@ -409,14 +410,8 @@ class AdminController {
                 }
             }
 
-        }elseif(isset($_SESSION['user_profile']['profile'])){
-            if (isset($_SESSION['user_profile']['profile']) == 1) {
-                if ($is !== null) {
-                    header('location: /');
-                }
-            }
         }else{
-            header("location: /login");
+            header('location: /');
         }
     }
 
