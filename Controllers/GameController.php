@@ -5,13 +5,19 @@ class GameController{
 
     public function __construct($settings)
     {
+        if (isset($_SESSION['admin_profile']['profile']) == 1) {
+            header('location: /');
+        }
+        if (isset($_SESSION['user_profile']['profile'])) {
+            if ($_SESSION['user_profile']['profile'] == 1){
+
+            }else{
+                header('location: /login');
+            }
+        }
         $this->game = model('Game', $settings);
     }
 
-    public function index(){
-        $this->checkplay();
-        view("Home", null, '', 'Game');
-    }
 
     public function play()
     {
@@ -21,14 +27,14 @@ class GameController{
 
     public function play_name()
     {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 
-        if ($_POST){
             if (isset($_SESSION['play'])){
 
                 header('location: /play');
 
             }else{
-                $_SESSION['play_run']['player'] = $_POST['name'];
+                $_SESSION['play_run']['player'] = $_SESSION['user_profile']['login'];
                 $_SESSION['play'] = true;
                 $_SESSION['play_run']['level'] = [
                     'level_1' => false,
@@ -111,14 +117,14 @@ class GameController{
                     echo json_encode($ajax);
                 }else{
                     // if user answer false
-                    $previous_level_id = $NowLevel - 1;
+                    $previous_level_id = $NowLevel;
                     if ($NowLevel - 1 < 1){
                         $previous_level_id = 1;
                     }
                     $question_last = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $previous_level_id")->fetch_all(true);
                     $prize = $question_last[0]['price'];
                     if (array_search(false, $_SESSION['play_run']['level']) == 'level_1'){
-                        $prize = 100;
+                        $prize = 0;
                     }
                     $level = $question_last[0]['number'];
                     $player = $_SESSION['play_run']['player'];
@@ -181,7 +187,7 @@ class GameController{
                         echo 'It is or ' . $true . ' or' . $false[1];
                         $_SESSION['play_run']['bonus'][$bonus_name] = true;
                     } elseif ($bonus_name == 'Voice') {
-                        echo 'Voice is think it is ' . $true;
+                        echo 'Voice think it is ' . $true;
                         $_SESSION['play_run']['bonus'][$bonus_name] = true;
                     }
                 }else{

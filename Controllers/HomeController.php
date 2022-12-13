@@ -119,7 +119,17 @@ class HomeController{
             header("location: /login");
         }
     }
+    public function home(){
+        $this->checkplay();
+        view("Home", null, '', 'HomePages');
 
+    }
+    public function checkplay()
+    {
+        if (isset($_SESSION['play'])){
+            header('location: /play');
+        }
+    }
 
 
 }

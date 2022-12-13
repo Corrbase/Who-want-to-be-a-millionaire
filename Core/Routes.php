@@ -22,8 +22,11 @@ $route->add('/admin/questions/edit/{id}', 'AdminController@edit_question');
 $route->add('/admin/questions/{pagination}', 'AdminController@question_pagination');
 $route->add('/admin/gamers/{pagination}', 'AdminController@gamers_pagination');
 
+$route->add('/user/wins/{pagination}', 'UserController@games_pagination');
+$route->add('/user/get_money/{id}', 'UserController@get_money');
 
-$route->add('/home', 'GameController@index');
+
+$route->add('/home', 'homeCOntroller@home');
 $route->add('/game', 'GameController@play');
 
 

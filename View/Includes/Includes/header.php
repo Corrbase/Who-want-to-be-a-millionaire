@@ -18,9 +18,12 @@
                         <a href="/admin/home" class="btn btn-outline-light me-2">Admin panel</a>
                     </div>';
             }elseif (isset($_SESSION['user_profile']['profile']) == 1){
-                echo ' <div class="text-end">
+                echo ' 
+                    <div class="text-end">
                         <a href="/profile" class="btn btn-outline-light me-2">Profile</a>
-                    </div>';
+                    </div>
+                    
+                    ';
             }else{
                 echo '<div class="text-end">
                         <a href="/login" class="btn btn-outline-light me-2">Login</a>

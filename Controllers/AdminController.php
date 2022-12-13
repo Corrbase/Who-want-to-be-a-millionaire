@@ -367,18 +367,16 @@ class AdminController {
                 if (!array_search('',$_POST)){
 
                     mysqli_query($this->admin->conn, "UPDATE `questions` SET `question`= '$question', `right_answer`= '$right_answer', wrong_answer= '$wrongs', `difficulty`= '$diff' WHERE `id` = $id;");
-                    header("location: /admin/home");
+
 
                     return true;
                 }else{
 
                     echo 0;
-                    header("location: /admin/home");
                     return false;
                 }
             }
         }else{
-            header("location: /admin/home");
         }
     }
     public function change_gamer_status($id)
@@ -404,9 +402,11 @@ class AdminController {
 
     public function CheckLogin($is = null){
         if (isset($_SESSION['admin_profile']['profile'])) {
-            if (isset($_SESSION['admin_profile']['profile']) == 1) {
+            if ($_SESSION['admin_profile']['profile']== 1 ){
                 if ($is !== null) {
                     header('location: /');
+                }else{
+
                 }
             }
 
