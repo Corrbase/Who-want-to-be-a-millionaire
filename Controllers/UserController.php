@@ -194,6 +194,7 @@ class UserController{
         if ($game == 1){
             if ($game_settings['status'] == 'Finished'){
                 $balance = $_SESSION['user_profile']['balance'] + $game_settings['prize'];
+                $_SESSION['user_profile']['balance'] = $balance;
                 mysqli_query($this->user->conn, "UPDATE `users` SET `balance` = $balance WHERE login = '$login'");
                 mysqli_query($this->user->conn, "UPDATE `gamers` SET `getted` = 1 WHERE id = $id");
 
