@@ -16,7 +16,7 @@
                         <div class="collapse" id="collapseDashboards" data-bs-parent="#accordionSidenav">
                             <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                                 <a class="nav-link" href="/admin/gamers">
-                                    gamers
+                                    Games
                                 </a>
     <!--                            <a class="nav-link" href="dashboard-2.html">Admins</a>-->
                                 <a class="nav-link" href="/admin/questions">Questions</a>

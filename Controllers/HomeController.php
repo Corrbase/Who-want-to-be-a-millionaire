@@ -42,6 +42,7 @@ class HomeController{
                 $ajax['error'] = 'please check form again';
                 echo json_encode($ajax);
             }else{
+
                 $login = $_POST['login'];
                 $pass = $_POST['password'];
                 $pass_confirm = $_POST['password_confirm'];
@@ -78,7 +79,9 @@ class HomeController{
                     }
 
                     $pass = md5($pass);
-                    $query = mysqli_query($this->user->conn, "INSERT INTO `users`( `login`, `password`, `name`, `sname`, `age`) VALUES ('$login','$pass','$name','$sname','$age')");
+
+                    $query = mysqli_query($this->user->conn, "INSERT INTO `users`( `login`, `password`, `name`, `sname`, `age`, `balance`) VALUES ('$login','$pass','$name','$sname',$age, 0)");
+
                     if ($query){
                         $_SESSION['user_profile'] = [
                             'profile' => 1,
@@ -86,6 +89,7 @@ class HomeController{
                             'name' => $name,
                             'sname' => $sname,
                             'age' => $age,
+                            'balance' => 0,
                         ];
                         $ajax['success'] = true;
                         echo json_encode($ajax);

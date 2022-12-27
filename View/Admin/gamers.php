@@ -15,7 +15,7 @@
                 <nav class="mt-4 rounded" aria-label="breadcrumb">
                     <ol class="breadcrumb px-3 py-2 rounded mb-0">
                         <li class="breadcrumb-item"><a href="/admin/home">Dashboard</a></li>
-                        <li class="breadcrumb-item active">gamers</li>
+                        <li class="breadcrumb-item active">Games</li>
                     </ol>
                 </nav>
             </div>

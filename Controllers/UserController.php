@@ -91,7 +91,7 @@ class UserController{
         $PreviousPage = $pagination['pagination'] - 1;
         $NextPage = $pagination['pagination'] + 1;
         if ($pagination['pagination'] == 1){
-            $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE `name` = '$login' LIMIT 10")->fetch_all(true);
+            $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE `name` = '$login' ORDER BY `id` DESC LIMIT 10")->fetch_all(true);
         }elseif($pagination['pagination'] > ceil($AllGames / 10)) {
             dd('Ups');
         }

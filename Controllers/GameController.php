@@ -6,14 +6,12 @@ class GameController{
     public function __construct($settings)
     {
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
-            header('location: /');
+            header('location: /admin/home');
         }
-        if (isset($_SESSION['user_profile']['profile'])) {
-            if ($_SESSION['user_profile']['profile'] == 1){
+        if (isset($_SESSION['user_profile']['profile']) == 1) {
 
-            }else{
-                header('location: /login');
-            }
+        }else{
+            header('location: /login');
         }
         $this->game = model('Game', $settings);
     }
@@ -128,7 +126,8 @@ class GameController{
                     }
                     $level = $question_last[0]['number'];
                     $player = $_SESSION['play_run']['player'];
-                    mysqli_query($this->game->conn, "INSERT INTO `gamers` (name, level, prize, status) VALUES ('$player', $level, '$prize', 'waiting');");
+                    mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', $level, $prize, 'waiting', 0)");
+
                     $ajax['status'] = false;
                     $ajax['right'] = $question['right_answer'];
                     echo json_encode($ajax);
@@ -144,6 +143,8 @@ class GameController{
                 if (array_search(false, $_SESSION['play_run']['level']) == 'level_15'){
                     echo 'you win ';
                     echo 'your prize is 1000000';
+                    $player = $_SESSION['play_run']['player'];
+                    mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', 30, 100000, 'waiting', 0)");
                                     unset($_SESSION['play']);
                 unset($_SESSION['play_run']);
                 }else{

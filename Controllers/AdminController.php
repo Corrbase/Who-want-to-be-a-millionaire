@@ -134,14 +134,14 @@ class AdminController {
         $PreviousPage = $pagination['pagination'] - 1;
         $NextPage = $pagination['pagination'] + 1;
         if ($pagination['pagination'] == 1){
-            $questions = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT 10")->fetch_all(true);
+            $questions = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` ORDER BY `id` DESC LIMIT 10")->fetch_all(true);
         }elseif($pagination['pagination'] > ceil($AllQusetions / 10)) {
             dd('Ups');
         }
             else{
             $page = ($pagination['pagination'] * 5) ;
 
-            $questions = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT 10 OFFSET $page")->fetch_all(true);
+            $questions = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` ORDER BY `status` DESC LIMIT 10 OFFSET $page")->fetch_all(true);
             $NextPage = ceil($AllQusetions);
         }
         if ($NextPage > ceil($AllQusetions / 10)){
