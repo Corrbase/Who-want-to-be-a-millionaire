@@ -66,6 +66,7 @@ class UserController{
                         'balance' => $profile_settings['balance']
                     ];
                     $ajax['success'] = true;
+
                     echo json_encode($ajax);
 
                 }

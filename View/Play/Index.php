@@ -64,6 +64,11 @@
                         }
                     })
                 }else{
+                    if (request_data.prize == 1){
+                        var LostWin = 'Դուք պարտվեցիք ձեր հաղթանակը ' + request_data.prize_count;
+                    }else {
+                        var LostWin = 'Դուք պարտվեցիք, փորձեք կրկին ' ;
+                    }
                     $.ajax({
                         type: "GET",
                         url: '/test',
@@ -74,14 +79,13 @@
                         //     }
                         // },
                         beforeSend: function (){
-
                             $(question_id).css('background-color', '#f65c5c');
                             $(".answer-button[data-answer="+request_data.right+"]").css('background-color', '#7de051');
                         },
                         success: function()
                         {
 
-                            $('.content').html('<h1 class="text-center p-2">You lost your prize is ' + $('.NowFond').attr('data-price') + '</span>');
+                            $('.content').html('<h1 class="text-center p-2">' + LostWin + '<a href="/">։ Գլխավոր էջ</a>  </h1>');
                         }
                     })
 

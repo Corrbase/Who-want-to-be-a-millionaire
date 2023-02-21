@@ -21,14 +21,14 @@
                 </h1>
             </div>
             <div class="mb-3">
-                <label  class="form-label">Login</label>
+                <label  class="form-label">Մուտքանուն</label>
                     <input type="login" value="" name="user_login" class="form-control" id="login" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
-                <label class="form-label">Password</label>
+                <label class="form-label">Գաղտնաբառ</label>
                 <input type="password" name="user_password" class="form-control" id="exampleInputPassword1">
             </div>
-            <button class="btn btn-primary">Login</button>
+            <button class="btn btn-primary">Մութք</button>
             <div class="mb-3">
                 <div class="form-errors  form-label text-danger">
 
@@ -108,6 +108,8 @@
                 },
             success: function(data)
             {
+                console.log(data)
+
                 let request_data = JSON.parse(data)
                 $('.loading-refresh').removeClass('loading-form');
                 $('.form-error').html(request_data.error);

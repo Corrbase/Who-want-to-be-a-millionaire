@@ -115,24 +115,34 @@ class GameController{
                     echo json_encode($ajax);
                 }else{
                     // if user answer false
-                    $previous_level_id = $NowLevel;
-                    if ($NowLevel - 1 < 1){
-                        $previous_level_id = 1;
-                    }
-                    $question_last = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $previous_level_id")->fetch_all(true);
-                    $prize = $question_last[0]['price'];
-                    if (array_search(false, $_SESSION['play_run']['level']) == 'level_1'){
-                        $prize = 0;
-                    }
-                    $level = $question_last[0]['number'];
                     $player = $_SESSION['play_run']['player'];
-                    mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', $level, $prize, 'waiting', 0)");
+                    if ($_SESSION['play_run']['level']['level_5'] === true){
+                        mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', '$NowLevel', 1000, 'waiting', 0)");
+                        $ajax['status'] = false;
+                        $ajax['prize'] = true;
+                        $ajax['prize_count'] = 1000;
+                        $ajax['right'] = $question['right_answer'];
+                        echo json_encode($ajax);
+                        unset($_SESSION['play']);
+                        unset($_SESSION['play_run']);
+                    }elseif ($_SESSION['play_run']['level']['level_5'] === true){
+                        mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', '$NowLevel', 32000, 'waiting', 0)");
+                        $ajax['status'] = false;
+                        $ajax['prize'] = true;
+                        $ajax['prize_count'] = 1000;
+                        $ajax['right'] = $question['right_answer'];
+                        echo json_encode($ajax);
+                        unset($_SESSION['play']);
+                        unset($_SESSION['play_run']);
+                    } else{
+                        $ajax['status'] = false;
+                        $ajax['prize'] = false;
+                        $ajax['right'] = $question['right_answer'];
+                        echo json_encode($ajax);
+                        unset($_SESSION['play']);
+                        unset($_SESSION['play_run']);
+                    }
 
-                    $ajax['status'] = false;
-                    $ajax['right'] = $question['right_answer'];
-                    echo json_encode($ajax);
-                    unset($_SESSION['play']);
-                    unset($_SESSION['play_run']);
                 }
             }
 
@@ -144,7 +154,7 @@ class GameController{
                     echo 'you win ';
                     echo 'your prize is 1000000';
                     $player = $_SESSION['play_run']['player'];
-                    mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', 30, 100000, 'waiting', 0)");
+                    mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', 30, 100000 , 'waiting', 0)");
                                     unset($_SESSION['play']);
                 unset($_SESSION['play_run']);
                 }else{

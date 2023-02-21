@@ -1,7 +1,7 @@
 <div class="w-50 pt-5 m-auto">
     <ul class="d-flex justify-content-between">
         <li class="list-unstyled">
-            <a href="" class="m-5 LogOut">logout</a>
+            <a href="" class="m-5 LogOut">Դուրս գալ</a>
         </li>
         <li class="list-unstyled">
             <p>
@@ -17,20 +17,7 @@
 </div>
 
 <script>
-    $(document).on('click', '.LogOut', function (e){
-        $.ajax({
-            type: "POST",
-            url: '/r/user/logOut',
-            beforeSend:
-                function() {
-                    $('.loading-refresh').addClass('loading-form');
-                },
-            success: function(data) {
-                $('.loading-refresh').removeClass('loading-form');
-                window.location.replace("/login");
-            }
-        })
-    })
+
     $(document).on('click', '.get-money', function (e){
         let id = $(this).attr("data-id");
         $.ajax({
