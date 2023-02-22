@@ -34,6 +34,23 @@ class GameController{
             }else{
                 $_SESSION['play_run']['player'] = $_SESSION['user_profile']['login'];
                 $_SESSION['play'] = true;
+                $_SESSION['play_run']['level_prices'] = [
+                    'level_1' => 100,
+                    'level_2' => 200,
+                    'level_3' => 300,
+                    'level_4' => 500,
+                    'level_5' => 1000,
+                    'level_6' => 2000,
+                    'level_7' => 4000,
+                    'level_8' => 8000,
+                    'level_9' => 16000,
+                    'level_10' => 32000,
+                    'level_11' => 64000,
+                    'level_12' => 125000,
+                    'level_13' => 250000,
+                    'level_14' => 500000,
+                    'level_15' => 1000000,
+                ];
                 $_SESSION['play_run']['level'] = [
                     'level_1' => false,
                     'level_2' => false,
@@ -50,21 +67,6 @@ class GameController{
                     'level_13' => false,
                     'level_14' => false,
                     'level_15' => false,
-                    'level_16' => false,
-                    'level_17' => false,
-                    'level_18' => false,
-                    'level_19' => false,
-                    'level_20' => false,
-                    'level_21' => false,
-                    'level_22' => false,
-                    'level_23' => false,
-                    'level_24' => false,
-                    'level_25' => false,
-                    'level_26' => false,
-                    'level_27' => false,
-                    'level_28' => false,
-                    'level_29' => false,
-                    'level_30' => false,
                 ];
                 $_SESSION['play_run']['bonus'] = [
                     '50' => false,
@@ -92,7 +94,7 @@ class GameController{
     public function play_gone()
     {
         if (!isset($_SESSION['play'])){
-            // if user has session for playing
+
             header('Location: /');
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -103,7 +105,30 @@ class GameController{
             $question = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $NowLevel")->fetch_all(true);
             $question = $question[0];
             $wrongs = explode(',' , $question['wrong_answer']);
-            if (isset($ajax['bonus'])){
+            if (isset($ajax['end_game'])){
+                if ($ajax['prize'] == 0){
+                    if ($_SESSION['play_run']['level']['level_1'] === false)
+                    $ajax['end'] = false;
+                    echo json_encode($ajax);
+                    unset($_SESSION['play']);
+                    unset($_SESSION['play_run']);
+                }else{
+                    $previous_level = $NowLevel - 1;
+                    $level_name = 'level_' . $previous_level;
+                    $prize = $_SESSION['play_run']['level_prices'][$level_name];
+                    $player = $_SESSION['play_run']['player'];
+
+//                    $prize = $_SESSION['play_run']['level_prices'][$previous_level - 1];
+
+                    mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', '$previous_level', $prize, 'waiting', 0)");
+                    $ajax['end'] = true;
+                    $ajax['prize'] = true;
+                    echo json_encode($ajax);
+                    unset($_SESSION['play']);
+                    unset($_SESSION['play_run']);
+                }
+            }
+            elseif (isset($ajax['bonus'])){
                 $this->bonus($ajax['bonus'], $question['right_answer'], $wrongs);
             }else{
                 if ($question['right_answer'] == $ajax['question_ans']){
@@ -113,6 +138,7 @@ class GameController{
                     $ajax['status'] = true;
 
                     echo json_encode($ajax);
+
                 }else{
                     // if user answer false
                     $player = $_SESSION['play_run']['player'];
@@ -169,11 +195,25 @@ class GameController{
                     $nextLvl = $NowLevel + 1;
                     $nextquestion = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $nextLvl")->fetch_all(true);
                     $nextquestion = $nextquestion[0];
+
+
+                    $previous_level = $NowLevel - 1;
+                    $Nowlevel_name = 'level_' . $previous_level;
+                    $Nextlevel_name = 'level_' . $NowLevel;
                     $ajax = [
                         'now_fond' => $question['price'],
                         'next_fond' => $nextquestion['price']
                     ];
-
+                    if ($Nowlevel_name == 'level_0'){
+                        $NextPrize = $_SESSION['play_run']['level_prices'][$Nextlevel_name];
+                        $ajax['now_fond'] = 0;
+                        $ajax['next_fond'] = $NextPrize;
+                    }else{
+                        $NowPrize = $_SESSION['play_run']['level_prices'][$Nowlevel_name];
+                        $NextPrize = $_SESSION['play_run']['level_prices'][$Nextlevel_name];
+                        $ajax['now_fond'] = $NowPrize;
+                        $ajax['next_fond'] = $NextPrize;
+                    }
 
                     $this->game->question_name($question['question']);
                     $this->game->random_answers($wrongs, $question['right_answer']);
@@ -187,22 +227,26 @@ class GameController{
 
     }
 
+    public function end_game(){}
+
     public function bonus($bonus_name, $true, $false){
         $exist = $_SESSION['play_run']['bonus'];
                 if ($exist[$bonus_name] == false) {
                     if ($bonus_name == 'call_to_friend') {
                         $rand = rand(1, 4);
-                        echo 'hi ' . $_SESSION['play_run']['player'] . ', i think it is ' . $true;
+                        echo 'Բարև ' . $_SESSION['play_run']['player'] . ', ես կարծում եմ դա "' . $true . '"-ն է';
                         $_SESSION['play_run']['bonus'][$bonus_name] = true;
                     } elseif ($bonus_name == '50') {
-                        echo 'It is or ' . $true . ' or' . $false[1];
+                        echo 'Դա կամ "' . $true . '"-ն է կամ էլ "' . $false[1] . '"-ը';
                         $_SESSION['play_run']['bonus'][$bonus_name] = true;
                     } elseif ($bonus_name == 'Voice') {
-                        echo 'Voice think it is ' . $true;
+                        $prcnt = rand(50, 100); //  get random number
+
+                        echo 'Դայլիճի ձայնի  ' . $prcnt .' տոկոսը կարծում է որ դա "'. $true . '"-ն է';
                         $_SESSION['play_run']['bonus'][$bonus_name] = true;
                     }
                 }else{
-                    echo 'you cannot use the same bonus twice';
+                    echo 'Դուք չեք կարող օգտագործել նույն բոնուսը երկու անգամ';
                 }
 
     }

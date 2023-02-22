@@ -119,4 +119,37 @@
         })
 
     })
+    $(document).on('click', ".end_game" ,function(e) {
+
+        let prize = $('.NowFond').attr("data-price");
+
+        $.ajax({
+            type: "POST",
+            url: 'play/gone',
+            data: {
+                end_game: true,
+                prize: prize
+            },
+            beforeSend:
+                function() {
+                    $('.loading-refresh').addClass('loading-form');
+                },
+            success: function(data) {
+                $('.loading-refresh').removeClass('loading-form');
+                let request_data = JSON.parse(data)
+                if (request_data.end == false){
+                    $('.content').html('<h1 class="text-center p-2"> Դուք չունեք հաղթած գումար, խաղը ավարտված է <a href="/">։ Գլխավոր էջ</a>  </h1>');
+                }else {
+                    $('.content').html('<h1 class="text-center p-2"> Խաղը ավարտված է, ձեր շահած գումարն է '+prize+'<a href="/">։ Գլխավոր էջ</a>  </h1>');
+                }
+                $('.bonus_request').text(data);
+
+
+
+            }
+        })
+
+    })
+
+
 </script>

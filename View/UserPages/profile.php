@@ -1,16 +1,14 @@
 <div class="w-50 pt-5 m-auto">
-    <ul class="d-flex justify-content-between">
-        <li class="list-unstyled">
-            <a href="" class="m-5 LogOut">Դուրս գալ</a>
-        </li>
+
         <li class="list-unstyled">
             <p>
                 Your balance:
-                <?php echo $_SESSION['user_profile']['balance']; ?>
+                <span style="color: #009576">
+                    <?php echo $_SESSION['user_profile']['balance']; ?>
+                </span>
             </p>
         </li>
 
-    </ul>
     <div class="card-body table-body mt-3">
 
     </div>
@@ -32,7 +30,6 @@
                    },
             success: function (response) {
                 location.reload()
-                $('.loading-refresh').removeClass('loading-form');
 
 
             },
@@ -48,7 +45,7 @@
             },
             beforeSend:
                 function() {
-                    $('.table-body').html('<table class="table table-hover"> <button type="button" class="btn btn-outline-success m-1"><</button> <button type="button" class="m-1 btn btn-outline-success">></button> <p>Page:</p> <thead> <tr> <th># </th> <th> name </th> <th>level</th> <th>prize</th> <th>status</th> <th>action</th></tr> </thead> <tbody></tbody> </table> <div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
+                    $('.table-body').html('<table class="table table-hover"> <button type="button" class="btn btn-outline-success m-1"><</button> <button type="button" class="m-1 btn btn-outline-success">></button> <p>Էջ:</p> <thead> <tr> <th>#Համար </th> <th> Անուն </th> <th>Հարց</th> <th>Գումար</th> <th>Կարգավիճակ</th> </tr> </thead> <tbody></tbody> </table> <div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
                 },
             success: function (response) {
 
@@ -68,7 +65,7 @@
         },
         beforeSend:
             function() {
-                $('.table-body').html('<table class="table table-hover"> <button type="button" class="btn btn-outline-success m-1"><</button> <button type="button" class="btn btn-outline-success m-1">></button><p>Page:</p><thead> <tr> <th># </th> <th> name </th> <th>level</th> <th>prize</th> <th>status</th> <th>action</th></tr> </thead> <tbody></tbody> </table> <div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
+                $('.table-body').html('<table class="table table-hover"> <button type="button" class="btn btn-outline-success m-1"><</button> <button type="button" class="btn btn-outline-success m-1">></button><p>Էջ:</p><thead> <tr> <th>#Համար </th> <th> Անուն </th> <th>Հարց</th> <th>Գումար</th> <th>Կարգավիճակ</th> </tr> </thead> <tbody></tbody> </table> <div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
             },
         success: function (response) {
 

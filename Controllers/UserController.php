@@ -43,35 +43,53 @@ class UserController{
             $pass = $_POST['user_password'];
             $_SESSION['login_values'] = $login;
 
-            if (array_search('', $_POST))
-            {
-                $ajax['error'] = 'please check form again';
-                echo json_encode($ajax);
-            }else{
 
-                $pass = md5($pass);
-                $profile = mysqli_query($this->user->conn, "SELECT * FROM `users` WHERE `login` = '$login' AND `password` = '$pass'");
-                $profile_settings = $profile->fetch_all(true);
-                $profile = mysqli_num_rows($profile);
-                $profile_settings = $profile_settings[0];
-                if ($profile == 1)
+                if (array_search('', $_POST))
                 {
-                    unset($_SESSION['user_profile']);
-                    $_SESSION['user_profile'] = [
-                        'profile' => 1,
-                        'login' => $login,
-                        'name' => $profile_settings['name'],
-                        'sname' => $profile_settings['sname'],
-                        'age' => $profile_settings['age'],
-                        'balance' => $profile_settings['balance']
-                    ];
-                    $ajax['success'] = true;
-
+                    $ajax['error'] = 'please check form again';
                     echo json_encode($ajax);
+                }else {
 
+                    $pass = md5($pass);
+                    $profile = mysqli_query($this->user->conn, "SELECT * FROM `users` WHERE `login` = '$login' AND `password` = '$pass'");
+                    $profile_settings = $profile->fetch_all(true);
+                    $profile = mysqli_num_rows($profile);
+                    if ($profile == 0) {
+                        $ajax['error'] = 'Այդպիսի օգտատեր գոյություն չունի';
+                        echo json_encode($ajax);
+                    } else {
+                        $profile_settings = $profile_settings[0];
+                        if ($profile_settings['Role'] == 'Admin'){
+
+                                unset($_SESSION['user_profile']);
+
+                                $_SESSION['admin_profile'] = [
+                                    'profile' => 1,
+                                    'login' => $login,
+                                    'password' => $pass,
+                                ];
+                                $ajax['success'] = true;
+                                echo json_encode($ajax);
+
+                        }else {
+                            if ($profile == 1) {
+                                unset($_SESSION['user_profile']);
+                                $_SESSION['user_profile'] = [
+                                    'profile' => 1,
+                                    'login' => $login,
+                                    'name' => $profile_settings['name'],
+                                    'sname' => $profile_settings['sname'],
+                                    'age' => $profile_settings['age'],
+                                    'balance' => $profile_settings['balance']
+                                ];
+                                $ajax['success'] = true;
+
+                                echo json_encode($ajax);
+
+                            }
+                        }
+                    }
                 }
-            }
-
         }else{
             header("location: /login");
         }
@@ -87,12 +105,15 @@ class UserController{
             header('location: /');
         }
         $login = $_SESSION['user_profile']['name'];
-        $AllGames = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE `name` = '$login'");
+        $AllGames = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC ");
         $AllGames = mysqli_num_rows($AllGames);
+        if ($AllGames <= 0){
+            echo "Դուք չունեք հաղթաց գումար";
+        }
         $PreviousPage = $pagination['pagination'] - 1;
         $NextPage = $pagination['pagination'] + 1;
         if ($pagination['pagination'] == 1){
-            $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE `name` = '$login' ORDER BY `id` DESC LIMIT 10")->fetch_all(true);
+            $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE `name` = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC")->fetch_all(true);
         }elseif($pagination['pagination'] > ceil($AllGames / 10)) {
             dd('Ups');
         }
@@ -117,29 +138,28 @@ class UserController{
         echo '"class="btn btn-outline-success m-1"><</a>
                     <a href="javascript:void(0)" id="ClickToPage" data-id="'. $NextPage;
         echo '" class="btn  btn-outline-success m-1">></a>
-                    <p>Page: ' . $pagination['pagination'];
+                    <p>Էջ: ' . $pagination['pagination'];
         echo '</p>
                         <thead>
                         <tr>
                             <th>
-                                #number
+                                #Համար
                             </th>
                             <th>
-                                name
+                                Անուն
                             </th>
                             <th>
-                                level
+                                հարց
                             </th>
                             <th>
-                                prize
+                                գումար
                             </th>
                             <th>
-                                status
+                                կարգավիճակ
                             </th>
                         </tr>
                         </thead>
                         <tbody>';
-
         foreach ($questions as $gamer) {
             echo '<tr>';
             echo '<td>';
@@ -163,10 +183,10 @@ class UserController{
             if ($gamer['getted'] == true){echo 'getted';}
             else if ($gamer['status'] == 'Finished'){
                 echo "<button class='btn btn-outline-primary get-money' data-id='". $gamer['id'] ."'>Get</button>";
-            }else if ($gamer['status'] == 'Canceled'){
-                echo 'Canceled';
+            }else if ($gamer['status'] == 'canceled'){
+                echo 'Չեղարկված';
             }else if ($gamer['status'] == 'waiting') {
-                echo 'not accepted';
+                echo 'սպասելու';
             }
             echo '</td>';
             echo '</tr>';
