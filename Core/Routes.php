@@ -18,8 +18,12 @@ $route->add('/admin/home', 'AdminController@index');
 $route->add('/admin/questions', 'AdminController@questions');
 $route->add('/admin/documentation', 'AdminController@documentation');
 $route->add('/admin/gamers', 'AdminController@gamers');
+$route->add('/admin/users', 'AdminController@users');
+$route->add('/admin/users/add', 'AdminController@add_user');
 $route->add('/admin/questions/edit/{id}', 'AdminController@edit_question');
+$route->add('/admin/questions/create', 'AdminController@create_question');
 $route->add('/admin/questions/{pagination}', 'AdminController@question_pagination');
+$route->add('/admin/users/{pagination}', 'AdminController@admins_pagination');
 $route->add('/admin/gamers/{pagination}', 'AdminController@gamers_pagination');
 
 $route->add('/user/wins/{pagination}', 'UserController@games_pagination');
@@ -31,8 +35,10 @@ $route->add('/game', 'GameController@play');
 
 
 $route->add('/r/admin/login', 'AdminController@login_admin_request');
+$route->add('r/admin/users/add', 'AdminController@add_user_request');
 $route->add('/r/admin/delete/user/{id}', 'AdminController@delete_user');
 $route->add('/r/admin/question/edit/{id}', 'AdminController@question_edit');
+$route->add('/r/admin/question/create', 'AdminController@question_create');
 $route->add('/r/admin/gamer/change_status/{id}', 'AdminController@change_gamer_status');
 $route->add('/r/admin/logOut', 'AdminController@logout');
 

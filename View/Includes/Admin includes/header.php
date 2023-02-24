@@ -34,6 +34,9 @@
                             <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                                 <a class="nav-link" href="/admin/documentation">Documentation</a>
                             </nav>
+                            <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                                <a class="nav-link" href="/admin/users">Users</a>
+                            </nav>
                         </div>
 
                     </div>

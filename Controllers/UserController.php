@@ -182,11 +182,11 @@ class UserController{
 
             if ($gamer['getted'] == true){echo 'getted';}
             else if ($gamer['status'] == 'Finished'){
-                echo "<button class='btn btn-outline-primary get-money' data-id='". $gamer['id'] ."'>Get</button>";
+                echo "<button class='btn btn-outline-primary get-money' data-id='". $gamer['id'] ."'>Վերցնել</button>";
             }else if ($gamer['status'] == 'canceled'){
                 echo 'Չեղարկված';
             }else if ($gamer['status'] == 'waiting') {
-                echo 'սպասելու';
+                echo 'Ընթացքի մեջ';
             }
             echo '</td>';
             echo '</tr>';

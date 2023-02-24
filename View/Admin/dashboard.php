@@ -45,70 +45,76 @@
 
             </div>
         </div>
-        <div class="card mb-4 m-5">
-            <div class="card-header">
-                Top 5 players
-            </div>
-            <div class="card-body">
-                <table class="table table-hover">
-
-
-                    <thead>
-                    <tr>
-                        <th>
-                            #
-                        </th>
-                        <th>
-                            name
-                        </th>
-                        <th>
-                            level
-                        </th>
-                        <th>
-                            prize
-                        </th>
-                        <th>
-                            status
-                        </th>
-                        <th>
-                            action
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    foreach ($view_array['top_gamers'] as $gamer){
-                        echo '<tr>';
-                            echo '<td>';
-                            echo $gamer['id'];
-                            echo '</td>';
-
-                            echo '<td>';
-                            echo $gamer['name'];
-                            echo '</td>';
-
-                            echo '<td>';
-                            echo $gamer['level'];
-                            echo '</td>';
-
-                            echo '<td>';
-                            echo $gamer['prize'];
-                            echo '</td>';
-
-                            echo '<td>';
-                            echo $gamer['status'];
-                            echo '</td>';
-
-                            echo '<td>';
-                            echo '<a href="/r/admin/delete/user/' . $gamer['id'] . '"' .'>Delete</a>';
-                            echo '</td>';
-                        echo '</tr>';
-                    }
-                    ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<!--        <div class="card mb-4 m-5">-->
+<!--            <div class="card-header">-->
+<!--                Top 5 players-->
+<!--            </div>-->
+<!--            <div class="card-body">-->
+<!--                <table class="table table-hover">-->
+<!---->
+<!---->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>-->
+<!--                            #-->
+<!--                        </th>-->
+<!--                        <th>-->
+<!--                            name-->
+<!--                        </th>-->
+<!--                        <th>-->
+<!--                            level-->
+<!--                        </th>-->
+<!--                        <th>-->
+<!--                            prize-->
+<!--                        </th>-->
+<!--                        <th>-->
+<!--                            status-->
+<!--                        </th>-->
+<!--                        <th>-->
+<!--                            action-->
+<!--                        </th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    --><?php
+//                    foreach ($view_array['top_gamers'] as $gamer){
+//                        echo '<tr>';
+//                            echo '<td>';
+//                            echo $gamer['id'];
+//                            echo '</td>';
+//
+//                            echo '<td>';
+//                            echo $gamer['name'];
+//                            echo '</td>';
+//
+//                            echo '<td>';
+//                            echo $gamer['level'];
+//                            echo '</td>';
+//
+//                            echo '<td>';
+//                            echo $gamer['prize'];
+//                            echo '</td>';
+//
+//                            echo '<td>';
+//                            if ($gamer['status'] == 'Finished'){
+//                                echo 'Ավարտած';
+//                            }elseif ($gamer['status'] == 'Waiting'){
+//                                echo 'Ընթացքի մեջ';
+//                            }else{
+//                                echo 'չեղարկված';
+//                            }
+//                            echo '</td>';
+//
+//                            echo '<td>';
+//                            echo '<a href="/r/admin/delete/user/' . $gamer['id'] . '"' .'>Ջնջել</a>';
+//                            echo '</td>';
+//                        echo '</tr>';
+//                    }
+//                    ?>
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
 
         <div class="row m-4">
             <div class="col mb-4">

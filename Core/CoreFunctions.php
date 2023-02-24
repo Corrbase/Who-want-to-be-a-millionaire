@@ -174,6 +174,12 @@ function dd($arr){
     die();
 }
 
+function randomGen($min, $max, $quantity) {
+    $numbers = range($min, $max);
+    shuffle($numbers);
+    return array_slice($numbers, 0, $quantity);
+}
+
 function model($name, $settings){
     include "./Models/$name" . '.php';
     return new $name($settings);

@@ -34,28 +34,28 @@
                         <div class="card-body">
                             <form enctype="multipart/form-data" method="POST" data-id="<?php echo $question['id']?>" id="edit_question">
                                 <div class="mb-3">
-                                    <label class="small mb-1" for="inputQuestion">Question</label>
+                                    <label class="small mb-1" for="Question">Question</label>
 
-                                    <input class="form-control" id="inputQuestion" type="text" placeholder="Enter your email address" name="question" value="<?php echo $question['question'] ?>">
+                                    <input class="form-control" id="Question" type="text" placeholder="Question" name="question" value="<?php echo $question['question'] ?>">
                                 </div>
                                 <div class="row gx-3 mb-3">
                                     <div class="col-md-6">
-                                        <label class="small mb-1 f-1 text-success" for="inputFirstName">Right answer</label>
-                                        <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" name="right_answer" value="<?php echo $question['right_answer'] ?>">
+                                        <label class="small mb-1 f-1 text-success" for="Right_answer">Right answer</label>
+                                        <input class="form-control" id="Right_answer" type="text" placeholder="RightAnswer" name="right_answer" value="<?php echo $question['right_answer'] ?>">
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="small mb-1" for="inputLastName">Other variants</label>
-                                        <input class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" name="wrong_answer_1" value="<?php echo $wrongs[0] ?>">
+                                        <label class="small mb-1" for="Wrong1">Other variants</label>
+                                        <input class="form-control" id="Wrong1" type="text" placeholder="Wrong Answer" name="wrong_answer_1" value="<?php echo $wrongs[0] ?>">
                                     </div>
                                 </div>
                                 <div class="row gx-3 mb-3">
                                     <div class="col-md-6">
-                                        <label class="small mb-1" for="inputFirstName">Other variants</label>
-                                        <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" name="wrong_answer_2" value="<?php echo $wrongs[1] ?>">
+                                        <label class="small mb-1" for="Wrong2">Other variants</label>
+                                        <input class="form-control" id="Wrong2" type="text" placeholder="Wrong Answer" name="wrong_answer_2" value="<?php echo $wrongs[1] ?>">
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="small mb-1" for="inputLastName">Other variants</label>
-                                        <input class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" name="wrong_answer_3" value="<?php echo $wrongs[2] ?>">
+                                        <label class="small mb-1" for="Wrong3">Other variants</label>
+                                        <input class="form-control" id="Wrong3" type="text" placeholder="Wrong Answer" name="wrong_answer_3" value="<?php echo $wrongs[2] ?>">
                                     </div>
                                 </div>
                                 <div class="mb-3">
@@ -66,6 +66,15 @@
                                         <option <?php if ($question['difficulty'] == 'easy'){ echo 'selected="selected"'; } ?>name="easy" value="easy" selected="">Easy</option>
                                         <option <?php if ($question['difficulty'] == 'normal'){ echo 'selected="selected"'; } ?>name="normal" value="normal">Normal</option>
                                         <option <?php if ($question['difficulty'] == 'hard'){ echo 'selected="selected"'; } ?>name="hard" value="hard">Hard</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="small mb-1">Active</label>
+                                    <select name="active" class="form-select" aria-label="Default select example">
+                                        <option selected="" disabled="">Select a role:</option>
+
+                                        <option <?php if($question['active'] == 1){ echo 'selected="selected"';} ?> name="On" value="1" selected="">On</option>
+                                        <option <?php if($question['active'] == 0){ echo 'selected="selected"';} ?>name="Off" value="0">Off</option>
                                     </select>
                                 </div>
                                 <!-- Submit button-->
@@ -101,7 +110,7 @@
                 $('.loading-refresh').removeClass('loading-form');
 
                 if ($.trim(data)){
-                    $('.form-errors').text('please fill all');
+                    $('.form-errors').text(data);
                     $('.form-accept').text('');
                 }else {
                     $('.form-errors').text('');

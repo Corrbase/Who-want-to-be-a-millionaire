@@ -20,13 +20,16 @@ class AdminController {
 
         $top_gamers = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` ORDER BY `prize` DESC LIMIT 5;")->fetch_all(true);
 
-        view("admin", 'Admin' , [
+        view("dashboard", 'Admin' , [
             'top_gamers' => $top_gamers,
             'UpToFive' => $UpToFive,
             'AllGames' => $AllGames,
             'Admin' => $_SESSION['admin_profile'],
         ], "Admin");
     }
+
+
+
 
     public function questions()
     {
@@ -36,95 +39,18 @@ class AdminController {
             'Admin' => $_SESSION['admin_profile'],
         ], "Admin");
     }
-    public function question_pagination($pagination)
-    {
+
+    public function add_user(){
         $this->CheckLogin();
-        $AllQusetions = mysqli_query($this->admin->conn, "SELECT * FROM `questions`");
-        $AllQusetions = mysqli_num_rows($AllQusetions);
-        $PreviousPage = $pagination['pagination'] - 1;
-        $NextPage = $pagination['pagination'] + 1;
-        if ($pagination['pagination'] == 1){
-            $questions = mysqli_query($this->admin->conn, "SELECT * FROM `questions` LIMIT 10")->fetch_all(true);
-        }elseif($pagination['pagination'] > ceil($AllQusetions / 10)) {
-            dd('Ups');
-        }
-            else{
-            $page = ($pagination['pagination'] * 5) ;
-
-            $questions = mysqli_query($this->admin->conn, "SELECT * FROM `questions` LIMIT 10 OFFSET $page")->fetch_all(true);
-            $NextPage = ceil($AllQusetions);
-        }
-        if ($NextPage > ceil($AllQusetions / 10)){
-            $NextPage = ceil($AllQusetions / 10);
-        }
-        if ($PreviousPage <= 0){
-            $PreviousPage = 1;
-        }
-        echo '
-                      <table class="table table-hover">
-                      
-                      
-
-                    <a href="javascript:void(0)" id="ClickToPage" data-id="'. $PreviousPage;
-        echo '"class="btn btn-outline-success m-1"><</a>
-                    <a href="javascript:void(0)" id="ClickToPage" data-id="'. $NextPage;
-        echo '" class="btn  btn-outline-success m-1">></a>
-                    <p>Page: ' . $pagination['pagination'];
-        echo '</p>
-                        <thead>
-                        <tr>
-                            <th>
-                                #number
-                            </th>
-                            <th>
-                                Question
-                            </th>
-                            <th>
-                                Right answer
-                            </th>
-                            <th>
-                                answer price
-                            </th>
-                            <th>
-                                difficulty
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>';
-
-        foreach ($questions as $gamer) {
-            echo '<tr>';
-            echo '<td>';
-            echo $gamer['number'];
-            echo '</td>';
-
-            echo '<td>';
-            echo $gamer['question'];
-            echo '</td>';
-
-            echo '<td>';
-            echo $gamer['right_answer'];
-            echo '</td>';
-
-            echo '<td>';
-            echo $gamer['price'];
-            echo '</td>';
-
-            echo '<td>';
-            echo $gamer['difficulty'];
-            echo '</td>';
-
-            echo '<td>';
-            echo '<a href="/admin/questions/edit/' . $gamer['id'];
-            echo '">Edit</a>';
-            echo '</td>';
-            echo '</tr>';
-        }
-
-        echo '
-                        </tbody>
-                    </table>
-        ';
+        view("add_user", 'Admin' , [
+            'Admin' => $_SESSION['admin_profile'],
+        ], "Admin");
+    }
+    public function users(){
+        $this->CheckLogin();
+        view("users", 'Admin' , [
+            'Admin' => $_SESSION['admin_profile'],
+        ], "Admin");
     }
     public function gamers_pagination($pagination)
     {
@@ -224,7 +150,7 @@ class AdminController {
             }
             echo 'name="Finished" data-id="';
             echo $gamer['id'];
-            echo '" value="Finished">Finished</option>
+            echo '" value="Finished">Ավարտած</option>
                   </select>';
             echo '</td>';
 
@@ -238,6 +164,238 @@ class AdminController {
                         </tbody>
                     </table>
         ';
+    }
+    public function question_pagination($pagination)
+    {
+        $this->CheckLogin();
+        $AllQusetions = mysqli_query($this->admin->conn, "SELECT * FROM `questions`");
+        $AllQusetions = mysqli_num_rows($AllQusetions);
+        $PreviousPage = $pagination['pagination'] - 1;
+        $NextPage = $pagination['pagination'] + 1;
+        if ($pagination['pagination'] == 1){
+            $questions = mysqli_query($this->admin->conn, "SELECT * FROM `questions` LIMIT 10")->fetch_all(true);
+        }elseif($pagination['pagination'] > ceil($AllQusetions / 10)) {
+            dd('Ups');
+        }
+        else{
+            $page = ($pagination['pagination'] * 5) ;
+
+            $questions = mysqli_query($this->admin->conn, "SELECT * FROM `questions` LIMIT 10 OFFSET $page")->fetch_all(true);
+            $NextPage = ceil($AllQusetions);
+        }
+        if ($NextPage > ceil($AllQusetions / 10)){
+            $NextPage = ceil($AllQusetions / 10);
+        }
+        if ($PreviousPage <= 0){
+            $PreviousPage = 1;
+        }
+        echo '
+                      <table class="table table-hover">
+                      
+                      
+
+                    <a href="javascript:void(0)" id="ClickToPage" data-id="'. $PreviousPage;
+        echo '"class="btn btn-outline-success m-1"><</a>
+                    <a href="javascript:void(0)" id="ClickToPage" data-id="'. $NextPage;
+        echo '" class="btn  btn-outline-success m-1">></a>
+                    <p>Page: ' . $pagination['pagination'];
+        echo '</p>
+                        <thead>
+                        <tr>
+                            <th>
+                                #number
+                            </th>
+                            <th>
+                                Question
+                            </th>
+                            <th>
+                                Right answer
+                            </th>
+                            <th>
+                                difficulty
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>';
+
+        foreach ($questions as $gamer) {
+            echo '<tr>';
+            echo '<td>';
+            echo $gamer['id'];
+            echo '</td>';
+
+            echo '<td>';
+            echo $gamer['question'];
+            echo '</td>';
+
+            echo '<td>';
+            echo $gamer['right_answer'];
+            echo '</td>';
+
+            echo '<td>';
+            echo $gamer['difficulty'];
+            echo '</td>';
+
+            echo '<td>';
+            echo '<a href="/admin/questions/edit/' . $gamer['id'];
+            echo '">Edit</a>';
+            echo '</td>';
+            echo '</tr>';
+        }
+
+        echo '
+                        </tbody>
+                    </table>
+        ';
+    }
+    public function admins_pagination($pagination)
+    {
+        $ajax = $_GET;
+        $role = $ajax['role'];
+        $this->CheckLogin();
+        if ($ajax['role'] == 'all'){
+            $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users`");
+        }else{
+
+            $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role'");
+
+        }
+        $AllUsersCount = mysqli_num_rows($AllUsers);
+        $page = $pagination['pagination'] -1;
+
+        if ($AllUsersCount /5 <1){
+
+            $pages = 1;
+            if ($ajax['role'] == 'all'){
+                $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` LIMIT 5 OFFSET $page ")->fetch_all(true);
+            }else{
+
+                $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role' LIMIT 5 OFFSET $page ")->fetch_all(true);
+
+            }
+        }elseif ($AllUsersCount/5 == 1){
+            $pages = $AllUsersCount/5;
+
+            if ($ajax['role'] == 'all'){
+                $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` LIMIT 5 OFFSET $page ")->fetch_all(true);
+            }else{
+
+                $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role' LIMIT 5 OFFSET $page ")->fetch_all(true);
+
+            }
+        }elseif ($AllUsersCount%5 <= 4){
+            $pages = floor($AllUsersCount/5) + 1;
+            $a = $pagination['pagination'];
+            if ($pages == $pagination['pagination']){
+                if ($ajax['role'] == 'all'){
+                    $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` LIMIT 5, $a")->fetch_all(true);
+                }else{
+
+                    $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role' LIMIT 5, $a")->fetch_all(true);
+
+                }
+            }else{
+                if ($ajax['role'] == 'all'){
+                    $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` LIMIT 5 OFFSET $page ")->fetch_all(true);
+                }else{
+
+                    $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role' LIMIT 5 OFFSET $page ")->fetch_all(true);
+
+                }
+            }
+        }
+
+        $PreviousPage = $pagination['pagination'] - 1;
+        $NextPage = $pagination['pagination'] + 1;
+        if ($PreviousPage < 1){
+            $disabled1 = 'disabled';
+        }
+        if ($NextPage > $pages){
+
+            $disabled2 = 'disabled';
+        }
+
+        echo '
+                      <table class="table table-hover">
+                      
+                      <div class="d-flex align-items-center">
+                      
+                    
+                        <a href="javascript:void(0)" type="button" id="ClickToPage" data-id="'. $PreviousPage;
+        echo '"class="btn btn-outline-success m-1 ';
+        echo $disabled1;
+        echo '"';
+
+            echo '><</a>
+                    <a href="javascript:void(0)" id="ClickToPage" data-id="'. $NextPage;
+        echo '" class="btn  btn-outline-success m-1 ';
+        echo $disabled2;
+        echo'">';
+            echo '></a></div>
+<div class="d-flex">
+
+
+                    <p class="mt-3">Page: ' . $pagination['pagination'];
+
+        echo '</p>
+<p class="mt-3 m-3">All users: ' . $AllUsersCount;
+
+        echo '</p></div>
+                        <thead>
+                        <tr>
+                            <th>
+                                #number
+                            </th>
+                            <th>
+                                Question
+                            </th>
+                            <th>
+                                Right answer
+                            </th>
+                            <th>
+                                difficulty
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>';
+
+        foreach ($AllUsers as $gamer) {
+            echo '<tr>';
+            echo '<td>';
+            echo $gamer['id'];
+            echo '</td>';
+
+            echo '<td>';
+            echo $gamer['name'];
+            echo '</td>';
+
+            echo '<td>';
+            echo $gamer['sname'];
+            echo '</td>';
+
+            echo '<td>';
+            echo $gamer['age'];
+            echo '</td>';
+
+            echo '<td>';
+            echo $gamer['Role'];
+            echo '</td>';
+
+            echo '<td>';
+            echo '<a href="/admin/questions/edit/' . $gamer['id'];
+            echo '">Edit</a>';
+            echo '</td>';
+            echo '</tr>';
+        }
+        echo '
+                        </tbody>
+                    </table>
+        ';
+    }
+    public function create_question()
+    {
+        $this->CheckLogin();
+        view("create_question", 'Admin' , [], "Admin");
     }
     public function edit_question($id)
     {
@@ -329,6 +487,9 @@ class AdminController {
             header("location: /login");
         }
     }
+    public function add_user_request(){
+        dd($_POST);
+    }
     public function delete_user($user){
         $this->CheckLogin();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -363,11 +524,50 @@ class AdminController {
                 $wrong_answer_3 = $_POST['wrong_answer_3'];
                 $right_answer = $_POST['right_answer'];
                 $diff = $_POST['difficulty'];
+                $active = $_POST['active'];
+                $actives = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE active = 1");
+                $actives = mysqli_num_rows($actives);
+
+                if ($active == 0){
+                    if ($actives <= 15 ){
+
+                        echo 'You cant change active because you have only 15 active questions';
+                        return false;
+                    }
+                    }
+                }
+            $wrongs = "$wrong_answer_1" . ',' . "$wrong_answer_2" . ',' . "$wrong_answer_3";
+            if (!array_search('',$_POST)){
+
+                mysqli_query($this->admin->conn, "UPDATE `questions` SET `question`= '$question', `right_answer`= '$right_answer', wrong_answer= '$wrongs', `difficulty`= '$diff' WHERE `id` = $id;");
+
+
+                return true;
+            }else{
+
+                echo 'please fill all';
+                return false;
+
+            }
+        }else{
+        }
+    }
+    public function question_create(){
+
+        $this->CheckLogin();
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if ($_POST){
+                $question = $_POST['question'];
+                $wrong_answer_1 = $_POST['wrong_answer_1'];
+                $wrong_answer_2 = $_POST['wrong_answer_2'];
+                $wrong_answer_3 = $_POST['wrong_answer_3'];
+                $right_answer = $_POST['right_answer'];
+                $diff = $_POST['difficulty'];
+                $active = $_POST['Active'];
                 $wrongs = "$wrong_answer_1" . ',' . "$wrong_answer_2" . ',' . "$wrong_answer_3";
                 if (!array_search('',$_POST)){
 
-                    mysqli_query($this->admin->conn, "UPDATE `questions` SET `question`= '$question', `right_answer`= '$right_answer', wrong_answer= '$wrongs', `difficulty`= '$diff' WHERE `id` = $id;");
-
+                    mysqli_query($this->admin->conn, "INSERT INTO `questions`(`question`, `right_answer`, `wrong_answer`, `difficulty`, `active`) VALUES ('$question','$right_answer','$wrongs','$diff','$active');");
 
                     return true;
                 }else{

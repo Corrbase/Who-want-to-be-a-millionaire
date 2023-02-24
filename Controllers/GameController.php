@@ -32,8 +32,19 @@ class GameController{
                 header('location: /play');
 
             }else{
+                $questionsCount = mysqli_query($this->game->conn, "SELECT * FROM `questions`");
+                $questions = $questionsCount->fetch_all(true);
+                $questionsCount = mysqli_num_rows($questionsCount);
+                $numbers = randomGen(1,$questionsCount,$questionsCount + 1);
+                $question_numbers = [];
+                foreach ($numbers as $key=>$value){
+                    array_push($question_numbers, $questions[$value-1]['id']);
+
+                }
                 $_SESSION['play_run']['player'] = $_SESSION['user_profile']['login'];
                 $_SESSION['play'] = true;
+                $_SESSION['play_run']['questions_id'] = $question_numbers;
+
                 $_SESSION['play_run']['level_prices'] = [
                     'level_1' => 100,
                     'level_2' => 200,
@@ -102,7 +113,8 @@ class GameController{
             $NowLevel = array_search(false, $_SESSION['play_run']['level']);
             $NowLevel = explode('_', $NowLevel);
             $NowLevel = $NowLevel[1];
-            $question = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $NowLevel")->fetch_all(true);
+            $id = $_SESSION['play_run']['questions_id'][$NowLevel - 1];
+            $question = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $id")->fetch_all(true);
             $question = $question[0];
             $wrongs = explode(',' , $question['wrong_answer']);
             if (isset($ajax['end_game'])){
@@ -184,26 +196,24 @@ class GameController{
                                     unset($_SESSION['play']);
                 unset($_SESSION['play_run']);
                 }else{
+
                     $NowLevel = array_search(false, $_SESSION['play_run']['level']);
                     $NowLevel = explode('_', $NowLevel);
                     $NowLevel = $NowLevel[1];
-                    $question = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $NowLevel")->fetch_all(true);
+                    $id = $_SESSION['play_run']['questions_id'][$NowLevel - 1];
+                    $question = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $id")->fetch_all(true);
                     $question = $question[0];
                     $wrongs = explode(',' , $question['wrong_answer']);
-
-
                     $nextLvl = $NowLevel + 1;
-                    $nextquestion = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $nextLvl")->fetch_all(true);
+
+                    $nextquestion = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $id")->fetch_all(true);
                     $nextquestion = $nextquestion[0];
 
 
                     $previous_level = $NowLevel - 1;
                     $Nowlevel_name = 'level_' . $previous_level;
                     $Nextlevel_name = 'level_' . $NowLevel;
-                    $ajax = [
-                        'now_fond' => $question['price'],
-                        'next_fond' => $nextquestion['price']
-                    ];
+
                     if ($Nowlevel_name == 'level_0'){
                         $NextPrize = $_SESSION['play_run']['level_prices'][$Nextlevel_name];
                         $ajax['now_fond'] = 0;
