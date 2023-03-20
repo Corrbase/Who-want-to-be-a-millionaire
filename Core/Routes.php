@@ -58,10 +58,12 @@ $route->add('/r/user/logOut', 'UserController@logout_user');
 $route->add('/r/user/login', 'UserController@login_user');
 
 $route->add('hy/play/name', 'GameController@play_name');
-$route->add('en/play/name', 'GameController@play_name');
 $route->add('hy/play', 'GameController@play_game');
+$route->add('hy/play/gone', 'GameController@play_gone');
+
+$route->add('en/play/name', 'GameController@play_name');
 $route->add('en/play', 'GameController@play_game');
-$route->add('/play/gone', 'GameController@play_gone');
+$route->add('en/play/gone', 'GameController@play_gone');
 
 
 // error404 page*

@@ -37,7 +37,7 @@ class GameController{
                 header('location: /play');
 
             }else{
-                $questionsCount = mysqli_query($this->game->conn, "SELECT * FROM `questions`");
+                $questionsCount = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `active` = 1");
                 $questions = $questionsCount->fetch_all(true);
                 $questionsCount = mysqli_num_rows($questionsCount);
                 $numbers = randomGen(1,$questionsCount,$questionsCount + 1);
@@ -104,7 +104,12 @@ class GameController{
             header('Location: /');
 
         }
-        view('index', 'Game', '', 'Play');
+        $language = getLanguage();
+        $url = substr($_GET['url'], 3);
+
+        $front = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+
+        view('index', 'Game', ['front' => $front,'language' => $language], 'Play');
     }
 
     public function play_gone()
@@ -113,7 +118,9 @@ class GameController{
 
             header('Location: /');
         }
+        $language = getLanguage();
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+
             $ajax = $_POST;
             $NowLevel = array_search(false, $_SESSION['play_run']['level']);
             $NowLevel = explode('_', $NowLevel);
@@ -146,9 +153,9 @@ class GameController{
                 }
             }
             elseif (isset($ajax['bonus'])){
-                $this->bonus($ajax['bonus'], $question['right_answer'], $wrongs);
+                $this->bonus($ajax['bonus'], $question['right_answer_' . $language], $wrongs, $language);
             }else{
-                if ($question['right_answer'] == $ajax['question_ans']){
+                if ($question['right_answer_' . $language] == $ajax['question_ans']){
                     // check is user answer right
                     $NowLevel = array_search(false, $_SESSION['play_run']['level']);
                     $_SESSION['play_run']['level'][$NowLevel] = true;
@@ -164,7 +171,7 @@ class GameController{
                         $ajax['status'] = false;
                         $ajax['prize'] = true;
                         $ajax['prize_count'] = 1000;
-                        $ajax['right'] = $question['right_answer'];
+                        $ajax['right'] = $question['right_answer_' . $language];
                         echo json_encode($ajax);
                         unset($_SESSION['play']);
                         unset($_SESSION['play_run']);
@@ -173,14 +180,14 @@ class GameController{
                         $ajax['status'] = false;
                         $ajax['prize'] = true;
                         $ajax['prize_count'] = 1000;
-                        $ajax['right'] = $question['right_answer'];
+                        $ajax['right'] = $question['right_answer_' . $language];
                         echo json_encode($ajax);
                         unset($_SESSION['play']);
                         unset($_SESSION['play_run']);
                     } else{
                         $ajax['status'] = false;
                         $ajax['prize'] = false;
-                        $ajax['right'] = $question['right_answer'];
+                        $ajax['right'] = $question['right_answer_' . $language];
                         echo json_encode($ajax);
                         unset($_SESSION['play']);
                         unset($_SESSION['play_run']);
@@ -208,7 +215,7 @@ class GameController{
                     $id = $_SESSION['play_run']['questions_id'][$NowLevel - 1];
                     $question = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $id")->fetch_all(true);
                     $question = $question[0];
-                    $wrongs = explode(',' , $question['wrong_answer']);
+                    $wrongs = explode(',' , $question['wrong_answer_' . $language]);
                     $nextLvl = $NowLevel + 1;
 
                     $nextquestion = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $id")->fetch_all(true);
@@ -230,8 +237,8 @@ class GameController{
                         $ajax['next_fond'] = $NextPrize;
                     }
 
-                    $this->game->question_name($question['question']);
-                    $this->game->random_answers($wrongs, $question['right_answer']);
+                    $this->game->question_name($question[$language]);
+                    $this->game->random_answers($wrongs, $question['right_answer_' . $language]);
                     $this->game->bonuses();
                     $this->game->fond($ajax);
                 }
@@ -244,25 +251,48 @@ class GameController{
 
     public function end_game(){}
 
-    public function bonus($bonus_name, $true, $false){
+    public function bonus($bonus_name, $true, $false, $language){
         $exist = $_SESSION['play_run']['bonus'];
-                if ($exist[$bonus_name] == false) {
-                    if ($bonus_name == 'call_to_friend') {
-                        $rand = rand(1, 4);
-                        echo 'Բարև ' . $_SESSION['play_run']['player'] . ', ես կարծում եմ դա "' . $true . '"-ն է';
-                        $_SESSION['play_run']['bonus'][$bonus_name] = true;
-                    } elseif ($bonus_name == '50') {
-                        echo 'Դա կամ "' . $true . '"-ն է կամ էլ "' . $false[1] . '"-ը';
-                        $_SESSION['play_run']['bonus'][$bonus_name] = true;
-                    } elseif ($bonus_name == 'Voice') {
-                        $prcnt = rand(50, 100); //  get random number
+        if ($language == 'en'){
+            if ($exist[$bonus_name] == false) {
+                if ($bonus_name == 'call_to_friend') {
+                    $rand = rand(1, 4);
 
-                        echo 'Դայլիճի ձայնի  ' . $prcnt .' տոկոսը կարծում է որ դա "'. $true . '"-ն է';
-                        $_SESSION['play_run']['bonus'][$bonus_name] = true;
-                    }
-                }else{
-                    echo 'Դուք չեք կարող օգտագործել նույն բոնուսը երկու անգամ';
+                    echo 'Hi ' . $_SESSION['play_run']['player'] . ', i think it is "' . $true . '"';
+                    $_SESSION['play_run']['bonus'][$bonus_name] = true;
+                } elseif ($bonus_name == '50') {
+                    echo 'It is or"' . $true . '" or "' . $false[1] . '"';
+                    $_SESSION['play_run']['bonus'][$bonus_name] = true;
+                } elseif ($bonus_name == 'Voice') {
+                    $prcnt = rand(50, 100); //  get random number
+
+                    echo $prcnt .' percent of coward voice think that it is'. $true . '"';
+                    $_SESSION['play_run']['bonus'][$bonus_name] = true;
                 }
+            }else{
+                echo 'You cannot use the same bonus twice';
+            }
+        }elseif ($language == 'hy'){
+            if ($exist[$bonus_name] == false) {
+                if ($bonus_name == 'call_to_friend') {
+                    $rand = rand(1, 4);
+
+                    echo 'Բարև ' . $_SESSION['play_run']['player'] . ', ես կարծում եմ դա "' . $true . '"-ն է';
+                    $_SESSION['play_run']['bonus'][$bonus_name] = true;
+                } elseif ($bonus_name == '50') {
+                    echo 'Դա կամ "' . $true . '"-ն է կամ էլ "' . $false[1] . '"-ը';
+                    $_SESSION['play_run']['bonus'][$bonus_name] = true;
+                } elseif ($bonus_name == 'Voice') {
+                    $prcnt = rand(50, 100); //  get random number
+
+                    echo 'Դայլիճի ձայնի  ' . $prcnt .' տոկոսը կարծում է որ դա "'. $true . '"-ն է';
+                    $_SESSION['play_run']['bonus'][$bonus_name] = true;
+                }
+            }else{
+                echo 'Դուք չեք կ    արող օգտագործել նույն բոնուսը երկու անգամ';
+            }
+        }
+
 
     }
 

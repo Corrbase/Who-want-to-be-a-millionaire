@@ -41,11 +41,18 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <header class="d-flex w-75 m-auto justify-content-between p-2">
     <form class=" justify-content-between d-flex">
+        <?php
+           $front = $view_array['front'];
+        ?>
         <a href="javascript:void(0)" class="end_game m-2">
-            Ավարտել խաղը և վերցնել շահած գումարը
+            <?php
+            echo text($front, $language, 'end_game');
+            ?>
         </a>
         <p class="m-2">
-            Ով է ուզում դառնալ միլիոնատեր
+            <?php
+            echo text($front, $language, 'muted_title');
+            ?>
         </p>
     </form>
 </header>

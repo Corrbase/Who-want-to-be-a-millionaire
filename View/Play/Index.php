@@ -6,7 +6,7 @@
 <script>
     $.ajax({
         type: "GET",
-        url: 'play/gone',
+        url: '/<?php echo $language?>/play/gone',
         // data: function (params){
         //     return{
         //         question_number: question_number,
@@ -30,7 +30,7 @@
         let question_id = $(this)
         $.ajax({
             type: "POST",
-            url: 'play/gone',
+            url: '/<?php echo $language?>/play/gone',
             data: {
                 question_num: question_number,
                 question_ans: question_answer
@@ -47,7 +47,7 @@
                 if (request_data.status == 1){
                     $.ajax({
                         type: "GET",
-                        url: 'play/gone',
+                        url: '/<?php echo $language?>/play/gone',
                         // data: function (params){
                         //     return{
                         //         question_number: question_number,
@@ -65,9 +65,9 @@
                     })
                 }else{
                     if (request_data.prize == 1){
-                        var LostWin = 'Դուք պարտվեցիք ձեր հաղթանակը ' + request_data.prize_count;
+                        var LostWin = '<?php echo text($front, $language, 'game_lost_noprize'); ?> ' + request_data.prize_count;
                     }else {
-                        var LostWin = 'Դուք պարտվեցիք, փորձեք կրկին ' ;
+                        var LostWin = '<?php echo text($front, $language, 'game_lost_prize'); ?>' ;
                     }
                     $.ajax({
                         type: "GET",
@@ -85,7 +85,7 @@
                         success: function()
                         {
 
-                            $('.content').html('<h1 class="text-center p-2">' + LostWin + '<a href="/">։ Գլխավոր էջ</a>  </h1>');
+                            $('.content').html('<h1 class="text-center p-2">' + LostWin + '<a href="/"><?php echo text($front, $language, 'game_main_page_button'); ?></a>  </h1>');
                         }
                     })
 
@@ -100,7 +100,7 @@
         let bonus_name = $(this).attr("data-id");
         $.ajax({
             type: "POST",
-            url: 'play/gone',
+            url: '/<?php echo $language?>/play/gone',
             data: {
                 bonus: bonus_name,
             },
@@ -125,7 +125,7 @@
 
         $.ajax({
             type: "POST",
-            url: 'play/gone',
+            url: '/<?php echo $language?>/play/gone',
             data: {
                 end_game: true,
                 prize: prize
@@ -138,9 +138,9 @@
                 $('.loading-refresh').removeClass('loading-form');
                 let request_data = JSON.parse(data)
                 if (request_data.end == false){
-                    $('.content').html('<h1 class="text-center p-2"> Դուք չունեք հաղթած գումար, խաղը ավարտված է <a href="/">։ Գլխավոր էջ</a>  </h1>');
+                    $('.content').html('<h1 class="text-center p-2"> <?php echo text($front, $language, 'game_stop_noprize'); ?>  <a href="/"><?php echo text($front, $language, 'game_main_page_button'); ?></a>  </h1>');
                 }else {
-                    $('.content').html('<h1 class="text-center p-2"> Խաղը ավարտված է, ձեր շահած գումարն է '+prize+'<a href="/">։ Գլխավոր էջ</a>  </h1>');
+                    $('.content').html('<h1 class="text-center p-2"> <?php echo text($front, $language, 'game_stop_prize'); ?> '+prize+'<a href="/"><?php echo text($front, $language, 'game_main_page_button'); ?></a>  </h1>');
                 }
                 $('.bonus_request').text(data);
 
