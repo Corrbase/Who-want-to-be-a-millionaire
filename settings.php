@@ -1,7 +1,7 @@
 <?php
 $MainSettings = [
 
-    'Homepage' => '/home', // if error is 404
+    'Homepage' => 'en/home', // if error is 404
     'Error404' => false,
     //MySQL
 

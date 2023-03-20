@@ -6,8 +6,16 @@
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/" class="nav-link px-2 text-secondary">Գլխավոր էջ</a></li>
-                <li><a href="/game" class="nav-link px-2 text-white">Խաղալ</a></li>
+                <li><a href="/<?php echo $language; ?>/home" class="nav-link px-2 text-secondary">
+                        <?php
+                            echo text($header, $language, 'main_page');
+                        ?>
+                    </a></li>
+                <li><a href="<?php echo '/' . $language ; ?>/game" class="nav-link px-2 text-white">
+                        <?php
+                        echo text($header, $language, 'play');
+                        ?>
+                    </a></li>
             </ul>
 
 
@@ -15,14 +23,14 @@
             <?php
             if (isset($_SESSION['admin_profile']['profile']) == 1){
                 echo ' <div class="text-end">
-                        <a href="/admin/home" class="btn btn-outline-light me-2">Admin panel</a>
+                        <a href="/admin/home" class="btn btn-outline-light me-2">'. text($header, $language, 'admin_panel') .'</a>
                     </div>';
             }elseif (isset($_SESSION['user_profile']['profile']) == 1){
                 echo ' 
                     <div class="text-end">
                    
-                        <a href="" class="LogOut btn btn-outline-light me-2">Դուրս գալ</a>
-                        <a href="/profile" class="btn btn-outline-light me-2">պրոֆիլ</a>
+                        <a href="" class="LogOut btn btn-outline-light me-2">'. text($header, $language, 'logout') .'</a>
+                        <a href="/'. $language .'/profile" class="btn btn-outline-light me-2">'. text($header, $language, 'profile') .'</a>
                        
                     </div>
                     <script >
@@ -44,8 +52,8 @@
                     ';
             }else{
                 echo '<div class="text-end">
-                        <a href="/login" class="btn btn-outline-light me-2">Մուտէ</a>
-                        <a href="/register" class="btn btn-warning">Գրանցվել</a>
+                        <a href="/'. $language .'/login" class="btn btn-outline-light me-2">'. text($header, $language, 'login') .'</a>
+                        <a href="/'. $language .'/register" class="btn btn-warning">'. text($header, $language, 'registration') .'</a>
                     </div>' ;
             }
             ?>

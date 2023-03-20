@@ -1,4 +1,6 @@
 
+
+
 <main>
     <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
         <div class="container-xl px-4">
@@ -7,67 +9,57 @@
                     <div class="col-auto mt-4">
                         <h1 class="page-header-title">
                             <div class="page-header-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div>
-                            All users
+                            Edit Question
                         </h1>
-
+                        <div class="page-header-subtitle">Here you can edit you question and save it</div>
                     </div>
                 </div>
                 <nav class="mt-4 rounded" aria-label="breadcrumb">
                     <ol class="breadcrumb px-3 py-2 rounded mb-0">
                         <li class="breadcrumb-item"><a href="/admin/home">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="/admin/users">Users</a></li>
-                        <li class="breadcrumb-item active">Add</li>
-
+                        <li class="breadcrumb-item active">edit_user</li>
                     </ol>
                 </nav>
             </div>
         </div>
     </header>
-
+    <?php
+    $user = $view_array['user'][0];
+    if ($user['Role'] == 'User'){
+        $dis1 = 'selected';
+        $dis2 = '';
+    }elseif ($user['Role'] == 'Admin'){
+        $dis2 = 'selected';
+        $dis1 = '';
+    }
+    ?>
     <div class="container-xl px-4 mt-n10">
-        <div class="card">
-            <div class="card-header">All questions is here</div>
-            <div class="card-body">Here you can add new users or edit that</div>
-        </div>
-        <div class="card mt-5">
-            <div class="card-header">
-                users
-            </div>
-            <div>
-            </div>
+        <div class="card mb-4">
+            <div class="card-header">User Details - <span class="text-muted"><?php echo $user['login']; ?></span></div>
             <div class="card-body">
-                <form enctype="multipart/form-data" method="POST" id="create_user">
+                <form enctype="multipart/form-data" method="POST" id="edit_user">
 
 
                     <div class="row gx-3 mb-3">
                         <div class="col-md-6">
                             <label class="small mb-1 f-1" for="Right_answer">Name <span class="text-danger">( Min: 3 sybhols )</span></label>
-                            <input class="form-control" id="Name" type="text" placeholder="name" name="name">
+                            <input class="form-control" id="Name" type="text" placeholder="name" value="<?php echo $user['name']; ?>" name="name">
                         </div>
                         <div class="col-md-6">
                             <label class="small mb-1" for="sname">Sname <span class="text-danger">( Min: 3 sybhols )</span></label>
-                            <input class="form-control" id="sname" type="text" placeholder="sname" name="sname">
+                            <input class="form-control" id="sname" type="text" placeholder="sname" name="sname" value="<?php echo $user['sname']; ?>">
                         </div>
                     </div>
                     <div class="row gx-3 mb-3">
                         <div class="col-md-6">
-                            <label class="small mb-1  text-success" for="balance ">Balance <span class="text-muted">( Automatically it's 0, you can skip this input )</span></label>
-                            <input class="form-control" id="balance" type="number" min="0" placeholder="balance" value="0" name="balance">
+                            <label class="small mb-1  text-success" for="balance ">Balance <span class="text-muted"></span></label>
+                            <input class="form-control" id="balance" type="number" min="0" placeholder="balance" name="balance" value="<?php echo $user['balance']; ?>">
                         </div>
                         <div class="col-md-6">
                             <label class="small mb-1" for="Wrong3">Age <span class="text-danger">( Min: 18 year )</span></label>
-                            <input class="form-control" id="age" type="number" min="18" max="99" placeholder="Age" name="age">
+                            <input class="form-control" id="age" type="number" min="18" max="99" placeholder="Age" name="age" value="<?php echo $user['age']; ?>">
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="small mb-1" for="login">Login <span class="text-danger">( Min: 4 sybhols )</span></label>
-
-                        <input class="form-control" id="login" type="login" placeholder="login" name="login">
-                    </div>
-                    <div class="mb-3">
-                        <label class="small mb-1" for="password">Password <span class="text-danger">( Min: 4 sybhols )</span></label>
-
-                        <input class="form-control" id="Password" type="password" placeholder="Password" name="password">
                     </div>
 
                     <div class="mb-3">
@@ -75,8 +67,8 @@
                         <select name="Role" class="form-select" aria-label="Default select example">
                             <option selected="" disabled="">Select a role:</option>
 
-                            <option name="Admin" value="Admin" >Admin</option>
-                            <option name="User" value="User" selected>User</option>
+                            <option name="Admin" value="Admin" <?php echo $dis2 ?>>Admin</option>
+                            <option name="User" value="User" <?php echo $dis1 ?>>User</option>
                         </select>
                     </div>
                     <!-- Submit button-->
@@ -89,19 +81,20 @@
             </div>
         </div>
     </div>
+        <!-- Button trigger modal -->
 </main>
 
-<div class="loading-refresh" style="z-index: 2000"></div>
 
 <script>
-    $("#create_user").submit(function(e) {
+    $("#edit_user").submit(function(e) {
 
-        e.preventDefault();
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
         var form = $(this);
 
         $.ajax({
             type: "POST",
-            url: '/r/admin/users/add',
+            url: '/r/admin/user/edit/<?php echo $user['id']?>',
             data: form.serialize(),
             beforeSend:
                 function() {
@@ -109,19 +102,17 @@
                 },
             success: function(data)
             {
-                let request_data = JSON.parse(data)
                 $('.loading-refresh').removeClass('loading-form');
 
-                if (request_data.success === true){
-                    $('.form-accept').html('user is create');
-                    $('.form-errors').empty();
-                }else{
-                    $('.form-accept').empty();
-                    $('.form-errors').html(request_data.error);
+                if ($.trim(data)){
+                    $('.form-errors').text(data);
+                    $('.form-accept').text('');
+                }else {
+                    $('.form-errors').text('');
+                    $('.form-accept').text('Save chnages');
                 }
             }
-        });
+        })
+
     })
-
-
 </script>

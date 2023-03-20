@@ -13,7 +13,12 @@ class HomeController{
 
             header('location: /');
         }
-        view("login", null, '', 'HomePages');
+        $language = getLanguage();
+
+        $url = substr($_GET['url'], 3);
+        $front = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+        $header = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = 'header' ")->fetch_all(true);
+        view("login", null, ['front' => $front, 'language' => $language, 'header' => $header], 'HomePages');
 
     }
     public function register()
@@ -25,7 +30,14 @@ class HomeController{
 
             header('location: /');
         }
-        view("register", null, '', 'HomePages');
+        $language = getLanguage();
+
+        $url = substr($_GET['url'], 3);
+        $front = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+        $header = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = 'header' ")->fetch_all(true);
+
+
+        view("register", null, ['front' => $front, 'language' => $language, 'header' => $header], 'HomePages');
     }
 
     // requests
@@ -80,7 +92,7 @@ class HomeController{
 
                     $pass = md5($pass);
 
-                    $query = mysqli_query($this->user->conn, "INSERT INTO `users`( `login`, `password`, `name`, `sname`, `age`, `balance`) VALUES ('$login','$pass','$name','$sname',$age, 0)");
+                    $query = mysqli_query($this->user->conn, "INSERT INTO `users`( `login`, `password`, `name`, `sname`, `age`, `balance`, `Role`) VALUES ('$login','$pass','$name','$sname',$age, 0, 'User')");
 
                     if ($query){
                         $_SESSION['user_profile'] = [
@@ -125,9 +137,17 @@ class HomeController{
     }
     public function home(){
         $this->checkplay();
-        view("Home", null, '', 'HomePages');
+        $language = getLanguage();
+
+        $url = substr($_GET['url'], 3);
+        $front = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+        $header = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = 'header' ")->fetch_all(true);
+
+        view("Home", null, ['front' => $front, 'language' => $language, 'header' => $header], 'HomePages');
 
     }
+
+
     public function checkplay()
     {
         if (isset($_SESSION['play'])){

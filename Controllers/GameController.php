@@ -20,7 +20,12 @@ class GameController{
     public function play()
     {
         $this->checkplay();
-        view("Play", null, '', 'Game');
+        $language = getLanguage();
+
+        $url = substr($_GET['url'], 3);
+        $header = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = 'header' ")->fetch_all(true);
+        $front = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+        view("Play", null, ['front' => $front,'language' => $language, 'header' => $header], 'Game');
     }
 
     public function play_name()

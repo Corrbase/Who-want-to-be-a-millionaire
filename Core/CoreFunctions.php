@@ -187,6 +187,12 @@ function model($name, $settings){
 
 function view($name,$includes = null ,$view_array = null, $folder = null){
 
+    if (isset($view_array['language'])){
+        $language = $view_array['language'];
+    }
+    if (isset($view_array['header'])){
+        $header = $view_array['header'];
+    }
     if ($includes == null){
         include "View/Includes/Includes/main.php";
     }else{
@@ -196,7 +202,26 @@ function view($name,$includes = null ,$view_array = null, $folder = null){
 
 }
 
+function text($array, $language, $name){
+    foreach ($array as $item => $val){
+        if ($val['name'] == $name){
+            return $val[$language];
+        }
+    }
+}
 
+function getLanguage(){
+        $url = substr($_GET['url'], 0, 2);
+        if ($url == 'en'){
+            $language = 'en';
+        }elseif ($url == 'hy'){
+            $language = 'hy';
+        }else{
+            $language = 'none';
+        }
+
+        return $language;
+    }
 ?>
 
 

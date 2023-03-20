@@ -59,7 +59,6 @@
                     $('.loading-refresh').addClass('loading-form');
                 },
             success: function(data) {
-                $('.loading-refresh').removeClass('loading-form');
                 window.location.replace("/login");
             }
         })

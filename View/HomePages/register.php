@@ -1,41 +1,86 @@
-
+<?php
+$front = $view_array['front'];
+?>
         <form id="UserRegisterForm" class="w-25 m-auto pt-5 mt-5" method="POST" action="" enctype="multipart/form-data">
             <div class="mb-3">
                 <h1 class="pb-3">
-                    Գրանցում
+                    <?php
+                    echo text($front, $language, 'registration_title');
+                    ?>
                 </h1>
             </div>
             <div class="mb-3">
-                <label  class="form-check-label">Մուտքանուն</label>
+                <label  class="form-check-label">
+                    <?php
+                    echo text($front, $language, 'input_login');
+                    ?>
+                </label>
                 <input type="login" value="" name="login" class="form-control" id="login" aria-describedby="emailHelp">
-                <div id="loginHelp" class="form-text">Տառերի մինիմալ քանակ։ 4</div>
+                <div id="loginHelp" class="form-text"><?php
+                    echo text($front, $language, 'input_danger_minimum');
+                    ?>։ 4</div>
             </div>
             <div class="mb-3">
-                <label class="form-check-label">Գաղտնաբառ</label>
+                <label class="form-check-label">
+                    <?php
+                    echo text($front, $language, 'input_password');
+                    ?>
+                </label>
                 <input type="password" name="password" class="form-control" >
-                <div id="loginHelp" class="form-text">Տառերի մինիմալ քանակ։ 4</div>
+                <div id="loginHelp" class="form-text"><?php
+                    echo text($front, $language, 'input_danger_minimum');
+                    ?>։ 4</div>
             </div>
             <div class="mb-3">
-                <label class="form-check-label">կրկնեք գաղտնաբառը</label>
+                <label class="form-check-label">
+                    <?php
+                    echo text($front, $language, 'input-rep-pass');
+                    ?>
+                </label>
                 <input type="password" name="password_confirm" class="form-control" >
             </div>
             <div class="mb-3">
-                <label class="form-check-label">Անուն</label>
+                <label class="form-check-label">
+                    <?php
+                    echo text($front, $language, 'input_name');
+                    ?>
+                </label>
                 <input type="text" name="name" class="form-control" >
-                <div id="loginHelp" class="form-text">Min length 3</div>
+                <div id="loginHelp" class="form-text"><?php
+                    echo text($front, $language, 'input_danger_minimum');
+                    ?>: 3</div>
             </div>
             <div class="mb-3">
-                <label class="form-check-label">Ազգանուն</label>
+                <label class="form-check-label">
+                    <?php
+                    echo text($front, $language, 'input_sname');
+                    ?>
+                </label>
                 <input type="text" name="sname" class="form-control" >
-                <div id="loginHelp" class="form-text">Տառերի մինիմալ քանակ։ 3</div>
+                <div id="loginHelp" class="form-text"><?php
+                    echo text($front, $language, 'input_danger_minimum');
+                    ?>։ 3</div>
             </div>
             <div class="mb-3">
-                <label class="form-check-label">Տարիք</label>
+                <label class="form-check-label">
+                    <?php
+                    echo text($front, $language, 'input_age');
+                    ?>
+                </label>
                 <input type="number" min="18" max="100" name="age" class="form-control" >
-                <div id="loginHelp" class="form-text">Առնվազն 18</div>
+                <div id="loginHelp" class="form-text">
+                    <?php
+                    echo text($front, $language, 'input_danger_minimum');
+                    ?>
+                    18
+                </div>
             </div>
 
-            <button class="btn btn-primary">Գրանցում</button>
+            <button class="btn btn-primary">
+                <?php
+                echo text($front, $language, 'input_button_register');
+                ?>
+            </button>
 
             <div class="mb-3">
                 <div class="form-error form-label text-danger">
@@ -63,11 +108,14 @@
             success: function(data)
             {
                 let request_data = JSON.parse(data)
-                $('.loading-refresh').removeClass('loading-form');
-                $('.form-error').text(request_data.error);
+
                 if (request_data.success === true){
                     window.location.replace("/profile");
+                }else {
+                    $('.loading-refresh').removeClass('loading-form');
+                    $('.form-error').text(request_data.error);
                 }
+
 
             }
         })
