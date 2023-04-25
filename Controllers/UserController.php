@@ -35,9 +35,12 @@ class UserController{
             header('location: /admin/home');
         }elseif (!isset($_SESSION['user_profile']['profile']) == 1){
             header('location: /profile');
-        }else{
-            unset($_SESSION['user_profile']);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+
+                unset($_SESSION['user_profile']);
+
         }
+
     }
     public function login_user(){
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
@@ -226,7 +229,8 @@ class UserController{
 
             if ($gamer['getted'] == true){echo 'getted';}
             else if ($gamer['status'] == 'Finished'){
-                echo "<button class='btn btn-outline-primary get-money' data-id='". $gamer['id'] ."'>'.text($front, $language, 'table_prize_button').'</button>";
+
+                echo "<button class='btn btn-outline-primary get-money' data-id='". $gamer['id'] ."'>".text($front, $language, 'table_prize_button')." </button>";
             }else if ($gamer['status'] == 'canceled'){
                 echo text($front, $language, 'game_status_canceled');
             }else if ($gamer['status'] == 'waiting') {

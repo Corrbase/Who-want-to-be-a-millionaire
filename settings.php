@@ -10,5 +10,4 @@ $MainSettings = [
     'Password' => '',
     'Database' => 'mvc'
 
-
 ];

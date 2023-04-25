@@ -54,13 +54,12 @@
                         //         question_answer: question_answer,
                         //     }
                         // },
-                        beforeSend: function (){
 
-                            $(".answer-button[data-id="+request_data.question_num+"]").css('background-color', '#7de051');
-                        },
                         success: function(data)
                         {
-                            $('.content').html(data);
+                            $(".answer-button[data-id=" + request_data.question_num + "]").css('background-color', '#7de051');
+                            setTimeout(function (){$('.content').html(data);}, 2000)
+
                         }
                     })
                 }else{
@@ -78,14 +77,14 @@
                         //         question_answer: question_answer,
                         //     }
                         // },
-                        beforeSend: function (){
-                            $(question_id).css('background-color', '#f65c5c');
-                            $(".answer-button[data-answer="+request_data.right+"]").css('background-color', '#7de051');
-                        },
+
                         success: function()
                         {
+                            $(question_id).css('background-color', '#f65c5c');
+                            $(".answer-button[data-answer="+request_data.right+"]").css('background-color', '#7de051');
+                            
+                            setTimeout(function (){$('.content').html('<h1 class="text-center p-2">' + LostWin + '<a href="/"><?php echo text($front, $language, 'game_main_page_button'); ?></a>  </h1>');}, 2000)
 
-                            $('.content').html('<h1 class="text-center p-2">' + LostWin + '<a href="/"><?php echo text($front, $language, 'game_main_page_button'); ?></a>  </h1>');
                         }
                     })
 

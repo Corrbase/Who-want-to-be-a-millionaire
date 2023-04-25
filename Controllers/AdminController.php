@@ -65,7 +65,7 @@ class AdminController {
             $pages = 1;
             $questions = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT $count, 5 ")->fetch_all(true);
 
-        }elseif ($AllUsersCount/5 == 1){
+        }elseif ($AllUsersCount%5 == 0){
             $pages = $AllUsersCount/5;
 
             $questions = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT $count, 5 ")->fetch_all(true);

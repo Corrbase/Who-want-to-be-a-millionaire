@@ -1,4 +1,4 @@
-<?php
+    <?php
 $front = $view_array['front'];
 ?>
 <div class="w-50 pt-5 m-auto">
