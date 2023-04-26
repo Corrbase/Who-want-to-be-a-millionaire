@@ -24,12 +24,24 @@
 
     <div class="container-xl px-4 mt-n10">
         <div class="card">
-            <div class="card-header">All gamers is here</div>
-            <div class="card-body">You can edit the gamer and change status of gamer or delete gamer</div>
+            <div class="card-header">
+                <?php
+                $front = $view_array['front'];
+                echo text($front, $language, 'all_games');
+                ?>
+            </div>
+            <div class="card-body">
+                <?php
+                echo text($front, $language, 'game_info');
+                ?>
+            </div>
         </div>
         <div class="card mt-5">
             <div class="card-header">
-                All gamers
+                <?php
+                echo text($front, $language, 'all_games_table');
+
+                ?>
             </div>
             <div>
             </div>
@@ -41,12 +53,11 @@
 </main>
 
 
-
 <script>
     $(document).on('click', '#ClickToPage', function (e){
         let a = $(this).attr("data-id");
         $.ajax({
-            url: "/admin/gamers/" + a,
+            url: "/<?php echo $language; ?>/admin/gamers/" + a,
             type: "GET",
             data: {
 
@@ -127,7 +138,7 @@
 
     });
     $.ajax({
-            url: "/admin/gamers/1",
+            url: "/<?php echo $language; ?>/admin/gamers/1",
             type: "GET",
             data: {
 

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 24 2023 г., 20:45
--- Версия сервера: 8.0.24
--- Версия PHP: 8.0.14
+-- Время создания: Апр 26 2023 г., 18:34
+-- Версия сервера: 8.0.30
+-- Версия PHP: 7.2.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -85,7 +85,6 @@ INSERT INTO `gamers` (`id`, `name`, `level`, `prize`, `status`, `getted`) VALUES
 (40, 'Mher', 1, 100, 'waiting', 0),
 (41, 'Mher', 6, 2000, 'waiting', 0),
 (42, '0', 0, 0, '0', 0),
-(43, 'Mher', 3, 300, 'waiting', 0),
 (46, 'Mher', 1, 0, 'waiting', 0),
 (47, 'Mher', 3, 300, 'waiting', 0),
 (48, 'Mher', 3, 300, 'waiting', 0),
@@ -94,7 +93,10 @@ INSERT INTO `gamers` (`id`, `name`, `level`, `prize`, `status`, `getted`) VALUES
 (56, 'Mher', 3, 300, 'waiting', 0),
 (57, 'Mher', 1, 100, 'waiting', 0),
 (58, 'Mher', 1, 100, 'waiting', 0),
-(59, 'Mher', 1, 100, 'waiting', 0);
+(59, 'Mher', 1, 100, 'waiting', 0),
+(60, 'Mher', 1, 100, 'waiting', 0),
+(61, 'Mher', 1, 100, 'waiting', 0),
+(64, 'admin', 1, 100, 'waiting', 0);
 
 -- --------------------------------------------------------
 
@@ -157,7 +159,40 @@ INSERT INTO `languages` (`id`, `en`, `hy`, `name`, `url`) VALUES
 (40, 'You lost your victory', 'Դուք պարտվեցիք ձեր հաղթանակը ', 'game_lost_noprize', 'play'),
 (41, 'You lost, try again', 'Դուք պարտվեցիք, փորձեք կրկին ', 'game_lost_prize', 'play'),
 (42, ': main page', '։ Գլխավոր էջ', 'game_main_page_button', 'play'),
-(43, 'You have no winnings, game over', 'Դուք չունեք հաղթած գումար, խաղը ավարտված է', 'game_stop_noprize', 'play');
+(43, 'You have no winnings, game over', 'Դուք չունեք հաղթած գումար, խաղը ավարտված է', 'game_stop_noprize', 'play'),
+(44, 'Main Dashboard', 'Հիմնական վահանակ', 'main_dashboard', 'admin_header'),
+(45, 'Go to HomePage', 'Գնալ Գլխավոր էջ', 'go_to_main_page', 'admin_header'),
+(46, 'logout', 'Դուրս գալ', 'log_out_btn', 'admin_header'),
+(47, 'Main', 'Հիմնական', 'menu_title', 'admin_header'),
+(48, 'Game', 'Խաղ', 'menu_game_chapter', 'admin_header'),
+(49, 'Games', 'Խաղեր', 'menu_game_chapter_games', 'admin_header'),
+(50, 'Questions', 'Հարցեր', 'menu_game_chapter_questions', 'admin_header'),
+(51, 'Admin tooles', 'Ադմինի գործիքներ', 'menu_admint_chapter', 'admin_header'),
+(52, 'Documentation', 'Դոկումենտացիա', 'menu_admint_chapter_documentation', 'admin_header'),
+(53, 'Users', 'Օգտատերներ', 'menu_admint_chapter_users', 'admin_header'),
+(54, 'Logged in as:', 'Ադմինի անուն։', 'menu_admint_chapter_admin_name', 'admin_header'),
+(55, 'Who want to be a millionaire', 'Ով է ուզում դառնալ միլիոնատեր', 'title', 'admin/home'),
+(56, 'Professionall admin panel', 'Պրոֆեսիոնալ ադմինիստրատորի վահանակ', 'title_info', 'admin/home'),
+(57, 'Wins up 5 level', 'Հաղթանակները 5 հարցից ավել', 'win_up_5', 'admin/home'),
+(58, 'All games', 'Բոլոր խաղերը', 'all_games', 'admin/home'),
+(59, 'Documentation', 'Դոկումենտացիա', 'documentation', 'admin/home'),
+(60, 'Documentation of game', 'Խաղի Դոկումենտացիան', 'documentation_of_game', 'admin/home'),
+(61, 'Who want to be a millionaire', 'Ով է ուզում դառնալ միլիոնատեր', 'title', 'admin_header'),
+(62, 'All games is here', 'Բոլոր խաղերը այսեղ են', 'all_games', 'admin/gamers'),
+(63, 'You can edit the gamer and change status of gamer or delete gamer', 'Դուք կարող եք խմբագրել խաղերը և փոխել խաղի կարգավիճակը կամ ջնջել խաղը', 'game_info', 'admin/gamers'),
+(64, 'All games', 'Բոլոր խաղերը', 'all_games_table', 'admin/gamers'),
+(65, 'login', 'Անուն', 'table_login', 'admin/gamers'),
+(66, 'level', 'Փուլ', 'table_lvl', 'admin/gamers'),
+(67, 'prize', 'Հաղթանակ', 'table_prize', 'admin/gamers'),
+(68, 'status', 'կարգավիճակ', 'table_status', 'admin/gamers'),
+(69, '#id', '#Հ', 'table_num', 'admin/gamers'),
+(70, 'all games', 'Բոլոր խաղերը', 'table_count', 'admin/gamers'),
+(71, 'Games', 'Խաղեր', 'title', 'admin/gamers'),
+(72, 'Delete', 'Ջնջել', 'table_delete', 'admin/gamers'),
+(73, 'Finished', 'Ավարտած', 'table_status_finished', 'admin/gamers'),
+(74, 'Canceled', 'չեղարկված', 'table_status_canceled', 'admin/gamers'),
+(75, 'In process', 'Ընթացքի մեջ', 'table_status_in_process', 'admin/gamers'),
+(76, 'Page:', 'Էջ:', 'table_page', 'admin/gamers');
 
 -- --------------------------------------------------------
 
@@ -222,7 +257,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `login`, `password`, `name`, `sname`, `age`, `balance`, `Role`) VALUES
-(1, 'Mher', '25f9e794323b453885f5181f1b624d0b', 'Mher', 'Barseghyan', 18, 3900, 'User'),
+(1, 'Mher', '25f9e794323b453885f5181f1b624d0b', 'Mher', 'Barseghyan', 18, 4200, 'User'),
 (2, 'asdf', '912ec803b2ce49e4a541068d495ab570', 'asdfa', 'asdf', 18, 0, 'User'),
 (3, 'Vazgen', 'e10adc3949ba59abbe56e057f20f883e', 'Vazgen', 'Petrosyan', 18, 0, 'User'),
 (4, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Admin', 18, 0, 'Admin'),
@@ -285,13 +320,13 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT для таблицы `gamers`
 --
 ALTER TABLE `gamers`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT для таблицы `languages`
 --
 ALTER TABLE `languages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
 -- AUTO_INCREMENT для таблицы `questions`

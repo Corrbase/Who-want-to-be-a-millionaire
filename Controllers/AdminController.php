@@ -18,6 +18,14 @@ class AdminController {
         $UpToFive = mysqli_num_rows($UpToFive);
         $AllGames = mysqli_num_rows($AllGames);
 
+
+        $language = getLanguage();
+
+        $url = substr($_GET['url'], 3);
+        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+
+        $header = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin_header' ")->fetch_all(true);
+
         $top_gamers = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` ORDER BY `prize` DESC LIMIT 5;")->fetch_all(true);
 
         view("dashboard", 'Admin' , [
@@ -25,6 +33,9 @@ class AdminController {
             'UpToFive' => $UpToFive,
             'AllGames' => $AllGames,
             'Admin' => $_SESSION['admin_profile'],
+            'front' => $front,
+            'language' => $language,
+            'header' => $header
         ], "Admin");
     }
 
@@ -56,7 +67,8 @@ class AdminController {
     {
         $this->CheckLogin();
         $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `gamers`");
-
+        $language = getLanguage();
+        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/gamers' ")->fetch_all(true);
         $AllUsersCount = mysqli_num_rows($AllUsers);
         $page = $pagination['pagination'] -1;
         $count = $page * 5;
@@ -112,27 +124,27 @@ class AdminController {
 <div class="d-flex">
 
 
-                    <p class="mt-3">Page: ' . $pagination['pagination'];
+                    <p class="mt-3"> '.text($front, $language, 'table_page')." " . $pagination['pagination'];
 
         echo '</p>
-<p class="mt-3 m-3">All questions: ' . $AllUsersCount;
+<p class="mt-3 m-3">'. text($front, $language, 'table_count').': ' . $AllUsersCount;
         echo '
                         <thead>
                         <tr>
                             <th>
-                                #id
+                                ' . text($front, $language, 'table_num') . '
+                            </th>   
+                            <th>
+                                ' . text($front, $language, 'table_login') . '
                             </th>
                             <th>
-                                login
+                                ' . text($front, $language, 'table_lvl') . '
                             </th>
                             <th>
-                                level
+                                ' . text($front, $language, 'table_prize') . '
                             </th>
                             <th>
-                                prize
-                            </th>
-                            <th>
-                                action
+                                ' . text($front, $language, 'table_status') . '
 </th>
                         </tr>
                         </thead>
@@ -166,26 +178,26 @@ class AdminController {
             }
             echo 'name="Waiting" data-id="';
             echo $gamer['id'];
-            echo '" value="Waiting" selected="">Ընթացքի մեջ</option>
+            echo '" value="Waiting" selected="">'. text($front, $language, 'table_status_in_process') .'</option>
                     <option ';
             if ($gamer['status'] == 'Canceled'){
                 echo 'selected="selected"';
             }
             echo 'name="Canceled" data-id="';
             echo $gamer['id'];
-            echo '" value="Canceled">չեղարկված</option>
+            echo '" value="Canceled">'. text($front, $language, 'table_status_canceled') .'</option>
                     <option ';
             if ($gamer['status'] == 'Finished'){
                 echo 'selected="selected"';
             }
             echo 'name="Finished" data-id="';
             echo $gamer['id'];
-            echo '" value="Finished">Ավարտած</option>
+            echo '" value="Finished">'. text($front, $language, 'table_status_finished') .'</option>
                   </select>';
             echo '</td>';
 
             echo '<td>';
-            echo '<a class="Delete_user" data-id =' . $gamer['id'] . ' href="javascript:void(0)">Delete</a>';
+                echo '<a class="Delete_user" data-id =' . $gamer['id'] . ' href="javascript:void(0)">'. text($front, $language, 'table_delete') .'</a>';
             echo '</td>';
             echo '</tr>';
         }
@@ -201,6 +213,7 @@ class AdminController {
         $this->CheckLogin();
         $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `questions`");
 
+
         $AllUsersCount = mysqli_num_rows($AllUsers);
         $page = $pagination['pagination'] -1;
         $count = $page * 5;
@@ -209,7 +222,7 @@ class AdminController {
             $pages = 1;
             $questions = mysqli_query($this->admin->conn, "SELECT * FROM `questions` LIMIT $count, 5 ")->fetch_all(true);
 
-        }elseif ($AllUsersCount/5 == 1){
+        }elseif ($AllUsersCount%5 == 0){
             $pages = $AllUsersCount/5;
 
             $questions = mysqli_query($this->admin->conn, "SELECT * FROM `questions` LIMIT $count, 5 ")->fetch_all(true);
@@ -500,9 +513,18 @@ class AdminController {
     }
     public function gamers(){
         $this->CheckLogin();
+        $language = getLanguage();
+
+        $url = substr($_GET['url'], 3);
+        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+
+        $header = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin_header' ")->fetch_all(true);
 
         view("gamers", 'Admin' , [
             'Admin' => $_SESSION['admin_profile'],
+            'language' => $language,
+            'header' => $header,
+            'front' => $front
         ], "Admin");
     }
 

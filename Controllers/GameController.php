@@ -6,9 +6,9 @@ class GameController{
     public function __construct($settings)
     {
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
-            header('location: /admin/home');
+
         }
-        if (isset($_SESSION['user_profile']['profile']) == 1) {
+        elseif (isset($_SESSION['user_profile']['profile']) == 1) {
 
         }else{
             header('location: /login');
@@ -30,6 +30,7 @@ class GameController{
 
     public function play_name()
     {
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 
             if (isset($_SESSION['play'])){
@@ -46,7 +47,12 @@ class GameController{
                     array_push($question_numbers, $questions[$value-1]['id']);
 
                 }
+
                 $_SESSION['play_run']['player'] = $_SESSION['user_profile']['login'];
+                if ($_SESSION['play_run']['player'] == ''){
+                    $_SESSION['play_run']['player'] = $_SESSION['admin_profile']['login'];
+                }
+
                 $_SESSION['play'] = true;
                 $_SESSION['play_run']['questions_id'] = $question_numbers;
 
@@ -249,7 +255,7 @@ class GameController{
 
     }
 
-    public function end_game(){}
+
 
     public function bonus($bonus_name, $true, $false, $language){
         $exist = $_SESSION['play_run']['bonus'];

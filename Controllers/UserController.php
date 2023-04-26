@@ -9,12 +9,7 @@ class UserController{
     }
 
     public function profile(){
-        if (isset($_SESSION['admin_profile']['profile']) == 1) {
-            header('location: /');
-        }
-        if (!isset($_SESSION['user_profile']['profile']) == 1) {
-            header('location: /');
-        }
+        $this->check();
         $language = getLanguage();
 
         $url = substr($_GET['url'], 3);
@@ -31,17 +26,12 @@ class UserController{
 
     public function logout_user()
     {
-        if (isset($_SESSION['admin_profile']['profile']) == 1) {
-            header('location: /admin/home');
-        }elseif (!isset($_SESSION['user_profile']['profile']) == 1){
-            header('location: /profile');
+$this->check();
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
 
-                unset($_SESSION['user_profile']);
+            unset($_SESSION['user_profile']);
 
-        }
-
-    }
+        }}
     public function login_user(){
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
             header('location: /admin/home');
@@ -109,12 +99,7 @@ class UserController{
 
     public function games_pagination($pagination)
     {
-        if (isset($_SESSION['admin_profile']['profile']) == 1) {
-            header('location: /');
-        }
-        if (!isset($_SESSION['user_profile']['profile']) == 1) {
-            header('location: /');
-        }
+        $this->check();
         $language = getLanguage();
         $front = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = 'profile' ")->fetch_all(true);
 
@@ -136,7 +121,7 @@ class UserController{
                 $pages = 1;
                 $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC  LIMIT $count, 10  ")->fetch_all(true);
 
-            } elseif ($AllUsersCount / 10 == 1) {
+            } elseif ($AllUsersCount %10 == 0) {
                 $pages = $AllUsersCount / 10;
 
                 $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC  LIMIT $count, 10 ")->fetch_all(true);
@@ -248,12 +233,7 @@ class UserController{
     }
 
     public function get_money($id){
-        if (isset($_SESSION['admin_profile']['profile']) == 1) {
-            header('location: /');
-        }
-        if (!isset($_SESSION['user_profile']['profile']) == 1) {
-            header('location: /');
-        }
+        $this->check();
         $id = $id['id'];
         $login = $_SESSION['user_profile']['login'];
         $game = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE `name` = '$login' AND `id` = '$id'");
@@ -276,6 +256,15 @@ class UserController{
             }
         }
 
+    }
+
+    public function check(){
+        if (isset($_SESSION['admin_profile']['profile']) == 1) {
+            header('location: /');
+        }
+        if (!isset($_SESSION['user_profile']['profile']) == 1) {
+            header('location: /');
+        }
     }
 
 

@@ -2,7 +2,11 @@
 <footer class="footer-admin mt-auto footer-light">
     <div class="container-xl px-4">
         <div class="row">
-            <div class="col-md-6 small">Ով է ուզում դառնալ միլիոնատեր</div>
+            <div class="col-md-6 small">
+                <?php
+                echo text($header, $language, 'title');
+                ?>
+            </div>
         </div>
     </div>
 </footer>

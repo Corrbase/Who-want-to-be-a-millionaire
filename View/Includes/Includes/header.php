@@ -43,7 +43,7 @@
                                         $(".loading-refresh").addClass("loading-form");
                                     },
                                 success: function(data) {  
-                                    
+                                    window.location.href = "/' .$language.'/home";
                                 }
                             })  
                         }
