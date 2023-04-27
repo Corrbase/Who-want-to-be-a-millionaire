@@ -44,23 +44,49 @@ class AdminController {
 
     public function questions()
     {
-
         $this->CheckLogin();
+        $language = getLanguage();
+
+        $url = substr($_GET['url'], 3);
+        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+
+        $header = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin_header' ")->fetch_all(true);
         view("questions", 'Admin' , [
             'Admin' => $_SESSION['admin_profile'],
+            'language' => $language,
+            'header' => $header,
+            'front' => $front
         ], "Admin");
     }
 
     public function add_user(){
         $this->CheckLogin();
+        $language = getLanguage();
+
+        $url = substr($_GET['url'], 3);
+        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+
+        $header = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin_header' ")->fetch_all(true);
         view("add_user", 'Admin' , [
             'Admin' => $_SESSION['admin_profile'],
+            'language' => $language,
+            'header' => $header,
+            'front' => $front
         ], "Admin");
     }
     public function users(){
         $this->CheckLogin();
+        $language = getLanguage();
+
+        $url = substr($_GET['url'], 3);
+        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+
+        $header = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin_header' ")->fetch_all(true);
         view("users", 'Admin' , [
             'Admin' => $_SESSION['admin_profile'],
+            'language' => $language,
+            'header' => $header,
+            'front' => $front
         ], "Admin");
     }
     public function gamers_pagination($pagination)
@@ -211,24 +237,26 @@ class AdminController {
     public function question_pagination($pagination)
     {
         $this->CheckLogin();
-        $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `questions`");
 
+        $language = getLanguage();
+        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/questions' ")->fetch_all(true);
+        $AllQuestions = mysqli_query($this->admin->conn, "SELECT * FROM `questions`   ");
 
-        $AllUsersCount = mysqli_num_rows($AllUsers);
+        $AllQuestionsCount = mysqli_num_rows($AllQuestions);
         $page = $pagination['pagination'] -1;
         $count = $page * 5;
-        if ($AllUsersCount /5 <1){
+        if ($AllQuestionsCount /5 <1){
 
             $pages = 1;
             $questions = mysqli_query($this->admin->conn, "SELECT * FROM `questions` LIMIT $count, 5 ")->fetch_all(true);
 
-        }elseif ($AllUsersCount%5 == 0){
-            $pages = $AllUsersCount/5;
+        }elseif ($AllQuestionsCount%5 == 0){
+            $pages = $AllQuestionsCount/5;
 
             $questions = mysqli_query($this->admin->conn, "SELECT * FROM `questions` LIMIT $count, 5 ")->fetch_all(true);
 
-        }elseif ($AllUsersCount%5 <= 4){
-            $pages = floor($AllUsersCount/5) + 1;
+        }elseif ($AllQuestionsCount%5 <= 4){
+            $pages = floor($AllQuestionsCount/5) + 1;
             $a = $pagination['pagination'];
             if ($pages == $pagination['pagination']){
                 $questions = mysqli_query($this->admin->conn, "SELECT * FROM `questions` LIMIT $count, 5 ")->fetch_all(true);
@@ -249,8 +277,7 @@ class AdminController {
             $disabled2 = 'disabled';
         }
 
-        echo '
-                      <table class="table table-hover">
+        echo '<table class="table table-hover">
                       
                       <div class="d-flex align-items-center">
                       
@@ -269,50 +296,57 @@ class AdminController {
 <div class="d-flex">
 
 
-                    <p class="mt-3">Page: ' . $pagination['pagination'];
+                    <p class="mt-3">'. text($front, $language, 'table_page').' '. $pagination['pagination'];
 
         echo '</p>
-<p class="mt-3 m-3">All questions: ' . $AllUsersCount;
+<p class="mt-3 m-3">'. text($front, $language, 'table_count').' ' . $AllQuestionsCount;
         echo '
                         <thead>
                         <tr>
                             <th>
-                                #number
+                                '. text($front, $language, 'table_num').'
                             </th>
                             <th>
-                                Question
+                                '. text($front, $language, 'table_question').'
                             </th>
                             <th>
-                                Right answer
+                                '. text($front, $language, 'table_right_ans').'
                             </th>
                             <th>
-                                difficulty
+                                '. text($front, $language, 'table_diff').'
                             </th>
                         </tr>
                         </thead>
                         <tbody>';
+$rightans = 'right_answer_' . $language;
 
-        foreach ($questions as $gamer) {
+        foreach ($questions as $qeustion) {
             echo '<tr>';
             echo '<td>';
-            echo $gamer['id'];
+            echo $qeustion['id'];
             echo '</td>';
 
             echo '<td>';
-            echo $gamer['question'];
+            echo $qeustion[$language];
             echo '</td>';
 
             echo '<td>';
-            echo $gamer['right_answer'];
+            echo $qeustion[$rightans];
             echo '</td>';
 
             echo '<td>';
-            echo $gamer['difficulty'];
+            if ($qeustion['difficulty'] == 'normal'){
+                echo text($front, $language, 'table_diff_n');
+            }elseif ($qeustion['difficulty'] == 'easy'){
+                echo text($front, $language, 'table_diff_e');
+            }elseif ($qeustion['difficulty'] == 'hard'){
+                echo text($front, $language, 'table_diff_h');
+            }
             echo '</td>';
 
             echo '<td>';
-            echo '<a href="/admin/questions/edit/' . $gamer['id'];
-            echo '">Edit</a>';
+            echo '<a href="/admin/questions/edit/' . $qeustion['id'];
+            echo '">'. text($front, $language, 'table_edit').'</a>';
             echo '</td>';
             echo '</tr>';
         }
@@ -324,6 +358,10 @@ class AdminController {
     }
     public function admins_pagination($pagination)
     {
+        $language = getLanguage();
+        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/users' ")->fetch_all(true);
+        $AllQuestions = mysqli_query($this->admin->conn, "SELECT * FROM `questions`   ");
+
         $ajax = $_GET;
         $role = $ajax['role'];
         $this->CheckLogin();
@@ -410,31 +448,31 @@ class AdminController {
 <div class="d-flex">
 
 
-                    <p class="mt-3">Page: ' . $pagination['pagination'];
+                    <p class="mt-3">'.text($front, $language, 'table_page' ).' ' . $pagination['pagination'];
 
         echo '</p>
-<p class="mt-3 m-3">All users: ' . $AllUsersCount;
+<p class="mt-3 m-3">'.text($front, $language, 'table_count' ).' ' . $AllUsersCount;
 
         echo '</p></div>
                         <thead>
                         <tr>
                             <th>
-                                #id
+                                '.text($front, $language, 'table_num' ).'
                             </th>
                             <th>
-                                login
+                                '.text($front, $language, 'table_login' ).'
                             </th>
                             <th>
-                                name
+                                '.text($front, $language, 'table_name' ).'
                             </th>
                             <th>
-                                balance
+                                '.text($front, $language, 'table_balance' ).'
                             </th>
                             <th>
-                            role
+                            '.text($front, $language, 'table_role' ).'
 </th>
                             <th>
-                            Action
+                            '.text($front, $language, 'table_action' ).'
 </th>
                         </tr>
                         </thead>
@@ -479,19 +517,37 @@ class AdminController {
         view("create_question", 'Admin' , [], "Admin");
     }
     public function edit_user($id){
+        $this->CheckLogin();
         $id = $id['id'];
         echo $id;
-        $this->CheckLogin();
+        $language = getLanguage();
+
+        $url = substr($_GET['url'], 3);
+        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+
+        $header = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin_header' ")->fetch_all(true);
+        $AllQuestions = mysqli_query($this->admin->conn, "SELECT * FROM `questions`   ");
         $user = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE `id` = $id")->fetch_all(true);
         if ($user){
-            view('edit_user','Admin', ['user'=>$user], 'Admin');
+            view('edit_user','Admin', [
+                'user'=>$user,
+                'language' => $language,
+                'header' => $header,
+                'front' => $front
+            ], 'Admin');
         }else{
             header('Location: /error404');
         }
     }
     public function edit_question($id)
     {
-        $this->CheckLogin();
+
+        $language = getLanguage();
+
+        $url = substr($_GET['url'], 3);
+        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+
+        $header = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin_header' ")->fetch_all(true);
         $id = $id['id'];
         if (is_numeric($id)){
             $question = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE `id` = $id")->fetch_all(true);
@@ -499,7 +555,10 @@ class AdminController {
 
             if ($question){
                 view('edit_question', 'Admin', [
-                    'question' => $question
+                    'question' => $question,
+                    'language' => $language,
+                    'header' => $header,
+                    'front' => $front
                 ], 'Admin');
             }
         }else{
@@ -509,7 +568,18 @@ class AdminController {
     public function documentation()
     {
         $this->CheckLogin();
-        view("documentation", 'Admin' , '', "Admin");
+
+        $language = getLanguage();
+
+        $url = substr($_GET['url'], 3);
+        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+
+        $header = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin_header' ")->fetch_all(true);
+        view("documentation", 'Admin' , [
+            'language' => $language,
+            'header' => $header,
+            'front' => $front
+        ], "Admin");
     }
     public function gamers(){
         $this->CheckLogin();
@@ -590,7 +660,8 @@ class AdminController {
     }
     public function add_user_request(){
         if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-
+            $language = getLanguage();
+            $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/users/add' ")->fetch_all(true);
             if (array_search('',$_POST)){
                 $ajax['error'] = 'please check form again';
                 echo json_encode($ajax);
@@ -604,23 +675,23 @@ class AdminController {
                 $role = $_POST['Role'];
                 if($age < 18 || $age >= 100){
 
-                    $ajax['error'] = 'please check form again';
+                    $ajax['error'] = text($front, $language, 'error');
                     echo json_encode($ajax);
 
                 }elseif (strlen($name) < 3){
-                    $ajax['error'] = 'please check form again';
+                    $ajax['error'] = text($front, $language, 'error');
                     echo json_encode($ajax);
                 }elseif (strlen($login) < 4){
-                    $ajax['error'] = 'please check form again';
+                    $ajax['error'] = text($front, $language, 'error');
                     echo json_encode($ajax);
                 }elseif (strlen($pass) < 4){
-                    $ajax['error'] = 'please check form again';
+                    $ajax['error'] = text($front, $language, 'error');
                     echo json_encode($ajax);
                 }elseif (strlen($sname) < 3){
-                    $ajax['error'] = 'please check form again';
+                    $ajax['error'] = text($front, $language, 'error');
                     echo json_encode($ajax);
                 }elseif ($role == ''){
-                    $ajax['error'] = 'please check form again';
+                    $ajax['error'] = text($front, $language, 'error');
                     echo json_encode($ajax);
                 }
                 else{
@@ -628,7 +699,7 @@ class AdminController {
 
                     $profile =  mysqli_num_rows($profile);
                     if ($profile == 1){
-                        $ajax['error'] = 'This name of user already exists';
+                        $ajax['error'] = text($front, $language, 'exist_user');
                         echo json_encode($ajax);
                     }else {
 

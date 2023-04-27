@@ -7,7 +7,7 @@
                         <div class="col-auto mt-4">
                             <h1 class="page-header-title">
                                 <div class="page-header-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div>
-                                Questions
+                                <?php $front = $view_array['front'];echo text($front, $language, 'title'); ?>
                             </h1>
 
                         </div>
@@ -24,17 +24,17 @@
 
         <div class="container-xl px-4 mt-n10">
             <div class="card">
-                <div class="card-header">All questions is here</div>
-                <div class="card-body">You can edit the questions and change difficulty of question</div>
+                <div class="card-header"><?php echo text($front, $language, 'question_title'); ?></div>
+                <div class="card-body"><?php echo text($front, $language, 'question_info'); ?></div>
             </div>
             <div class="card mt-5">
                 <div class="card-header">
-                    Questions
+                    <div class="card-body"><?php echo text($front, $language, 'title'); ?></div>
                 </div>
                 <div>
                 </div>
-                <div class="card-body table-body">
 
+                <div class="card-body table-body">
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
     $(document).on('click', '#ClickToPage', function (e){
         let a = $(this).attr("data-id");
         $.ajax({
-            url: "/admin/questions/" + a,
+            url: "/<?php echo $language; ?>/admin/questions/" + a,
             type: "GET",
             data: {
 
@@ -66,7 +66,7 @@
         });
     })
     $.ajax({
-        url: "/admin/questions/1",
+        url: "/<?php echo $language; ?>/admin/questions/1",
         type: "GET",
         data: {
 

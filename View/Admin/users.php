@@ -7,7 +7,7 @@
                     <div class="col-auto mt-4">
                         <h1 class="page-header-title">
                             <div class="page-header-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div>
-                            All users
+                            <?php $front = $view_array['front'];echo text($front, $language, 'title'); ?>
                         </h1>
 
                     </div>
@@ -24,12 +24,12 @@
 
     <div class="container-xl px-4 mt-n10">
         <div class="card">
-            <div class="card-header">All questions is here</div>
-            <div class="card-body">Here you can add new users or edit that</div>
+            <div class="card-header"><?php echo text($front, $language, 'users_title'); ?></div>
+            <div class="card-body"><?php echo text($front, $language, 'users_info'); ?></div>
         </div>
         <div class="card mt-5">
             <div class="card-header">
-                users
+                <?php echo text($front, $language, 'title'); ?>
             </div>
             <div>
             </div>
@@ -38,9 +38,9 @@
                     <select name="active" class="m-1 w-25  form-select 2 select-role" aria-label="Default select example">
                         <option selected="" disabled="">Select a role:</option>
 
-                        <option name="User" data-id="All" selected>all</option>
-                        <option name="User" data-id="User" >User</option>
-                        <option name="Admin" data-id="Admin">Admin</option>
+                        <option name="User" data-id="all" selected><?php echo text($front, $language, 'table_select_all'); ?></option>
+                        <option name="User" data-id="User" ><?php echo text($front, $language, 'table_select_user'); ?></option>
+                        <option name="Admin" data-id="Admin"><?php echo text($front, $language, 'table_select_admin'); ?></option>
                     </select>
                     <a href="/admin/users/add" class="font-weight-bold btn  btn-outline-success m-1">+</a>
                 </div>
@@ -56,9 +56,10 @@
 
 <script>
     $(document).on('change', '.select-role', function (e){
-        var b = $('.select-role').val();
+        var b = $(this).find(':selected').attr('data-id');
+        console.log(b)
         $.ajax({
-            url: "/admin/users/1",
+            url: "/<?php echo $language; ?>/admin/users/1",
             type: "GET",
             data: {
                 role: b
@@ -78,10 +79,10 @@
         });
     })
     $(document).on('click', '#ClickToPage', function (e){
-        var b = $('.select-role').val();
+        var b = $('.select-role').find(':selected').attr('data-id');
         let a = $(this).attr("data-id");
         $.ajax({
-            url: "/admin/users/" + a,
+            url: "/<?php echo $language; ?>/admin/users/" + a,
             type: "GET",
             data: {
                 role: b
@@ -103,7 +104,7 @@
     $.ajax({
 
 
-        url: "/admin/users/1",
+        url: "/<?php echo $language; ?>/admin/users/1",
         type: "GET",
         data: {
             role: 'all'
