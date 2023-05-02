@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 26 2023 г., 18:34
+-- Время создания: Май 02 2023 г., 21:18
 -- Версия сервера: 8.0.30
 -- Версия PHP: 7.2.34
 
@@ -192,7 +192,68 @@ INSERT INTO `languages` (`id`, `en`, `hy`, `name`, `url`) VALUES
 (73, 'Finished', 'Ավարտած', 'table_status_finished', 'admin/gamers'),
 (74, 'Canceled', 'չեղարկված', 'table_status_canceled', 'admin/gamers'),
 (75, 'In process', 'Ընթացքի մեջ', 'table_status_in_process', 'admin/gamers'),
-(76, 'Page:', 'Էջ:', 'table_page', 'admin/gamers');
+(76, 'Page:', 'Էջ:', 'table_page', 'admin/gamers'),
+(86, 'Questions', 'Հարցեր', 'title', 'admin/questions'),
+(87, 'All questions is here', 'Բոլոր հարցերն այստեղ են', 'question_title', 'admin/questions'),
+(88, 'You can edit the questions and change difficulty of question', 'Դուք կարող եք խմբագրել հարցերը և փոխել հարցի բարդությունը', 'question_info', 'admin/questions'),
+(89, 'Page:', 'Էջ:', 'table_page', 'admin/questions'),
+(90, 'All questions:', 'Բոլոր հարցերը:', 'table_count', 'admin/questions'),
+(91, '#number', '#համար', 'table_num', 'admin/questions'),
+(92, 'Question', 'Հարց', 'table_question', 'admin/questions'),
+(93, 'Right answer', 'Ճիշտ պատասխան', 'table_right_ans', 'admin/questions'),
+(94, 'difficulty', 'Բարդություն', 'table_diff', 'admin/questions'),
+(95, 'Edit', 'Խմբագրել', 'table_edit', 'admin/questions'),
+(96, 'Normal', 'Նորմալ', 'table_diff_n', 'admin/questions'),
+(97, 'Easy', 'Հեշտ', 'table_diff_e', 'admin/questions'),
+(98, 'Hard', 'Բարդ', 'table_diff_h', 'admin/questions'),
+(100, 'Documentation', 'Դոկումենտացիա', 'title', 'admin/documentation'),
+(101, 'All users', 'Բոլոր օգտատերերը', 'title', 'admin/users'),
+(102, 'All users are here', 'Բոլոր օգտատերերը այստեղ են', 'users_title', 'admin/users'),
+(103, 'Here you can add new users or edit that', 'Այստեղ դուք կարող եք ավելացնել նոր օգտատերերի կամ խմբագրել նրանց', 'users_info', 'admin/users'),
+(104, 'All', 'Բոլորը', 'table_select_all', 'admin/users'),
+(105, 'User', 'օգտատեր', 'table_select_user', 'admin/users'),
+(106, 'Admin', 'Ադմին', 'table_select_admin', 'admin/users'),
+(107, 'Page:', 'Էջ:', 'table_page', 'admin/users'),
+(108, 'All questions:', 'Բոլոր հարցերը:', 'table_count', 'admin/users'),
+(109, '#id', '#Համար', 'table_num', 'admin/users'),
+(110, 'login', 'Լոգին', 'table_login', 'admin/users'),
+(111, 'name', 'Անուն', 'table_name', 'admin/users'),
+(112, 'balance', 'Հաշիվ', 'table_balance', 'admin/users'),
+(113, 'role', 'Դեր', 'table_role', 'admin/users'),
+(114, 'Action', 'Գործողություն', 'table_action', 'admin/users'),
+(115, 'Create user', 'Ստեղծել օգտատեր', 'title', 'admin/users/add'),
+(116, 'You can create user here', 'Այստեղ կարող եք օգտատեր ստեղծել', 'add_title', 'admin/users/add'),
+(117, 'Here you can add new users and give them role', 'Այստեղ դուք կարող եք ավելացնել նոր օգտատեր և նրանց դեր տալ', 'add_info', 'admin/users/add'),
+(118, 'Name', 'Անուն', 'select_name', 'admin/users/add'),
+(119, 'Sname ', 'Ազգանուն', 'select_sname', 'admin/users/add'),
+(120, 'Balance ', 'հաշիվ', 'select_balance', 'admin/users/add'),
+(121, 'Age ', 'Տարիք', 'select_age', 'admin/users/add'),
+(122, 'Login', 'Լոգին', 'select_login', 'admin/users/add'),
+(123, 'Password', 'Գաղտնաբառ', 'select_pass', 'admin/users/add'),
+(124, 'Role', 'Դեր', 'select_role', 'admin/users/add'),
+(125, 'User', 'Օգտատեր', 'select_role_user', 'admin/users/add'),
+(126, 'Admin', 'Ադմին', 'select_role_admin', 'admin/users/add'),
+(127, 'Create a user', 'ստեղծել', 'select_btn', 'admin/users/add'),
+(128, '( Min: 3 sybhols )', '(Նվազագույնը՝ 3 սիբհոլ)', 'min3sym', 'admin/users/add'),
+(129, '( Min: 18 year )', '(Նվազագույնը: 18 տարի)', 'min18year', 'admin/users/add'),
+(130, '(Automatically it is 0 you can skip this input)', ' (Ավտոմատ կերպով դա 0 է դուք կարող եք բաց թողնել այս մուտքագրումը)', 'auto', 'admin/users/add'),
+(131, 'Please check form again', 'Խնդրում ենք կրկին ստուգել ձեր գրածը', 'please_check', 'admin/users/add'),
+(132, '( Min: 4 sybhols )', '(Նվազագույնը՝ 4 սիբհոլ)', 'min4sym', 'admin/users/add'),
+(133, 'Select a role', 'ընտրեք դերը', 'select_role_btn', 'admin/users/add'),
+(134, 'This name of user already exists', 'Այս օգտվողի անունը արդեն գոյություն ունի', 'exist_user', 'admin/users/add'),
+(135, 'User is created', 'օգտատերը ստեղծված է', 'user_created', 'admin/users/add'),
+(136, 'role', 'Դեր', 'select_role_text', 'admin/users_add'),
+(137, 'Edit Question', 'Խմբագրել օգտատիրոջը', 'title', 'admin/user/edit'),
+(138, 'Here you can edit you question and save it', 'Այստեղ դուք կարող եք խմբագրել ձեր օգտատիրոջը', 'title_info', 'admin/user/edit'),
+(139, 'User Details -', 'օգտատեր -', 'user_info', 'admin/user/edit'),
+(140, 'Name', 'Անուն', 'select_name', 'admin/user/edit'),
+(141, 'Sname ', 'Ազգանուն', 'select_sname', 'admin/user/edit'),
+(142, 'Balance ', 'հաշիվ', 'select_balance', 'admin/user/edit'),
+(143, 'Age ', 'Տարիք', 'select_age', 'admin/user/edit'),
+(144, 'Role', 'Դեր', 'select_role', 'admin/user/edit'),
+(145, 'User', 'Օգտատեր', 'select_role_user', 'admin/user/edit'),
+(146, 'Admin', 'Ադմին', 'select_role_admin', 'admin/user/edit'),
+(147, 'Create a user', 'Փոխել', 'select_btn', 'admin/user/edit');
 
 -- --------------------------------------------------------
 
@@ -270,7 +331,8 @@ INSERT INTO `users` (`id`, `login`, `password`, `name`, `sname`, `age`, `balance
 (11, 'asdfsa', '6a204bd89f3c8348afd5c77c717a097a', 'asdfasdf', 'asdfasdf', 18, 0, 'User'),
 (12, 'asdfsdsa', '6a204bd89f3c8348afd5c77c717a097a', 'asdfasdf', 'asdfasdf', 18, 0, 'User'),
 (13, 'Anna', '97a9d330e236c8d067f01da1894a5438', 'Anna', 'Poghosyan', 18, 0, 'User'),
-(14, 'asdddd', '5deb466b0e4c0c313bc6ac950d4247c4', 'asdddd', 'asdddd', 19, 0, 'User');
+(14, 'asdddd', '5deb466b0e4c0c313bc6ac950d4247c4', 'asdddd', 'asdddd', 19, 0, 'User'),
+(15, 'Artur', 'e10adc3949ba59abbe56e057f20f883e', 'Artur', 'Baghdasaryan', 18, 0, 'User');
 
 --
 -- Индексы сохранённых таблиц
@@ -326,7 +388,7 @@ ALTER TABLE `gamers`
 -- AUTO_INCREMENT для таблицы `languages`
 --
 ALTER TABLE `languages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
 
 --
 -- AUTO_INCREMENT для таблицы `questions`
@@ -338,7 +400,7 @@ ALTER TABLE `questions`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -39,6 +39,7 @@
                 <form enctype="multipart/form-data" method="POST" id="create_user">
 
 
+
                     <div class="row gx-3 mb-3">
                         <div class="col-md-6">
                             <label class="small mb-1 f-1" for="Right_answer"><?php echo text($front, $language, 'select_name'); ?> <span class="text-danger"><?php echo text($front, $language, 'min3sym'); ?></span></label>
@@ -71,7 +72,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="small mb-1">Role</label>
+                        <label class="small mb-1"><?php echo text($front, $language, 'select_role_text'); ?></label>
                         <select name="Role" class="form-select" aria-label="Default select example">
                             <option selected="" disabled=""><?php echo text($front, $language, 'select_role_btn'); ?></option>
 
@@ -115,9 +116,12 @@
                 if (request_data.success === true){
                     $('.form-accept').html('<?php echo text($front, $language, 'user_created'); ?>');
                     $('.form-errors').empty();
+                }else if(request_data.success === 123){
+                    $('.form-accept').empty();
+                    $('.form-errors').html('<?php echo text($front, $language, 'exist_user');    ?>');
                 }else{
                     $('.form-accept').empty();
-                    $('.form-errors').html(request_data.error);
+                    $('.form-errors').html('<?php echo text($front, $language, 'error');    ?>');
                 }
             }
         });

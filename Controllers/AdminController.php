@@ -519,7 +519,6 @@ $rightans = 'right_answer_' . $language;
     public function edit_user($id){
         $this->CheckLogin();
         $id = $id['id'];
-        echo $id;
         $language = getLanguage();
 
         $url = substr($_GET['url'], 3);
@@ -658,12 +657,15 @@ $rightans = 'right_answer_' . $language;
             header("location: /login");
         }
     }
-    public function add_user_request(){
+    public function add_user_request()  {
+
+
+        $language = getLanguage();
+        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/users/add' ")->fetch_all(true);
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $language = getLanguage();
-            $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/users/add' ")->fetch_all(true);
             if (array_search('',$_POST)){
-                $ajax['error'] = 'please check form again';
+                $ajax['success'] = false;
                 echo json_encode($ajax);
             }else{
 
@@ -675,23 +677,24 @@ $rightans = 'right_answer_' . $language;
                 $role = $_POST['Role'];
                 if($age < 18 || $age >= 100){
 
-                    $ajax['error'] = text($front, $language, 'error');
+                    $ajax['success'] = false;
                     echo json_encode($ajax);
 
                 }elseif (strlen($name) < 3){
-                    $ajax['error'] = text($front, $language, 'error');
+                    $ajax['success'] = false;
                     echo json_encode($ajax);
                 }elseif (strlen($login) < 4){
-                    $ajax['error'] = text($front, $language, 'error');
+                    $ajax['success'] = false;
                     echo json_encode($ajax);
                 }elseif (strlen($pass) < 4){
-                    $ajax['error'] = text($front, $language, 'error');
+                    $ajax['success'] = false;
                     echo json_encode($ajax);
                 }elseif (strlen($sname) < 3){
-                    $ajax['error'] = text($front, $language, 'error');
+                    $ajax['success'] = false;
                     echo json_encode($ajax);
                 }elseif ($role == ''){
-                    $ajax['error'] = text($front, $language, 'error');
+
+                    $ajax['success'] = false;
                     echo json_encode($ajax);
                 }
                 else{
@@ -699,7 +702,7 @@ $rightans = 'right_answer_' . $language;
 
                     $profile =  mysqli_num_rows($profile);
                     if ($profile == 1){
-                        $ajax['error'] = text($front, $language, 'exist_user');
+                        $ajax['success'] = false;
                         echo json_encode($ajax);
                     }else {
 
