@@ -2,10 +2,10 @@
 -- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Хост: 127.0.0.1:3306
--- Время создания: Май 02 2023 г., 21:18
--- Версия сервера: 8.0.30
--- Версия PHP: 7.2.34
+-- Host: 127.0.0.1:3306
+-- Generation Time: May 04, 2023 at 07:09 PM
+-- Server version: 8.0.30
+-- PHP Version: 7.2.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- База данных: `mvc`
+-- Database: `mvc`
 --
 
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `admins`
+-- Table structure for table `admins`
 --
 
 CREATE TABLE `admins` (
@@ -34,7 +34,7 @@ CREATE TABLE `admins` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Дамп данных таблицы `admins`
+-- Dumping data for table `admins`
 --
 
 INSERT INTO `admins` (`id`, `login`, `password`) VALUES
@@ -43,7 +43,7 @@ INSERT INTO `admins` (`id`, `login`, `password`) VALUES
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `gamers`
+-- Table structure for table `gamers`
 --
 
 CREATE TABLE `gamers` (
@@ -56,7 +56,7 @@ CREATE TABLE `gamers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Дамп данных таблицы `gamers`
+-- Dumping data for table `gamers`
 --
 
 INSERT INTO `gamers` (`id`, `name`, `level`, `prize`, `status`, `getted`) VALUES
@@ -101,7 +101,7 @@ INSERT INTO `gamers` (`id`, `name`, `level`, `prize`, `status`, `getted`) VALUES
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `languages`
+-- Table structure for table `languages`
 --
 
 CREATE TABLE `languages` (
@@ -113,7 +113,7 @@ CREATE TABLE `languages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Дамп данных таблицы `languages`
+-- Dumping data for table `languages`
 --
 
 INSERT INTO `languages` (`id`, `en`, `hy`, `name`, `url`) VALUES
@@ -243,7 +243,7 @@ INSERT INTO `languages` (`id`, `en`, `hy`, `name`, `url`) VALUES
 (134, 'This name of user already exists', 'Այս օգտվողի անունը արդեն գոյություն ունի', 'exist_user', 'admin/users/add'),
 (135, 'User is created', 'օգտատերը ստեղծված է', 'user_created', 'admin/users/add'),
 (136, 'role', 'Դեր', 'select_role_text', 'admin/users_add'),
-(137, 'Edit Question', 'Խմբագրել օգտատիրոջը', 'title', 'admin/user/edit'),
+(137, 'Edit user', 'Խմբագրել օգտատիրոջը', 'title', 'admin/user/edit'),
 (138, 'Here you can edit you question and save it', 'Այստեղ դուք կարող եք խմբագրել ձեր օգտատիրոջը', 'title_info', 'admin/user/edit'),
 (139, 'User Details -', 'օգտատեր -', 'user_info', 'admin/user/edit'),
 (140, 'Name', 'Անուն', 'select_name', 'admin/user/edit'),
@@ -253,12 +253,61 @@ INSERT INTO `languages` (`id`, `en`, `hy`, `name`, `url`) VALUES
 (144, 'Role', 'Դեր', 'select_role', 'admin/user/edit'),
 (145, 'User', 'Օգտատեր', 'select_role_user', 'admin/user/edit'),
 (146, 'Admin', 'Ադմին', 'select_role_admin', 'admin/user/edit'),
-(147, 'Create a user', 'Փոխել', 'select_btn', 'admin/user/edit');
+(147, 'Create a user', 'Փոխել', 'select_btn', 'admin/user/edit'),
+(148, '( Min: 3 sybhols )', '(Նվազագույնը՝ 3 սիբհոլ)', 'min3sym', 'admin/user/edit'),
+(149, '( Min: 18 year )', '(Նվազագույնը: 18 տարի)', 'min18year', 'admin/user/edit'),
+(150, 'Select a role', 'ընտրեք դերը', 'select_role_btn', 'admin/user/edit'),
+(151, 'role', 'Դեր', 'select_role_text', 'admin/user/edit'),
+(152, 'Save chnages', 'Պահպանված է', 'save_changes', 'admin/user/edit'),
+(153, 'you cant change user, because it\'s you', 'Դուք չեք կարող փոխել օգտվողին, քանի որ դա դուք եք', 'error1', 'admin/user/edit'),
+(154, 'you cant change admin, because admins count is 1', 'Դուք չեք կարող փոխել ադմինիստրատորը, քանի որ ադմինների թիվը 1 է', 'error2', 'admin/user/edit'),
+(155, 'age is not correct', 'տարիքը ճիշտ չէ', 'error3', 'admin/user/edit'),
+(156, 'please fill all', 'խնդրում եմ լրացնել բոլորը', 'error4', 'admin/user/edit'),
+(159, 'Create question', 'Ստեղծել հարց', 'title', 'admin/questions/create'),
+(160, 'You can create the questions', 'Դուք կարող եք ստեղծել հարցերը', 'title_info', 'admin/questions/create'),
+(161, 'Question', 'Հարց', 'form_title', 'admin/questions/create'),
+(162, 'Armenian', 'Հայերեն', 'form_armenian', 'admin/questions/create'),
+(163, 'English', 'Անգլերեն', 'form_english', 'admin/questions/create'),
+(164, 'Question', 'Հարց', 'select_question', 'admin/questions/create'),
+(165, 'Right answer', 'Ճիշտ հարց', 'select_right_ans', 'admin/questions/create'),
+(166, 'Other variant', 'Ուրիշ տարբերակ', 'select_other_ans', 'admin/questions/create'),
+(167, 'difficulty', 'Բարդություն', 'select_diff', 'admin/questions/create'),
+(168, 'Normal', 'Նորմալ', 'select_diff_n', 'admin/questions/create'),
+(169, 'Easy', 'Հեշտ', 'select_diff_e', 'admin/questions/create'),
+(170, 'Hard', 'Բարդ', 'select_diff_h', 'admin/questions/create'),
+(171, 'Active', 'Ակտիվ', 'select_active', 'admin/questions/create'),
+(172, 'on', 'Այո', 'select_active_on', 'admin/questions/create'),
+(173, 'off', 'Ոչ', 'select_active_off', 'admin/questions/create'),
+(174, 'Create', 'Ստեղծել', 'select_btn', 'admin/questions/create'),
+(175, 'Select a diff:', 'ԸՆտրեք բարդությունը', 'select_diff_place', 'admin/questions/create'),
+(176, 'Select a active:', 'ԸՆտրեք հասանելիությունը', 'select_active_place', 'admin/questions/create'),
+(177, 'please fill all', 'Լրացրեք բոլոր բաց թողնված տեղերը', 'error1', 'admin/questions/create'),
+(178, 'You crate a question.', 'Հարցը ստեղծված է', 'error2', 'admin/questions/create'),
+(179, 'Edit question', 'Փոխել հարցը', 'title', 'admin/questions/edit'),
+(180, 'You can edit the questions and change difficulty of question', 'Դուք կարող եք խմբագրել հարցերը և փոխել հարցի դժվարությունը', 'title_info', 'admin/questions/edit'),
+(181, 'Question', 'Հարց', 'form_title', 'admin/questions/edit'),
+(182, 'Armenian', 'Հայերեն', 'form_armenian', 'admin/questions/edit'),
+(183, 'English', 'Անգլերեն', 'form_english', 'admin/questions/edit'),
+(184, 'Question', 'Հարց', 'select_question', 'admin/questions/edit'),
+(185, 'Right answer', 'Ճիշտ հարց', 'select_right_ans', 'admin/questions/edit'),
+(186, 'Other variant', 'Ուրիշ տարբերակ', 'select_other_ans', 'admin/questions/edit'),
+(187, 'difficulty', 'Բարդություն', 'select_diff', 'admin/questions/edit'),
+(188, 'Normal', 'Նորմալ', 'select_diff_n', 'admin/questions/edit'),
+(189, 'Easy', 'Հեշտ', 'select_diff_e', 'admin/questions/edit'),
+(190, 'Hard', 'Բարդ', 'select_diff_h', 'admin/questions/edit'),
+(191, 'Active', 'Ակտիվ', 'select_active', 'admin/questions/edit'),
+(192, 'on', 'Այո', 'select_active_on', 'admin/questions/edit'),
+(193, 'off', 'Ոչ', 'select_active_off', 'admin/questions/edit'),
+(194, 'Create', 'Ստեղծել', 'select_btn', 'admin/questions/edit'),
+(195, 'Select a diff:', 'ԸՆտրեք բարդությունը', 'select_diff_place', 'admin/questions/edit'),
+(196, 'Select a active:', 'ԸՆտրեք հասանելիությունը', 'select_active_place', 'admin/questions/edit'),
+(197, 'please fill all', 'Լրացրեք բոլոր բաց թողնված տեղերը', 'error1', 'admin/questions/edit'),
+(198, 'You crate a question.', 'Հարցը ստեղծված է', 'error2', 'admin/questions/edit');
 
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `questions`
+-- Table structure for table `questions`
 --
 
 CREATE TABLE `questions` (
@@ -274,7 +323,7 @@ CREATE TABLE `questions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Дамп данных таблицы `questions`
+-- Dumping data for table `questions`
 --
 
 INSERT INTO `questions` (`id`, `hy`, `right_answer_hy`, `wrong_answer_hy`, `difficulty`, `active`, `en`, `right_answer_en`, `wrong_answer_en`) VALUES
@@ -299,7 +348,7 @@ INSERT INTO `questions` (`id`, `hy`, `right_answer_hy`, `wrong_answer_hy`, `diff
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -314,11 +363,11 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Дамп данных таблицы `users`
+-- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `login`, `password`, `name`, `sname`, `age`, `balance`, `Role`) VALUES
-(1, 'Mher', '25f9e794323b453885f5181f1b624d0b', 'Mher', 'Barseghyan', 18, 4200, 'User'),
+(1, 'Mher', '25f9e794323b453885f5181f1b624d0b', 'mher', 'Barseghyan', 18, 4200, 'Admin'),
 (2, 'asdf', '912ec803b2ce49e4a541068d495ab570', 'asdfa', 'asdf', 18, 0, 'User'),
 (3, 'Vazgen', 'e10adc3949ba59abbe56e057f20f883e', 'Vazgen', 'Petrosyan', 18, 0, 'User'),
 (4, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Admin', 18, 0, 'Admin'),
@@ -335,69 +384,69 @@ INSERT INTO `users` (`id`, `login`, `password`, `name`, `sname`, `age`, `balance
 (15, 'Artur', 'e10adc3949ba59abbe56e057f20f883e', 'Artur', 'Baghdasaryan', 18, 0, 'User');
 
 --
--- Индексы сохранённых таблиц
+-- Indexes for dumped tables
 --
 
 --
--- Индексы таблицы `admins`
+-- Indexes for table `admins`
 --
 ALTER TABLE `admins`
   ADD PRIMARY KEY (`id`);
 
 --
--- Индексы таблицы `gamers`
+-- Indexes for table `gamers`
 --
 ALTER TABLE `gamers`
   ADD PRIMARY KEY (`id`);
 
 --
--- Индексы таблицы `languages`
+-- Indexes for table `languages`
 --
 ALTER TABLE `languages`
   ADD PRIMARY KEY (`id`);
 
 --
--- Индексы таблицы `questions`
+-- Indexes for table `questions`
 --
 ALTER TABLE `questions`
   ADD PRIMARY KEY (`id`);
 
 --
--- Индексы таблицы `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT для сохранённых таблиц
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT для таблицы `admins`
+-- AUTO_INCREMENT for table `admins`
 --
 ALTER TABLE `admins`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT для таблицы `gamers`
+-- AUTO_INCREMENT for table `gamers`
 --
 ALTER TABLE `gamers`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
--- AUTO_INCREMENT для таблицы `languages`
+-- AUTO_INCREMENT for table `languages`
 --
 ALTER TABLE `languages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=199;
 
 --
--- AUTO_INCREMENT для таблицы `questions`
+-- AUTO_INCREMENT for table `questions`
 --
 ALTER TABLE `questions`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
--- AUTO_INCREMENT для таблицы `users`
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;

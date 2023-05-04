@@ -20,10 +20,10 @@ $route->add('en/admin/gamers', 'AdminController@gamers');
 $route->add('en/admin/users', 'AdminController@users');
 $route->add('en/admin/user/edit/{id}', 'AdminController@edit_user');
 $route->add('en/admin/users/add', 'AdminController@add_user');
-$route->add('en/admin/questions/edit/{id}', 'AdminController@edit_question');
-$route->add('en/admin/questions/create', 'AdminController@create_question');
-$route->add('en/admin/questions/{pagination}', 'AdminController@question_pagination');
 $route->add('en/admin/users/{pagination}', 'AdminController@admins_pagination');
+$route->add('en/admin/questions/create', 'AdminController@create_question');
+$route->add('en/admin/questions/edit/{id}', 'AdminController@edit_question');
+$route->add('en/admin/questions/{pagination}', 'AdminController@question_pagination');
 $route->add('en/admin/gamers/{pagination}', 'AdminController@gamers_pagination');
 
 // ---------------------- admin hy pages
@@ -32,12 +32,12 @@ $route->add('hy/admin/questions', 'AdminController@questions');
 $route->add('hy/admin/documentation', 'AdminController@documentation');
 $route->add('hy/admin/gamers', 'AdminController@gamers');
 $route->add('hy/admin/users', 'AdminController@users');
-$route->add('hy/admin/user/edit/{id}', 'AdminController@edit_user');
 $route->add('hy/admin/users/add', 'AdminController@add_user');
-$route->add('hy/admin/questions/edit/{id}', 'AdminController@edit_question');
-$route->add('hy/admin/questions/create', 'AdminController@create_question');
-$route->add('hy/admin/questions/{pagination}', 'AdminController@question_pagination');
 $route->add('hy/admin/users/{pagination}', 'AdminController@admins_pagination');
+$route->add('hy/admin/user/edit/{id}', 'AdminController@edit_user');
+$route->add('hy/admin/questions/create', 'AdminController@create_question');
+$route->add('hy/admin/questions/edit/{id}', 'AdminController@edit_question');
+$route->add('hy/admin/questions/{pagination}', 'AdminController@question_pagination');
 $route->add('hy/admin/gamers/{pagination}', 'AdminController@gamers_pagination');
 
 

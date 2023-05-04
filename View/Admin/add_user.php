@@ -119,9 +119,9 @@
                 }else if(request_data.success === 123){
                     $('.form-accept').empty();
                     $('.form-errors').html('<?php echo text($front, $language, 'exist_user');    ?>');
-                }else{
+                }else if(request_data.success === false){
                     $('.form-accept').empty();
-                    $('.form-errors').html('<?php echo text($front, $language, 'error');    ?>');
+                    $('.form-errors').html('<?php echo text($front, $language, 'please_check');    ?>');
                 }
             }
         });
