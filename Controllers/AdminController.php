@@ -769,37 +769,60 @@ $rightans = 'right_answer_' . $language;
 
         $this->CheckLogin();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if ($_POST){
                 $id = $id['id'];
-                $question = $_POST['question'];
-
-                $wrong_answer_1 = $_POST['wrong_answer_1'];
-                $wrong_answer_2 = $_POST['wrong_answer_2'];
-                $wrong_answer_3 = $_POST['wrong_answer_3'];
-                $right_answer = $_POST['right_answer'];
+             $act = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE `id` = $id")->fetch_all(true);
+            if ($act[0] == 0){
+                dd('oops');
+            }
+            if ($_POST){
+                $question_hy = $_POST['question_hy'];
+                $question_en = $_POST['question_en'];
+                $wrong_answer_1_en = $_POST['wrong_answer_1_en'];
+                $wrong_answer_2_en = $_POST['wrong_answer_2_en'];
+                $wrong_answer_3_en = $_POST['wrong_answer_3_en'];
+                $wrong_answer_1_hy = $_POST['wrong_answer_1_hy'];
+                $wrong_answer_2_hy = $_POST['wrong_answer_2_hy'];
+                $wrong_answer_3_hy = $_POST['wrong_answer_3_hy'];
+                $right_answer_hy = $_POST['right_answer_hy'];
+                $right_answer_en = $_POST['right_answer_en'];
                 $diff = $_POST['difficulty'];
                 $active = $_POST['Active'];
                 $actives = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE active = 1");
                 $actives = mysqli_num_rows($actives);
-                dd($active);
-                if ($active == 0){
-                    if ($actives <= 14 ){
 
-                        echo 'You cant change active because you have only 15 active questions';
+                if ($active == 0){
+                    if ($actives <= 15 ){
+
+                        $ajax['success'] = 'error1';
+                        echo json_encode($ajax);
                         return false;
                     }
                     }
                 }
-            $wrongs = "$wrong_answer_1" . ',' . "$wrong_answer_2" . ',' . "$wrong_answer_3";
+
+            $wrongs_en = "$wrong_answer_1_en" . ',' . "$wrong_answer_2_en" . ',' . "$wrong_answer_3_en";
+            $wrongs_hy = "$wrong_answer_1_hy" . ',' . "$wrong_answer_2_hy" . ',' . "$wrong_answer_3_hy";
+
             if (!array_search('',$_POST)){
 
-                mysqli_query($this->admin->conn, "UPDATE `questions` SET `question`= '$question', `right_answer`= '$right_answer', wrong_answer= '$wrongs', `difficulty`= '$diff' WHERE `id` = $id;");
+                mysqli_query($this->admin->conn, "UPDATE `questions` SET 
+                       `hy`='$question_hy',
+                       `right_answer_hy`='$right_answer_hy',
+                       `wrong_answer_hy`='$wrongs_hy',
+                       `difficulty`='$diff',
+                       `active`='$active',
+                       `en`='$question_en',
+                       `right_answer_en`='$right_answer_en',
+                       `wrong_answer_en`='$wrongs_en' 
+                   WHERE 1");
 
-
-                return true;
+                $ajax['success'] = 'success';
+                echo json_encode($ajax);
+                return false;
             }else{
 
-                echo 'please fill all';
+                $ajax['success'] = 'error2';
+                echo json_encode($ajax);
                 return false;
 
             }
@@ -859,17 +882,36 @@ $rightans = 'right_answer_' . $language;
         $this->CheckLogin();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($_POST){
-                $question = $_POST['question'];
-                $wrong_answer_1 = $_POST['wrong_answer_1'];
-                $wrong_answer_2 = $_POST['wrong_answer_2'];
-                $wrong_answer_3 = $_POST['wrong_answer_3'];
-                $right_answer = $_POST['right_answer'];
+                $question_hy = $_POST['question_hy'];
+                $question_en = $_POST['question_en'];
+                $wrong_answer_1_en = $_POST['wrong_answer_1_en'];
+                $wrong_answer_2_en = $_POST['wrong_answer_2_en'];
+                $wrong_answer_3_en = $_POST['wrong_answer_3_en'];
+                $wrong_answer_1_hy = $_POST['wrong_answer_1_hy'];
+                $wrong_answer_2_hy = $_POST['wrong_answer_2_hy'];
+                $wrong_answer_3_hy = $_POST['wrong_answer_3_hy'];
+                $right_answer_hy = $_POST['right_answer_hy'];
+                $right_answer_en = $_POST['right_answer_en'];
                 $diff = $_POST['difficulty'];
                 $active = $_POST['Active'];
-                $wrongs = "$wrong_answer_1" . ',' . "$wrong_answer_2" . ',' . "$wrong_answer_3";
+                $actives = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE active = 1");
+                $actives = mysqli_num_rows($actives);
+
+                $wrongs_en = "$wrong_answer_1_en" . ',' . "$wrong_answer_2_en" . ',' . "$wrong_answer_3_en";
+                $wrongs_hy = "$wrong_answer_1_hy" . ',' . "$wrong_answer_2_hy" . ',' . "$wrong_answer_3_hy";
+
                 if (!array_search('',$_POST)){
 
-                    mysqli_query($this->admin->conn, "INSERT INTO `questions`(`question`, `right_answer`, `wrong_answer`, `difficulty`, `active`) VALUES ('$question','$right_answer','$wrongs','$diff','$active');");
+                    mysqli_query($this->admin->conn, "INSERT INTO `questions`(`hy`, `right_answer_hy`, `wrong_answer_hy`, `difficulty`, `active`, `en`, `right_answer_en`, `wrong_answer_en`) 
+VALUES (
+    '$question_hy',
+        '$right_answer_hy',
+        '$wrongs_hy',
+        '$diff',
+        '$active',
+        '$question_en',
+        '$right_answer_en',
+        '$wrongs_en')");
 
                     return true;
                 }else{

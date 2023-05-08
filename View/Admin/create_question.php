@@ -41,26 +41,26 @@
                         <div class="mb-3">
                             <label class="small mb-1" for="Question"><?php echo text($front, $language, 'title'); ?></label>
 
-                            <input class="form-control" id="Question" type="text" placeholder="<?php echo text($front, $language, 'title'); ?>" name="question">
+                            <input class="form-control" value="<?php echo $question['hy']; ?>" id="Question" type="text" placeholder="<?php echo text($front, $language, 'title'); ?>" name="question_hy">
                         </div>
                         <div class="row gx-3 mb-3">
                             <div class="col-md-6">
                                 <label class="small mb-1 f-1 text-success" for="Right_answer"><?php echo text($front, $language, 'select_right_ans'); ?></label>
-                                <input class="form-control" id="Right_answer" type="text" placeholder="<?php echo text($front, $language, 'select_right_ans'); ?>" name="right_answer">
+                                <input class="form-control" value="<?php echo $question['right_answer_hy'] ?>" id="Right_answer" type="text" placeholder="<?php echo text($front, $language, 'select_right_ans'); ?>" name="right_answer_hy">
                             </div>
                             <div class="col-md-6">
                                 <label class="small mb-1" for="Wrong1"><?php echo text($front, $language, 'select_other_ans'); ?></label>
-                                <input class="form-control" id="Wrong1" type="text" placeholder="<?php echo text($front, $language, 'select_other_ans'); ?>" name="wrong_answer_1">
+                                <input class="form-control" value="<?php echo $wrongs_hy[0]; ?>" id="Wrong1" type="text" placeholder="<?php echo text($front, $language, 'select_other_ans'); ?>" name="wrong_answer_1_hy">
                             </div>
                         </div>
                         <div class="row gx-3 mb-3">
                             <div class="col-md-6">
                                 <label class="small mb-1" for="Wrong2"><?php echo text($front, $language, 'select_other_ans'); ?></label>
-                                <input class="form-control" id="Wrong2" type="text" placeholder="<?php echo text($front, $language, 'select_other_ans'); ?>" name="wrong_answer_2">
+                                <input class="form-control" id="Wrong2" value="<?php echo $wrongs_hy[1]; ?>" type="text" placeholder="<?php echo text($front, $language, 'select_other_ans'); ?>" name="wrong_answer_2_hy">
                             </div>
                             <div class="col-md-6">
                                 <label class="small mb-1" for="Wrong3"><?php echo text($front, $language, 'select_other_ans'); ?></label>
-                                <input class="form-control" id="Wrong3" type="text" placeholder="<?php echo text($front, $language, 'select_other_ans'); ?>" name="wrong_answer_3">
+                                <input class="form-control" id="Wrong3" value="<?php echo $wrongs_hy[2]; ?>" type="text" placeholder="<?php echo text($front, $language, 'select_other_ans'); ?>" name="wrong_answer_3_hy">
                             </div>
                         </div>
 
@@ -70,26 +70,26 @@
                         <div class="mb-3">
                             <label class="small mb-1" for="Question"><?php echo text($front, $language, 'title'); ?></label>
 
-                            <input class="form-control" id="Question" type="text" placeholder="<?php echo text($front, $language, 'title'); ?>" name="question">
+                            <input class="form-control" value="<?php echo $question['en']; ?>" id="Question" type="text" placeholder="<?php echo text($front, $language, 'title'); ?>" name="question_en">
                         </div>
                         <div class="row gx-3 mb-3">
                             <div class="col-md-6">
                                 <label class="small mb-1 f-1 text-success" for="Right_answer"><?php echo text($front, $language, 'select_right_ans'); ?></label>
-                                <input class="form-control" id="Right_answer" type="text" placeholder="<?php echo text($front, $language, 'select_right_ans'); ?>" name="right_answer">
+                                <input class="form-control" value="<?php echo $question['right_answer_en'] ?>" id="Right_answer" type="text" placeholder="<?php echo text($front, $language, 'select_right_ans'); ?>" name="right_answer_en">
                             </div>
                             <div class="col-md-6">
                                 <label class="small mb-1" for="Wrong1"><?php echo text($front, $language, 'select_other_ans'); ?></label>
-                                <input class="form-control" id="Wrong1" type="text" placeholder="<?php echo text($front, $language, 'select_other_ans'); ?>" name="wrong_answer_1">
+                                <input class="form-control" value="<?php echo $wrongs_en[0]; ?>" id="Wrong1" type="text" placeholder="<?php echo text($front, $language, 'select_other_ans'); ?>" name="wrong_answer_1_en">
                             </div>
                         </div>
                         <div class="row gx-3 mb-3">
                             <div class="col-md-6">
                                 <label class="small mb-1" for="Wrong2"><?php echo text($front, $language, 'select_other_ans'); ?></label>
-                                <input class="form-control" id="Wrong2" type="text" placeholder="<?php echo text($front, $language, 'select_other_ans'); ?>" name="wrong_answer_2">
+                                <input class="form-control" id="Wrong2" value="<?php echo $wrongs_en[1]; ?>" type="text" placeholder="<?php echo text($front, $language, 'select_other_ans'); ?>" name="wrong_answer_2_en">
                             </div>
                             <div class="col-md-6">
                                 <label class="small mb-1" for="Wrong3"><?php echo text($front, $language, 'select_other_ans'); ?></label>
-                                <input class="form-control" id="Wrong3" type="text" placeholder="<?php echo text($front, $language, 'select_other_ans'); ?>" name="wrong_answer_3">
+                                <input class="form-control" id="Wrong3" value="<?php echo $wrongs_en[2]; ?>" type="text" placeholder="<?php echo text($front, $language, 'select_other_ans'); ?>" name="wrong_answer_3_en">
                             </div>
                         </div>
 
@@ -116,7 +116,7 @@
                         </div>
                     </div>
                     <!-- Submit button-->
-                    <button class="btn btn-primary" type="submit">Save changes</button>
+                    <button class="btn btn-primary" type="submit"><?php echo text($front, $language, 'select_btn'); ?></button>
                     <div class="text-danger form-errors m-2">
                     </div>
                     <div class="text-green form-accept m-2">
