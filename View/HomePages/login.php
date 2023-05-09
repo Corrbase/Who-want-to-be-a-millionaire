@@ -61,7 +61,7 @@ $front = $view_array['front'];
                 let request_data = JSON.parse(data)
                 if (request_data.success === true){
 
-                    window.location.replace("/admin/home");
+                    window.location.replace("/<?php echo $language;?>/admin/home");
                 }else{
                     $('.loading-refresh').removeClass('loading-form');
                     console.log(request_data.error)

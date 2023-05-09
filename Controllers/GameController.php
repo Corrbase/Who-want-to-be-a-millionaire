@@ -19,8 +19,8 @@ class GameController{
 
     public function play()
     {
-        $this->checkplay();
         $language = getLanguage();
+        $this->checkplay($language);
 
         $url = substr($_GET['url'], 3);
         $header = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = 'header' ")->fetch_all(true);
@@ -30,12 +30,12 @@ class GameController{
 
     public function play_name()
     {
-
+        $language = getLanguage();
         if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 
             if (isset($_SESSION['play'])){
 
-                header('location: /play');
+                header('location: /'. $language .'/play');
 
             }else{
                 $questionsCount = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `active` = 1");
@@ -95,7 +95,7 @@ class GameController{
                     'call_to_friend' => false,
                     'Voice' => false,
                 ];
-                header('location: /play');
+                header('location: /'. $language .'/play');
             }
         }else{
             header('Location: /home');
@@ -134,7 +134,7 @@ class GameController{
             $id = $_SESSION['play_run']['questions_id'][$NowLevel - 1];
             $question = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $id")->fetch_all(true);
             $question = $question[0];
-            $wrongs = explode(',' , $question['wrong_answer']);
+            $wrongs = explode(',' , $question['wrong_answer_'. $language]);
             if (isset($ajax['end_game'])){
                 if ($ajax['prize'] == 0){
                     if ($_SESSION['play_run']['level']['level_1'] === false)
@@ -158,6 +158,7 @@ class GameController{
                     unset($_SESSION['play_run']);
                 }
             }
+
             elseif (isset($ajax['bonus'])){
                 $this->bonus($ajax['bonus'], $question['right_answer_' . $language], $wrongs, $language);
             }else{
@@ -259,6 +260,7 @@ class GameController{
 
     public function bonus($bonus_name, $true, $false, $language){
         $exist = $_SESSION['play_run']['bonus'];
+
         if ($language == 'en'){
             if ($exist[$bonus_name] == false) {
                 if ($bonus_name == 'call_to_friend') {
@@ -267,7 +269,8 @@ class GameController{
                     echo 'Hi ' . $_SESSION['play_run']['player'] . ', i think it is "' . $true . '"';
                     $_SESSION['play_run']['bonus'][$bonus_name] = true;
                 } elseif ($bonus_name == '50') {
-                    echo 'It is or"' . $true . '" or "' . $false[1] . '"';
+                    $randfalse = rand(0,2);
+                    echo 'It is or"' . $true . '" or "' . $false[$randfalse] . '"';
                     $_SESSION['play_run']['bonus'][$bonus_name] = true;
                 } elseif ($bonus_name == 'Voice') {
                     $prcnt = rand(50, 100); //  get random number
@@ -286,7 +289,8 @@ class GameController{
                     echo 'Բարև ' . $_SESSION['play_run']['player'] . ', ես կարծում եմ դա "' . $true . '"-ն է';
                     $_SESSION['play_run']['bonus'][$bonus_name] = true;
                 } elseif ($bonus_name == '50') {
-                    echo 'Դա կամ "' . $true . '"-ն է կամ էլ "' . $false[1] . '"-ը';
+                    $randfalse = rand(0,2);
+                    echo 'Դա կամ "' . $true . '"-ն է կամ էլ "' . $false[$randfalse] . '"-ը';
                     $_SESSION['play_run']['bonus'][$bonus_name] = true;
                 } elseif ($bonus_name == 'Voice') {
                     $prcnt = rand(50, 100); //  get random number
@@ -295,17 +299,18 @@ class GameController{
                     $_SESSION['play_run']['bonus'][$bonus_name] = true;
                 }
             }else{
-                echo 'Դուք չեք կ    արող օգտագործել նույն բոնուսը երկու անգամ';
+                echo 'Դուք չեք կարող օգտագործել նույն բոնուսը երկու անգամ';
             }
         }
 
 
     }
 
-    public function checkplay()
+    public function checkplay($language)
     {
         if (isset($_SESSION['play'])){
-            header('location: /play');
+
+            header('location: /'. $language .'/play');
         }
     }
 

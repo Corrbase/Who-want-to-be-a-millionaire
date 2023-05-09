@@ -91,6 +91,7 @@ class AdminController {
     }
     public function gamers_pagination($pagination)
     {
+
         if (!is_numeric($pagination['pagination'])){
             header('location: /');
         }
@@ -207,7 +208,7 @@ class AdminController {
             }
             echo 'name="Waiting" data-id="';
             echo $gamer['id'];
-            echo '" value="Waiting" selected="">'. text($front, $language, 'table_status_in_process') .'</option>
+            echo '" value="waiting" selected="">'. text($front, $language, 'table_status_in_process') .'</option>
                     <option ';
             if ($gamer['status'] == 'Canceled'){
                 echo 'selected="selected"';
@@ -251,12 +252,12 @@ class AdminController {
         $AllQuestionsCount = mysqli_num_rows($AllQuestions);
         $page = $pagination['pagination'] -1;
         $count = $page * 5;
-        if ($AllQuestionsCount /5 <1){
+        if ($AllQuestionsCount %5 == 0){
 
             $pages = 1;
             $questions = mysqli_query($this->admin->conn, "SELECT * FROM `questions` LIMIT $count, 5 ")->fetch_all(true);
 
-        }elseif ($AllQuestionsCount%5 == 0){
+        }elseif ($AllQuestionsCount/5 == 1){
             $pages = $AllQuestionsCount/5;
 
             $questions = mysqli_query($this->admin->conn, "SELECT * FROM `questions` LIMIT $count, 5 ")->fetch_all(true);
@@ -298,7 +299,10 @@ class AdminController {
         echo '" class="btn  btn-outline-success m-1 ';
         echo $disabled2;
         echo'">';
-        echo '></a></div>
+
+        echo '></a>';
+        echo '<a href="/hy/admin/questions/create" class="font-weight-bold btn  btn-outline-success m-1">+</a> </div>';
+        echo '
 <div class="d-flex">
 
 
@@ -351,7 +355,7 @@ $rightans = 'right_answer_' . $language;
             echo '</td>';
 
             echo '<td>';
-            echo '<a href="/admin/questions/edit/' . $qeustion['id'];
+            echo '<a href="/'.$language.'/admin/questions/edit/' . $qeustion['id'];
             echo '">'. text($front, $language, 'table_edit').'</a>';
             echo '</td>';
             echo '</tr>';
@@ -364,6 +368,7 @@ $rightans = 'right_answer_' . $language;
     }
     public function admins_pagination($pagination)
     {
+        $this->CheckLogin();
         if (is_numeric($pagination['pagination'])){
             $language = getLanguage();
             $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/users' ")->fetch_all(true);
@@ -371,7 +376,7 @@ $rightans = 'right_answer_' . $language;
 
             $ajax = $_GET;
             $role = $ajax['role'];
-            $this->CheckLogin();
+
 
             if ($ajax['role'] == 'all'){
                 $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users`");
@@ -383,7 +388,7 @@ $rightans = 'right_answer_' . $language;
             $AllUsersCount = mysqli_num_rows($AllUsers);
             $page = $pagination['pagination'] -1;
             $count = $page * 5;
-            if ($AllUsersCount /5 <1){
+            if ($AllUsersCount /5 == 1){
 
                 $pages = 1;
                 if ($ajax['role'] == 'all'){
@@ -393,7 +398,7 @@ $rightans = 'right_answer_' . $language;
                     $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role' LIMIT $count, 5 ")->fetch_all(true);
 
                 }
-            }elseif ($AllUsersCount/5 == 1){
+            }elseif ($AllUsersCount%5 == 0){
                 $pages = $AllUsersCount/5;
 
                 if ($ajax['role'] == 'all'){
@@ -509,7 +514,7 @@ $rightans = 'right_answer_' . $language;
                 echo '</td>';
 
                 echo '<td>';
-                echo '<a href="/admin/user/edit/' . $gamer['id'];
+                echo '<a href="/'.$language.'/admin/user/edit/' . $gamer['id'];
                 echo '">Edit</a>';
                 echo '</td>';
                 echo '</tr>';
@@ -550,8 +555,8 @@ $rightans = 'right_answer_' . $language;
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/user/edit' ")->fetch_all(true);
 
         $header = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin_header' ")->fetch_all(true);
-        $AllQuestions = mysqli_query($this->admin->conn, "SELECT * FROM `questions`   ");
         $user = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE `id` = $id")->fetch_all(true);
+
         if ($user){
             view('edit_user','Admin', [
                 'user'=>$user,
@@ -565,7 +570,7 @@ $rightans = 'right_answer_' . $language;
     }
     public function edit_question($id)
     {
-
+        $this->CheckLogin();
         if (!is_numeric($id['id'])){
             header('location: /');
         }
@@ -628,6 +633,7 @@ $rightans = 'right_answer_' . $language;
 
     public function logout()
     {
+        $this->CheckLogin();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->CheckLogin();
             unset($_SESSION['admin_profile']);
@@ -635,58 +641,9 @@ $rightans = 'right_answer_' . $language;
             header("location: /admin/home");
         }
     }
-    public function login_admin_request()
-    {
-        if (isset($_SESSION['admin_profile']['profile']) == 1) {
-            header('location: /admin/home');
-        }elseif (isset($_SESSION['user_profile']['profile']) == 1){
-            header('location: /admin/home');
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $login = $_POST['admin_login'];
-            $pass = $_POST['admin_password'];
-            $_SESSION['login_values'] = $login;
-
-            if ($login == '')
-            {
-                $ajax['error'] = 'something goes wrong';
-                echo json_encode($ajax);
-//                header("location: /admin/login");
-            }elseif($pass == '')
-            {
-                $ajax['error'] = 'something goes wrong';
-                echo json_encode($ajax);
-//                header("location: /admin/login");
-            }else{
-
-                $pass = md5($pass);
-                unset($_SESSION['login_error']);
-                unset($_SESSION['login_values']);
-                $profile = mysqli_query($this->admin->conn, "SELECT * FROM `admins` WHERE `login` = '$login' AND `password` = '$pass'");
-                $profile =  mysqli_num_rows($profile);
-                if ($profile == 1)
-                {
-                    unset($_SESSION['user_profile']);
-
-                    $_SESSION['admin_profile'] = [
-                        'profile' => 1,
-                        'login' => $login,
-                        'password' => $pass,
-                    ];
-                    $ajax['success'] = true;
-                    echo json_encode($ajax);
-
-                }
-            }
-
-        }else{
-            header("location: /login");
-        }
-    }
     public function add_user_request()  {
 
-
+        $this->CheckLogin();
         $language = getLanguage();
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/users/add' ")->fetch_all(true);
 
@@ -814,7 +771,7 @@ $rightans = 'right_answer_' . $language;
                        `en`='$question_en',
                        `right_answer_en`='$right_answer_en',
                        `wrong_answer_en`='$wrongs_en' 
-                   WHERE 1");
+                   WHERE `id` = $id");
 
                 $ajax['success'] = 'success';
                 echo json_encode($ajax);
@@ -861,6 +818,7 @@ $rightans = 'right_answer_' . $language;
                 echo json_encode($ajax);
                 return false;
             }elseif (!array_search('',$_POST)){
+
                 mysqli_query($this->admin->conn, "UPDATE `users` SET `name`= '$name', `sname`= '$sname',  `age`= '$age', `balance`= '$balance', `role` = '$role' WHERE `id` = $id;");
 
                 $ajax['success'] = true;

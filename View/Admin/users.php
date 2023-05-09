@@ -1,4 +1,4 @@
-
+d
 <main>
     <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
         <div class="container-xl px-4">
@@ -14,7 +14,7 @@
                 </div>
                 <nav class="mt-4 rounded" aria-label="breadcrumb">
                     <ol class="breadcrumb px-3 py-2 rounded mb-0">
-                        <li class="breadcrumb-item"><a href="/admin/home">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo '/' . $language ; ?>/admin/home">Dashboard</a></li>
                         <li class="breadcrumb-item active">Users</li>
                     </ol>
                 </nav>
@@ -42,7 +42,7 @@
                         <option name="User" data-id="User" ><?php echo text($front, $language, 'table_select_user'); ?></option>
                         <option name="Admin" data-id="Admin"><?php echo text($front, $language, 'table_select_admin'); ?></option>
                     </select>
-                    <a href="/admin/users/add" class="font-weight-bold btn  btn-outline-success m-1">+</a>
+                    <a href="<?php echo '/' . $language ; ?>/admin/users/add" class="font-weight-bold btn  btn-outline-success m-1">+</a>
                 </div>
                 <div class="users">
 

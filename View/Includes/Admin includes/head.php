@@ -23,7 +23,7 @@
     <!-- * * Tip * * You can use text or an image for your navbar brand.-->
     <!-- * * * * * * When using an image, we recommend the SVG format.-->
     <!-- * * * * * * Dimensions: Maximum height: 32px, maximum width: 240px-->
-    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="/admin/home">
+    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="<?php echo '/' . $language ; ?>/admin/home">
         <?php
         echo text($header, $language, 'main_dashboard');
         ?>
@@ -47,12 +47,32 @@
                     </div>
                 </h6>
                 <div class="dropdown-divider"></div>
+                <a href="javascript:void(0)" onclick="chnageLang()" class="dropdown-item">
+                    <div class="dropdown-item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></div>
 
+                    <?php if ($language == 'en'){echo 'hy'; }else{echo "en";} ?>
+                </a>
+                <script>
+                    function chnageLang(){
+                        var pathname = window.location.pathname
+                        let url = pathname.slice(3);
+                        console.log(url)
+                        let language = '<?php echo $language?>'
+                        if (language == 'hy'){
+                            newurl = '/en' + url
+                        }else {
+                            newurl = '/hy' + url
+                        }
+                        window.location.replace(newurl);
+                    }
+
+                </script>
                 <a class="dropdown-item LogOut" href="javascript:void(0)">
                     <div class="dropdown-item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></div>
                     <?php
                     echo text($header, $language, 'log_out_btn');
                     ?>
+
                 </a>
             </div>
         </li>
@@ -60,6 +80,7 @@
 </nav>
 
 <script>
+
     $(document).on('click', '.LogOut', function (e){
         $.ajax({
             type: "POST",
@@ -69,7 +90,7 @@
                     $('.loading-refresh').addClass('loading-form');
                 },
             success: function(data) {
-                window.location.replace("/login");
+                window.location.replace("/<?php echo $language;?>/login");
             }
         })
     })

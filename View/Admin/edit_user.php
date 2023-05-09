@@ -16,8 +16,8 @@
                 </div>
                 <nav class="mt-4 rounded" aria-label="breadcrumb">
                     <ol class="breadcrumb px-3 py-2 rounded mb-0">
-                        <li class="breadcrumb-item"><a href="/admin/home">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="/admin/users">Users</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo '/' . $language ; ?>/admin/home">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo '/' . $language ; ?>/admin/users">Users</a></li>
                         <li class="breadcrumb-item active">edit_user</li>
                     </ol>
                 </nav>
@@ -67,8 +67,8 @@
                         <select name="Role" class="form-select" aria-label="Default select example">
                             <option selected="" disabled=""><?php echo text($front, $language, 'select_role_btn'); ?></option>
 
-                            <option name="Admin" value="Admin" <?php echo $dis2 ?>><?php echo text($front, $language, 'select_role_user'); ?></option>
-                            <option name="User" value="User" <?php echo $dis1 ?>><?php echo text($front, $language, 'select_role_admin'); ?></option>
+                            <option name="User" value="User" <?php echo $dis1 ?>><?php echo text($front, $language, 'select_role_user'); ?></option>
+                            <option name="Admin" value="Admin" <?php echo $dis2 ?>><?php echo text($front, $language, 'select_role_admin'); ?></option>
                         </select>
                     </div>
                     <!-- Submit button-->

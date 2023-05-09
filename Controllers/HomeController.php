@@ -9,6 +9,7 @@ class HomeController{
     }
 
     public function login(){
+        $this->checklogin();
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
 
             header('location: /');
@@ -23,6 +24,7 @@ class HomeController{
     }
     public function register()
     {
+        $this->checklogin();
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
 
             header('location: /');
@@ -43,6 +45,7 @@ class HomeController{
     // requests
 
     public function register_request(){
+        $this->checklogin();
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
             header('location: /admin/home');
         }elseif (isset($_SESSION['user_profile']['profile']) == 1){
@@ -136,7 +139,6 @@ class HomeController{
         }
     }
     public function home(){
-        $this->checkplay();
         $language = getLanguage();
 
         $url = substr($_GET['url'], 3);
@@ -148,10 +150,13 @@ class HomeController{
     }
 
 
-    public function checkplay()
+    public function checklogin()
     {
-        if (isset($_SESSION['play'])){
-            header('location: /play');
+        if (isset($_SESSION['admin_profile']['profile']) == 1) {
+            header('location: /');
+        }
+        if (isset($_SESSION['user_profile']['profile']) == 1) {
+            header('location: /');
         }
     }
 

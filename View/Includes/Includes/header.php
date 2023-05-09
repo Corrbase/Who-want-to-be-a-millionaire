@@ -25,7 +25,7 @@
             <div class="text-end align-items-center">
             <?php
             if (isset($_SESSION['admin_profile']['profile']) == 1){
-                echo '  <a href="/admin/home" class="btn btn-outline-light me-2">'. text($header, $language, 'admin_panel') .'</a>';
+                echo '  <a href="/'. $language .'/admin/home" class="btn btn-outline-light me-2">'. text($header, $language, 'admin_panel') .'</a>';
             }elseif (isset($_SESSION['user_profile']['profile']) == 1){
                 echo ' 
                         <a href="javascript:void(0)" onclick="logout()" class="LogOut btn btn-outline-light me-2">'. text($header, $language, 'logout') .'</a>

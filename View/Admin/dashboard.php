@@ -134,7 +134,7 @@
         <div class="row m-4">
             <div class="col mb-4">
                 <!-- Dashboard example card 2-->
-                <a class="card lift h-100 " href="/admin/documentation">
+                <a class="card lift h-100 " href="<?php echo '/' . $language ; ?>/admin/documentation">
                     <div class="card-body d-flex justify-content-center flex-column">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="me-3">

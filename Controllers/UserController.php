@@ -33,6 +33,7 @@ $this->check();
 
         }}
     public function login_user(){
+        $this->checkl();
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
             header('location: /admin/home');
         }elseif (isset($_SESSION['user_profile']['profile']) == 1){
@@ -61,7 +62,6 @@ $this->check();
                     } else {
                         $profile_settings = $profile_settings[0];
                         if ($profile_settings['Role'] == 'Admin'){
-
                                 unset($_SESSION['user_profile']);
 
                                 $_SESSION['admin_profile'] = [
@@ -107,7 +107,7 @@ $this->check();
         $AllGames = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC ");
         $AllGames = mysqli_num_rows($AllGames);
         if ($AllGames <= 0){
-            echo "Դուք չունեք հաղթաց գումար";
+            echo text($front, $language, 'no_game');
         }else {
 
 
@@ -119,21 +119,21 @@ $this->check();
             if ($AllUsersCount / 10 < 1) {
 
                 $pages = 1;
-                $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC  LIMIT $count, 10  ")->fetch_all(true);
+                $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10  ")->fetch_all(true);
 
             } elseif ($AllUsersCount %10 == 0) {
                 $pages = $AllUsersCount / 10;
 
-                $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC  LIMIT $count, 10 ")->fetch_all(true);
+                $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10 ")->fetch_all(true);
 
             } elseif ($AllUsersCount % 10 <= 9) {
                 $pages = floor($AllUsersCount / 10) + 1;
                 $a = $pagination['pagination'];
                 if ($pages == $pagination['pagination']) {
-                    $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC  LIMIT $count, 10 ")->fetch_all(true);
+                    $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10 ")->fetch_all(true);
 
                 } else {
-                    $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC  LIMIT $count, 10 ")->fetch_all(true);
+                    $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10 ")->fetch_all(true);
 
                 }
             }
@@ -147,7 +147,7 @@ $this->check();
 
                 $disabled2 = 'disabled';
             }
-        }
+
         echo '
                       <table class="table table-hover">
                       
@@ -216,7 +216,7 @@ $this->check();
             else if ($gamer['status'] == 'Finished'){
 
                 echo "<button class='btn btn-outline-primary get-money' data-id='". $gamer['id'] ."'>".text($front, $language, 'table_prize_button')." </button>";
-            }else if ($gamer['status'] == 'canceled'){
+            }else if ($gamer['status'] == 'Canceled'){
                 echo text($front, $language, 'game_status_canceled');
             }else if ($gamer['status'] == 'waiting') {
                 echo text($front, $language, 'game_status_waiting');
@@ -229,7 +229,7 @@ $this->check();
         echo '
                         </tbody>
                     </table>
-        ';
+        ';}
     }
 
     public function get_money($id){
@@ -263,6 +263,15 @@ $this->check();
             header('location: /');
         }
         if (!isset($_SESSION['user_profile']['profile']) == 1) {
+            header('location: /');
+        }
+    }
+
+    public function checkl(){
+        if (isset($_SESSION['admin_profile']['profile']) == 1) {
+            header('location: /');
+        }
+        if (isset($_SESSION['user_profile']['profile']) == 1) {
             header('location: /');
         }
     }

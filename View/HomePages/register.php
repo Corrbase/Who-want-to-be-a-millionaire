@@ -99,7 +99,7 @@ $front = $view_array['front'];
 
         $.ajax({
             type: "POST",
-            url: 'r/user/register',
+            url: '/r/user/register',
             data: form.serialize(),
             beforeSend:
                 function() {
@@ -110,7 +110,7 @@ $front = $view_array['front'];
                 let request_data = JSON.parse(data)
 
                 if (request_data.success === true){
-                    window.location.replace("/profile");
+                    window.location.replace("/<?php echo $language; ?>/profile");
                 }else {
                     $('.loading-refresh').removeClass('loading-form');
                     $('.form-error').text(request_data.error);

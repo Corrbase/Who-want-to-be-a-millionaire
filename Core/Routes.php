@@ -57,7 +57,6 @@ $route->add('en/user/get_money/{id}', 'UserController@get_money');
 
 // ---------------------- requests
 
-$route->add('/r/admin/login', 'AdminController@login_admin_request');
 $route->add('/r/admin/users/add', 'AdminController@add_user_request');
 $route->add('/r/admin/delete/user/{id}', 'AdminController@delete_user');
 $route->add('/r/admin/question/edit/{id}', 'AdminController@question_edit');

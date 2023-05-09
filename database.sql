@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: May 04, 2023 at 07:09 PM
+-- Generation Time: May 09, 2023 at 05:41 PM
 -- Server version: 8.0.30
 -- PHP Version: 7.2.34
 
@@ -18,27 +18,8 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `mvc`
+-- Database: `database`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `admins`
---
-
-CREATE TABLE `admins` (
-  `id` int NOT NULL,
-  `login` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `admins`
---
-
-INSERT INTO `admins` (`id`, `login`, `password`) VALUES
-(1, 'Admin', '21232f297a57a5a743894a0e4a801fc3');
 
 -- --------------------------------------------------------
 
@@ -60,43 +41,16 @@ CREATE TABLE `gamers` (
 --
 
 INSERT INTO `gamers` (`id`, `name`, `level`, `prize`, `status`, `getted`) VALUES
-(5, 'Ando Smith', 6, 10000, 'Waiting', 0),
-(7, 'Tony Smith', 1, 1000, 'Canceled', 0),
-(9, 'Ando Smith', 2, 1500, 'Waiting', 0),
-(11, 'Tony Smith', 13, 100000, 'Finished', 0),
-(15, 'user', 1, 100, 'Canceled', 0),
-(18, 'Vazgen', 1, 100, 'waiting', 0),
-(19, 'Ann', 1, 100, 'waiting', 0),
-(21, 'asdasd', 1, 100, 'waiting', 0),
-(22, 'Mher', 4, 500, 'waiting', 0),
 (23, 'Mher', 4, 500, 'waiting', 0),
-(24, 'user', 1, 100, 'waiting', 0),
 (27, 'Mher', 1, 100, 'waiting', 0),
 (28, 'Mher', 1, 100, 'waiting', 0),
-(30, 'Maa', 1, 100, 'waiting', 0),
-(31, 'Maa', 1, 100, 'waiting', 0),
-(32, 'Maa', 1, 100, 'waiting', 0),
-(33, 'Maa', 1, 100, 'waiting', 0),
-(34, 'Maa', 1, 100, 'waiting', 0),
-(35, 'Maa', 1, 100, 'waiting', 0),
 (36, 'Mher', 1, 100, 'waiting', 0),
 (37, 'Mher', 1, 100, 'waiting', 0),
 (38, 'Mher', 2, 200, 'waiting', 0),
 (40, 'Mher', 1, 100, 'waiting', 0),
 (41, 'Mher', 6, 2000, 'waiting', 0),
-(42, '0', 0, 0, '0', 0),
 (46, 'Mher', 1, 0, 'waiting', 0),
-(47, 'Mher', 3, 300, 'waiting', 0),
-(48, 'Mher', 3, 300, 'waiting', 0),
-(49, 'Mher', 1, 0, 'waiting', 0),
-(50, 'Mher', 7, 1000, 'waiting', 0),
-(56, 'Mher', 3, 300, 'waiting', 0),
-(57, 'Mher', 1, 100, 'waiting', 0),
-(58, 'Mher', 1, 100, 'waiting', 0),
-(59, 'Mher', 1, 100, 'waiting', 0),
-(60, 'Mher', 1, 100, 'waiting', 0),
-(61, 'Mher', 1, 100, 'waiting', 0),
-(64, 'admin', 1, 100, 'waiting', 0);
+(47, 'Mher', 3, 300, 'waiting', 0);
 
 -- --------------------------------------------------------
 
@@ -301,8 +255,9 @@ INSERT INTO `languages` (`id`, `en`, `hy`, `name`, `url`) VALUES
 (194, 'Create', 'Ստեղծել', 'select_btn', 'admin/questions/edit'),
 (195, 'Select a diff:', 'ԸՆտրեք բարդությունը', 'select_diff_place', 'admin/questions/edit'),
 (196, 'Select a active:', 'ԸՆտրեք հասանելիությունը', 'select_active_place', 'admin/questions/edit'),
-(197, 'please fill all', 'Լրացրեք բոլոր բաց թողնված տեղերը', 'error1', 'admin/questions/edit'),
-(198, 'You crate a question.', 'Հարցը ստեղծված է', 'error2', 'admin/questions/edit');
+(197, 'please fill all', 'Լրացրեք բոլոր բաց թողնված տեղերը', 'error2', 'admin/questions/edit'),
+(198, 'save', 'Պահպանված է', 'success', 'admin/questions/edit'),
+(199, 'You cant change active because you have only 15 active questions', 'Դուք չեք կարող փոխել հարցի ակտիվը, քանի որ ունեք ընդամենը 15 ակտիվ հարց', 'error1', 'admin/questions/edit');
 
 -- --------------------------------------------------------
 
@@ -341,9 +296,7 @@ INSERT INTO `questions` (`id`, `hy`, `right_answer_hy`, `wrong_answer_hy`, `diff
 (12, 'Ո՞ր քիմիական տարրի հայտնագործման պատվին են Ֆրանսիայում 19-րդ դարում հատել Ապոլոնի պատկերով մեդալ․', 'Հելիում', 'Տիտան, Ռադիում, Ջրածին', 'normal', 1, 'In honor of the discovery of which chemical element, a medal with the image of Apollo was minted in France in the 19th century.', 'Helium', 'Titanium, Radium, Hydrogen'),
 (13, 'Ըստ իր խոստովանության ինչի՞ աստվածն էր Օլե Լուկոյեն՝ Անդերսենի համանուն հեքիաթից․', 'Երազների', 'Հեքիաթների, Մանկության, Գիշերվա', 'normal', 1, 'According to his confession, what god was Ole Lukoye from Andersen\'s fairy tale of the same name?', 'Of dreams', 'Fairy tales, childhood, night'),
 (14, 'Ավանդաբար ի՞նչ են անում երաժիշտները Հայդնի «Հրաժեշտի սիմֆոնիան» նվագելիս․', 'Հանգցնում են մոմերը', 'Երգում են, Գլխարկ են հագնում, Օդային համբույրներ են ուղարկում', 'normal', 1, 'What do musicians traditionally do when playing Haydn\'s Farewell Symphony?', 'They put out the candles', 'They sing, they wear hats, they send air kisses'),
-(15, 'Ո՞վ էր Հենրի Թեյթը, ում անունով է կոչվում Լոնդոնի պատկերասրահը․', 'Բարերար', 'Ծովահեն, Նկարիչ, Ճարտարապետ', 'normal', 1, 'Who was Henry Tait, after whom the gallery in London is named?', 'Benefactor', 'Pirate, Artist, Architect'),
-(32, 'asdfa', 'asdfsaa', 'asdf,asfd,asdf', 'normal', 0, '', '', ''),
-(33, 'asdfa', 'asdfsaa', 'asdf,asfd,asdf', 'normal', 0, '', '', '');
+(15, 'Ո՞վ էր Հենրի Թեյթը, ում անունով է կոչվում Լոնդոնի պատկերասրահը․', 'Բարերար', 'Ծովահեն, Նկարիչ, Ճարտարապետ', 'normal', 1, 'Who was Henry Tait, after whom the gallery in London is named?', 'Benefactor', 'Pirate, Artist, Architect');
 
 -- --------------------------------------------------------
 
@@ -368,30 +321,11 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `login`, `password`, `name`, `sname`, `age`, `balance`, `Role`) VALUES
 (1, 'Mher', '25f9e794323b453885f5181f1b624d0b', 'mher', 'Barseghyan', 18, 4200, 'Admin'),
-(2, 'asdf', '912ec803b2ce49e4a541068d495ab570', 'asdfa', 'asdf', 18, 0, 'User'),
-(3, 'Vazgen', 'e10adc3949ba59abbe56e057f20f883e', 'Vazgen', 'Petrosyan', 18, 0, 'User'),
-(4, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Admin', 18, 0, 'Admin'),
-(5, 'asdfa', '912ec803b2ce49e4a541068d495ab570', 'asdf', 'asdf', 18, 0, 'User'),
-(6, 'asdfa', '912ec803b2ce49e4a541068d495ab570', 'asdf', 'asdf', 18, 0, 'Admin'),
-(7, 'asdfa', '912ec803b2ce49e4a541068d495ab570', 'asdf', 'asdf', 18, 0, 'Admin'),
-(8, 'asdfss', '912ec803b2ce49e4a541068d495ab570', 'asdf', 'asdfasdf', 18, 0, 'User'),
-(9, 'asdfaa', 'aa41efe0a1b3eeb9bf303e4561ff8392', 'asfa', 'asdfs', 18, 0, 'User'),
-(10, 'asdfasdf', '6a204bd89f3c8348afd5c77c717a097a', 'asdfasdf', 'asdfasdf', 18, 0, 'User'),
-(11, 'asdfsa', '6a204bd89f3c8348afd5c77c717a097a', 'asdfasdf', 'asdfasdf', 18, 0, 'User'),
-(12, 'asdfsdsa', '6a204bd89f3c8348afd5c77c717a097a', 'asdfasdf', 'asdfasdf', 18, 0, 'User'),
-(13, 'Anna', '97a9d330e236c8d067f01da1894a5438', 'Anna', 'Poghosyan', 18, 0, 'User'),
-(14, 'asdddd', '5deb466b0e4c0c313bc6ac950d4247c4', 'asdddd', 'asdddd', 19, 0, 'User'),
-(15, 'Artur', 'e10adc3949ba59abbe56e057f20f883e', 'Artur', 'Baghdasaryan', 18, 0, 'User');
+(4, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Admin', 18, 0, 'Admin');
 
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `admins`
---
-ALTER TABLE `admins`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `gamers`
@@ -422,12 +356,6 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `admins`
---
-ALTER TABLE `admins`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
 -- AUTO_INCREMENT for table `gamers`
 --
 ALTER TABLE `gamers`
@@ -437,7 +365,7 @@ ALTER TABLE `gamers`
 -- AUTO_INCREMENT for table `languages`
 --
 ALTER TABLE `languages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=199;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=200;
 
 --
 -- AUTO_INCREMENT for table `questions`
