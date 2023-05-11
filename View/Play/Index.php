@@ -58,6 +58,9 @@
                         success: function(data)
                         {
                             $(".answer-button[data-id=" + request_data.question_num + "]").css('background-color', '#7de051');
+                            if (data == 'you win your prize is 1000000'){
+                                window.location.href = "<?php echo $language;?>/home";
+                            }
                             setTimeout(function (){$('.content').html(data);}, 2000)
 
                         }

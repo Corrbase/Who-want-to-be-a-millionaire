@@ -99,27 +99,27 @@ class AdminController {
         $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `gamers`");
         $language = getLanguage();
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/gamers' ")->fetch_all(true);
-        $AllUsersCount = mysqli_num_rows($AllUsers);
+        $AllGamesCount = mysqli_num_rows($AllUsers);
         $page = $pagination['pagination'] -1;
         $count = $page * 5;
-        if ($AllUsersCount /5 <1){
+        if ($AllGamesCount /5 <1){
 
             $pages = 1;
-            $questions = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT $count, 5 ")->fetch_all(true);
+            $games = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT $count, 5 ")->fetch_all(true);
 
-        }elseif ($AllUsersCount%5 == 0){
-            $pages = $AllUsersCount/5;
+        }elseif ($AllGamesCount%5 == 0){
+            $pages = $AllGamesCount/5;
 
-            $questions = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT $count, 5 ")->fetch_all(true);
+            $games = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT $count, 5 ")->fetch_all(true);
 
-        }elseif ($AllUsersCount%5 <= 4){
-            $pages = floor($AllUsersCount/5) + 1;
+        }elseif ($AllGamesCount%5 <= 4){
+            $pages = floor($AllGamesCount/5) + 1;
             $a = $pagination['pagination'];
             if ($pages == $pagination['pagination']){
-                $questions = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT $count, 5 ")->fetch_all(true);
+                $games = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT $count, 5 ")->fetch_all(true);
 
             }else{
-                $questions = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT $count, 5 ")->fetch_all(true);
+                $games = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT $count, 5 ")->fetch_all(true);
 
             }
         }
@@ -133,109 +133,74 @@ class AdminController {
 
             $disabled2 = 'disabled';
         }
+        $ajax = [
+            'games' => $games,
+            'disabled1' => $disabled1,
+            'disabled2' => $disabled2,
+            'PreviousPage' => $PreviousPage,
+            'NextPage' => $NextPage,
+            'AllUsersCount' => $AllGamesCount,
+            'pagination' => $pagination['pagination']
 
-        echo '
-                      <table class="table table-hover">
-                      
-                      <div class="d-flex align-items-center">
-                      
-                    
-                        <a href="javascript:void(0)" type="button" id="ClickToPage" data-id="'. $PreviousPage;
-        echo '"class="btn btn-outline-success m-1 ';
-        echo $disabled1;
-        echo '"';
+        ];
+        echo json_encode($ajax);
 
-        echo '><</a>
-                    <a href="javascript:void(0)" id="ClickToPage" data-id="'. $NextPage;
-        echo '" class="btn  btn-outline-success m-1 ';
-        echo $disabled2;
-        echo'">';
-        echo '></a></div>
-<div class="d-flex">
-
-
-                    <p class="mt-3"> '.text($front, $language, 'table_page')." " . $pagination['pagination'];
-
-        echo '</p>
-<p class="mt-3 m-3">'. text($front, $language, 'table_count').': ' . $AllUsersCount;
-        echo '
-                        <thead>
-                        <tr>
-                            <th>
-                                ' . text($front, $language, 'table_num') . '
-                            </th>   
-                            <th>
-                                ' . text($front, $language, 'table_login') . '
-                            </th>
-                            <th>
-                                ' . text($front, $language, 'table_lvl') . '
-                            </th>
-                            <th>
-                                ' . text($front, $language, 'table_prize') . '
-                            </th>
-                            <th>
-                                ' . text($front, $language, 'table_status') . '
-</th>
-                        </tr>
-                        </thead>
-                        <tbody>';
-
-        foreach ($questions as $gamer) {
-            echo '<tr>';
-            echo '<td>';
-            echo $gamer['id'];
-            echo '</td>';
-
-            echo '<td>';
-            echo $gamer['name'];
-            echo '</td>';
-
-            echo '<td>';
-            echo $gamer['level'];
-            echo '</td>';
-
-            echo '<td>';
-            echo $gamer['prize'];
-            echo '</td>';
-
-            echo '<td>';
-            echo '<select class="status-change form-select form-select-sm">
-                    <option selected="" disabled="">Select a status:</option>
-
-                    <option ';
-            if ($gamer['status'] == 'Waiting'){
-                echo 'selected="selected"';
-            }
-            echo 'name="Waiting" data-id="';
-            echo $gamer['id'];
-            echo '" value="waiting" selected="">'. text($front, $language, 'table_status_in_process') .'</option>
-                    <option ';
-            if ($gamer['status'] == 'Canceled'){
-                echo 'selected="selected"';
-            }
-            echo 'name="Canceled" data-id="';
-            echo $gamer['id'];
-            echo '" value="Canceled">'. text($front, $language, 'table_status_canceled') .'</option>
-                    <option ';
-            if ($gamer['status'] == 'Finished'){
-                echo 'selected="selected"';
-            }
-            echo 'name="Finished" data-id="';
-            echo $gamer['id'];
-            echo '" value="Finished">'. text($front, $language, 'table_status_finished') .'</option>
-                  </select>';
-            echo '</td>';
-
-            echo '<td>';
-                echo '<a class="Delete_user" data-id =' . $gamer['id'] . ' href="javascript:void(0)">'. text($front, $language, 'table_delete') .'</a>';
-            echo '</td>';
-            echo '</tr>';
-        }
-
-        echo '
-                        </tbody>
-                    </table>
-        ';
+//            foreach ($questions as $gamer) {
+//                echo '<tr>';
+//                echo '<td>';
+//                echo $gamer['id'];
+//                echo '</td>';
+//
+//                echo '<td>';
+//                echo $gamer['name'];
+//                echo '</td>';
+//
+//                echo '<td>';
+//                echo $gamer['level'];
+//                echo '</td>';
+//
+//                echo '<td>';
+//                echo $gamer['prize'];
+//                echo '</td>';
+//
+//                echo '<td>';
+//                echo '<select class="status-change form-select form-select-sm">
+//                        <option selected="" disabled="">Select a status:</option>
+//
+//                        <option ';
+//                if ($gamer['status'] == 'Waiting'){
+//                    echo 'selected="selected"';
+//                }
+//                echo 'name="Waiting" data-id="';
+//                echo $gamer['id'];
+//                echo '" value="waiting" selected="">'. text($front, $language, 'table_status_in_process') .'</option>
+//                        <option ';
+//                if ($gamer['status'] == 'Canceled'){
+//                    echo 'selected="selected"';
+//                }
+//                echo 'name="Canceled" data-id="';
+//                echo $gamer['id'];
+//                echo '" value="Canceled">'. text($front, $language, 'table_status_canceled') .'</option>
+//                        <option ';
+//                if ($gamer['status'] == 'Finished'){
+//                    echo 'selected="selected"';
+//                }
+//                echo 'name="Finished" data-id="';
+//                echo $gamer['id'];
+//                echo '" value="Finished">'. text($front, $language, 'table_status_finished') .'</option>
+//                      </select>';
+//                echo '</td>';
+//
+//                echo '<td>';
+//                    echo '<a class="Delete_user" data-id =' . $gamer['id'] . ' href="javascript:void(0)">'. text($front, $language, 'table_delete') .'</a>';
+//                echo '</td>';
+//                echo '</tr>';
+//            }
+//
+//        echo '
+//                        </tbody>
+//                    </table>
+//        ';
 
     }
     public function question_pagination($pagination)
@@ -284,92 +249,104 @@ class AdminController {
             $disabled2 = 'disabled';
         }
 
-        echo '<table class="table table-hover">
-                      
-                      <div class="d-flex align-items-center">
-                      
-                    
-                        <a href="javascript:void(0)" type="button" id="ClickToPage" data-id="'. $PreviousPage;
-        echo '"class="btn btn-outline-success m-1 ';
-        echo $disabled1;
-        echo '"';
+        $ajax = [
+            'questions' => $questions,
+            'disabled1' => $disabled1,
+            'disabled2' => $disabled2,
+            'PreviousPage' => $PreviousPage,
+            'NextPage' => $NextPage,
+            'AllQuestionsCount' => $AllQuestionsCount,
+            'pagination' => $pagination['pagination']
 
-        echo '><</a>
-                    <a href="javascript:void(0)" id="ClickToPage" data-id="'. $NextPage;
-        echo '" class="btn  btn-outline-success m-1 ';
-        echo $disabled2;
-        echo'">';
+        ];
+        echo json_encode($ajax);
 
-        echo '></a>';
-        echo '<a href="/hy/admin/questions/create" class="font-weight-bold btn  btn-outline-success m-1">+</a> </div>';
-        echo '
-<div class="d-flex">
-
-
-                    <p class="mt-3">'. text($front, $language, 'table_page').' '. $pagination['pagination'];
-
-        echo '</p>
-<p class="mt-3 m-3">'. text($front, $language, 'table_count').' ' . $AllQuestionsCount;
-        echo '
-                        <thead>
-                        <tr>
-                            <th>
-                                '. text($front, $language, 'table_num').'
-                            </th>
-                            <th>
-                                '. text($front, $language, 'table_question').'
-                            </th>
-                            <th>
-                                '. text($front, $language, 'table_right_ans').'
-                            </th>
-                            <th>
-                                '. text($front, $language, 'table_diff').'
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>';
-$rightans = 'right_answer_' . $language;
-
-        foreach ($questions as $qeustion) {
-            echo '<tr>';
-            echo '<td>';
-            echo $qeustion['id'];
-            echo '</td>';
-
-            echo '<td>';
-            echo $qeustion[$language];
-            echo '</td>';
-
-            echo '<td>';
-            echo $qeustion[$rightans];
-            echo '</td>';
-
-            echo '<td>';
-            if ($qeustion['difficulty'] == 'normal'){
-                echo text($front, $language, 'table_diff_n');
-            }elseif ($qeustion['difficulty'] == 'easy'){
-                echo text($front, $language, 'table_diff_e');
-            }elseif ($qeustion['difficulty'] == 'hard'){
-                echo text($front, $language, 'table_diff_h');
-            }
-            echo '</td>';
-
-            echo '<td>';
-            echo '<a href="/'.$language.'/admin/questions/edit/' . $qeustion['id'];
-            echo '">'. text($front, $language, 'table_edit').'</a>';
-            echo '</td>';
-            echo '</tr>';
-        }
-
-        echo '
-                        </tbody>
-                    </table>
-        ';
+//        echo '<table class="table table-hover">
+//
+//                      <div class="d-flex align-items-center">
+//
+//
+//                        <a href="javascript:void(0)" type="button" id="ClickToPage" data-id="'. $PreviousPage;
+//        echo '"class="btn btn-outline-success m-1 ';
+//        echo $disabled1;
+//        echo '"';
+//
+//        echo '><</a>
+//                    <a href="javascript:void(0)" id="ClickToPage" data-id="'. $NextPage;
+//        echo '" class="btn  btn-outline-success m-1 ';
+//        echo $disabled2;
+//        echo'">';
+//
+//        echo '></a>';
+//        echo '<a href="/hy/admin/questions/create" class="font-weight-bold btn  btn-outline-success m-1">+</a> </div>';
+//        echo '
+//<div class="d-flex">
+//
+//
+//                    <p class="mt-3">'. text($front, $language, 'table_page').' '. $pagination['pagination'];
+//
+//        echo '</p>
+//<p class="mt-3 m-3">'. text($front, $language, 'table_count').' ' . $AllQuestionsCount;
+//        echo '
+//                        <thead>
+//                        <tr>
+//                            <th>
+//                                '. text($front, $language, 'table_num').'
+//                            </th>
+//                            <th>
+//                                '. text($front, $language, 'table_question').'
+//                            </th>
+//                            <th>
+//                                '. text($front, $language, 'table_right_ans').'
+//                            </th>
+//                            <th>
+//                                '. text($front, $language, 'table_diff').'
+//                            </th>
+//                        </tr>
+//                        </thead>
+//                        <tbody>';
+//$rightans = 'right_answer_' . $language;
+//
+//        foreach ($questions as $qeustion) {
+//            echo '<tr>';
+//            echo '<td>';
+//            echo $qeustion['id'];
+//            echo '</td>';
+//
+//            echo '<td>';
+//            echo $qeustion[$language];
+//            echo '</td>';
+//
+//            echo '<td>';
+//            echo $qeustion[$rightans];
+//            echo '</td>';
+//
+//            echo '<td>';
+//            if ($qeustion['difficulty'] == 'normal'){
+//                echo text($front, $language, 'table_diff_n');
+//            }elseif ($qeustion['difficulty'] == 'easy'){
+//                echo text($front, $language, 'table_diff_e');
+//            }elseif ($qeustion['difficulty'] == 'hard'){
+//                echo text($front, $language, 'table_diff_h');
+//            }
+//            echo '</td>';
+//
+//            echo '<td>';
+//            echo '<a href="/'.$language.'/admin/questions/edit/' . $qeustion['id'];
+//            echo '">'. text($front, $language, 'table_edit').'</a>';
+//            echo '</td>';
+//            echo '</tr>';
+//        }
+//
+//        echo '
+//                        </tbody>
+//                    </table>
+//        ';
     }
     public function admins_pagination($pagination)
     {
         $this->CheckLogin();
-        if (is_numeric($pagination['pagination'])){
+        if (is_numeric($pagination['pagination'])) {
             $language = getLanguage();
             $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/users' ")->fetch_all(true);
             $AllQuestions = mysqli_query($this->admin->conn, "SELECT * FROM `questions`   ");
@@ -378,52 +355,52 @@ $rightans = 'right_answer_' . $language;
             $role = $ajax['role'];
 
 
-            if ($ajax['role'] == 'all'){
+            if ($ajax['role'] == 'all') {
                 $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users`");
-            }else{
+            } else {
 
                 $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role'");
 
             }
             $AllUsersCount = mysqli_num_rows($AllUsers);
-            $page = $pagination['pagination'] -1;
+            $page = $pagination['pagination'] - 1;
             $count = $page * 5;
-            if ($AllUsersCount /5 == 1){
+            if ($AllUsersCount / 5 == 1) {
 
                 $pages = 1;
-                if ($ajax['role'] == 'all'){
+                if ($ajax['role'] == 'all') {
                     $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` LIMIT $count, 5 ")->fetch_all(true);
-                }else{
+                } else {
 
                     $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role' LIMIT $count, 5 ")->fetch_all(true);
 
                 }
-            }elseif ($AllUsersCount%5 == 0){
-                $pages = $AllUsersCount/5;
+            } elseif ($AllUsersCount % 5 == 0) {
+                $pages = $AllUsersCount / 5;
 
-                if ($ajax['role'] == 'all'){
+                if ($ajax['role'] == 'all') {
                     $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users`LIMIT $count, 5 ")->fetch_all(true);
-                }else{
+                } else {
 
                     $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role' LIMIT $count, 5  ")->fetch_all(true);
 
                 }
-            }elseif ($AllUsersCount%5 <= 4){
-                $pages = floor($AllUsersCount/5) + 1;
+            } elseif ($AllUsersCount % 5 <= 4) {
+                $pages = floor($AllUsersCount / 5) + 1;
                 $a = $pagination['pagination'];
-                if ($pages == $pagination['pagination']){
-                    if ($ajax['role'] == 'all'){
+                if ($pages == $pagination['pagination']) {
+                    if ($ajax['role'] == 'all') {
                         $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` LIMIT $count, 5 ")->fetch_all(true);
-                    }else{
+                    } else {
 
                         $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role' LIMIT $count, 5")->fetch_all(true);
 
                     }
-                }else{
-                    if ($ajax['role'] == 'all'){
+                } else {
+                    if ($ajax['role'] == 'all') {
                         $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` LIMIT $count, 5 ")->fetch_all(true);
 
-                    }else{
+                    } else {
 
                         $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role' LIMIT $count, 5 ")->fetch_all(true);
 
@@ -433,100 +410,110 @@ $rightans = 'right_answer_' . $language;
 
             $PreviousPage = $pagination['pagination'] - 1;
             $NextPage = $pagination['pagination'] + 1;
-            if ($PreviousPage < 1){
+            if ($PreviousPage < 1) {
                 $disabled1 = 'disabled';
             }
-            if ($NextPage > $pages){
+            if ($NextPage > $pages) {
 
                 $disabled2 = 'disabled';
             }
+            $ajax = [
+                'users' => $AllUsers,
+                'disabled1' => $disabled1,
+                'disabled2' => $disabled2,
+                'PreviousPage' => $PreviousPage,
+                'NextPage' => $NextPage,
+                'AllUsersCount' => $AllUsersCount,
+                'pagination' => $pagination['pagination']
 
-            echo '
-                      <table class="table table-hover">
-                      
-                      <div class="d-flex align-items-center">
-                      
-                    
-                        <a href="javascript:void(0)" type="button" id="ClickToPage" data-id="'. $PreviousPage;
-            echo '"class="btn btn-outline-success m-1 ';
-            echo $disabled1;
-            echo '"';
-
-            echo '><</a>
-                    <a href="javascript:void(0)" id="ClickToPage" data-id="'. $NextPage;
-            echo '" class="btn  btn-outline-success m-1 ';
-            echo $disabled2;
-            echo'">';
-            echo '></a></div>
-<div class="d-flex">
-
-
-                    <p class="mt-3">'.text($front, $language, 'table_page' ).' ' . $pagination['pagination'];
-
-            echo '</p>
-<p class="mt-3 m-3">'.text($front, $language, 'table_count' ).' ' . $AllUsersCount;
-
-            echo '</p></div>
-                        <thead>
-                        <tr>
-                            <th>
-                                '.text($front, $language, 'table_num' ).'
-                            </th>
-                            <th>
-                                '.text($front, $language, 'table_login' ).'
-                            </th>
-                            <th>
-                                '.text($front, $language, 'table_name' ).'
-                            </th>
-                            <th>
-                                '.text($front, $language, 'table_balance' ).'
-                            </th>
-                            <th>
-                            '.text($front, $language, 'table_role' ).'
-</th>
-                            <th>
-                            '.text($front, $language, 'table_action' ).'
-</th>
-                        </tr>
-                        </thead>
-                        <tbody>';
-
-            foreach ($AllUsers as $gamer) {
-                echo '<tr>';
-                echo '<td>';
-                echo $gamer['id'];
-                echo '</td>';
-
-                echo '<td>';
-                echo $gamer['login'];
-                echo '</td>';
-
-                echo '<td>';
-                echo $gamer['name'];
-                echo '</td>';
-
-                echo '<td>';
-                echo $gamer['balance'];
-                echo '</td>';
-
-                echo '<td>';
-                echo $gamer['Role'];
-                echo '</td>';
-
-                echo '<td>';
-                echo '<a href="/'.$language.'/admin/user/edit/' . $gamer['id'];
-                echo '">Edit</a>';
-                echo '</td>';
-                echo '</tr>';
-            }
-            echo '
-                        </tbody>
-                    </table>
-        ';
-        }else{
-            header('location: /');
+            ];
+            echo json_encode($ajax);
+//            echo '
+//                      <table class="table table-hover">
+//
+//                      <div class="d-flex align-items-center">
+//
+//
+//                        <a href="javascript:void(0)" type="button" id="ClickToPage" data-id="'. $PreviousPage;
+//            echo '"class="btn btn-outline-success m-1 ';
+//            echo $disabled1;
+//            echo '"';
+//
+//            echo '><</a>
+//                    <a href="javascript:void(0)" id="ClickToPage" data-id="'. $NextPage;
+//            echo '" class="btn  btn-outline-success m-1 ';
+//            echo $disabled2;
+//            echo'">';
+//            echo '></a></div>
+//<div class="d-flex">
+//
+//
+//                    <p class="mt-3">'.text($front, $language, 'table_page' ).' ' . $pagination['pagination'];
+//
+//            echo '</p>
+//<p class="mt-3 m-3">'.text($front, $language, 'table_count' ).' ' . $AllUsersCount;
+//
+//            echo '</p></div>
+//                        <thead>
+//                        <tr>
+//                            <th>
+//                                '.text($front, $language, 'table_num' ).'
+//                            </th>
+//                            <th>
+//                                '.text($front, $language, 'table_login' ).'
+//                            </th>
+//                            <th>
+//                                '.text($front, $language, 'table_name' ).'
+//                            </th>
+//                            <th>
+//                                '.text($front, $language, 'table_balance' ).'
+//                            </th>
+//                            <th>
+//                            '.text($front, $language, 'table_role' ).'
+//</th>
+//                            <th>
+//                            '.text($front, $language, 'table_action' ).'
+//</th>
+//                        </tr>
+//                        </thead>
+//                        <tbody>';
+//
+//            foreach ($AllUsers as $gamer) {
+//                echo '<tr>';
+//                echo '<td>';
+//                echo $gamer['id'];
+//                echo '</td>';
+//
+//                echo '<td>';
+//                echo $gamer['login'];
+//                echo '</td>';
+//
+//                echo '<td>';
+//                echo $gamer['name'];
+//                echo '</td>';
+//
+//                echo '<td>';
+//                echo $gamer['balance'];
+//                echo '</td>';
+//
+//                echo '<td>';
+//                echo $gamer['Role'];
+//                echo '</td>';
+//
+//                echo '<td>';
+//                echo '<a href="/'.$language.'/admin/user/edit/' . $gamer['id'];
+//                echo '">Edit</a>';
+//                echo '</td>';
+//                echo '</tr>';
+//            }
+//            echo '
+//                        </tbody>
+//                    </table>
+//        ';
+//        }else{
+//            header('location: /');
+//        }
         }
-
     }
     public function create_question()
     {
@@ -894,7 +881,6 @@ VALUES (
                 if ($question) {
                     mysqli_query($this->admin->conn, "Update `gamers` SET `status` = '$Val' WHERE `id` = $id");
                 }
-                header("location: /admin/home");
             } else {
                 header('location: /');
             }

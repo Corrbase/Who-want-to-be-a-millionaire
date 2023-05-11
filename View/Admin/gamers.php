@@ -39,14 +39,64 @@
         <div class="card mt-5">
             <div class="card-header">
                 <?php
-                echo text($front, $language, 'all_games_table');
-
-                ?>
+                        echo text($front, $language, 'title');
+                        ?>
             </div>
-            <div>
-            </div>
-            <div class="card-body table-body">
 
+            <div class="card-body ">
+
+
+
+                <div class="d-flex align-items-center">
+
+
+                    <a href="javascript:void(0)" type="button" id="ClickToPage" data-id="" class="btn PreviousPage btn-outline-success m-1 ">&lt;</a>
+                    <a href="javascript:void(0)" id="ClickToPage" data-id="" class="btn NextPage btn-outline-success m-1 ">&gt;</a>
+                </div><div class="d-flex">
+
+
+                    <p class="mt-3"><?php
+                        echo text($front, $language, 'table_page');
+                        ?> <span class="page">0</span></p>
+                    <p class="mt-3 m-3"><?php
+                        echo text($front, $language, 'table_count');
+                        ?> <span class="all_count">0</span></p>
+                </div>
+                <table class="table table-hover">
+
+
+                    <thead>
+                    <tr>
+                        <th>
+                            #id
+                        </th>
+                        <th>
+                            <?php
+                            echo text($front, $language, 'table_login');
+                            ?>
+                        </th>
+                        <th>
+                            <?php
+                            echo text($front, $language, 'table_lvl');
+                            ?>
+                        </th>
+                        <th>
+                            <?php
+                            echo text($front, $language, 'table_prize');
+                            ?>
+                        </th>
+                        <th>
+                            <?php
+                            echo text($front, $language, 'table_status');
+                            ?>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-body">
+
+                    </tbody>
+
+                </table>
             </div>
         </div>
     </div>
@@ -64,13 +114,67 @@
             },
             beforeSend:
                 function() {
-                    $('.table-body').html('<div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
                 },
             success: function (response) {
-
-
+                let request_data = JSON.parse(response)
                 if (response) {
-                    $('.table-body').html(response);
+                    change_default()
+                    console.log(request_data)
+                    let data = request_data['games']
+                    let select1 = request_data['disabled1']
+                    let select2 = request_data['disabled2'];
+                    let Prev = request_data['PreviousPage'];
+                    let Next = request_data['NextPage'];
+                    let page = request_data['pagination'];
+                    let Allcount = request_data['AllUsersCount'];
+
+                    arr = {
+                        'select1': select1,
+                        'select2': select2,
+                        'Prev': Prev,
+                        'Next': Next,
+                        'page': page,
+                        'Allcount': Allcount,
+                    }
+
+
+                    let html = ''
+
+                    data.forEach(function(gamer) {
+                        html += '<tr>'
+                        html += '<td>' + gamer['id'] + '</td>'
+                        html += '<td>' + gamer['name'] + '</td>'
+                        html += '<td>' + gamer['level'] + '</td>'
+                        html += '<td>' + gamer['prize'] + '</td>'
+                        html += '<td>'
+
+
+
+                        html += ' <select class="status-change form-select form-select-sm"> <option selected="" disabled="">Select a status:</option>'
+                        html += '<option name="Waiting" data-id="' + gamer['id'] + '" value="waiting" selected=""'
+                        if (gamer['status'] = 'waiting' ){
+                            html += 'selected'
+                        }
+                        html += '>In process</option> <option name="Canceled" data-id="' + gamer['id'] + '" value="Canceled" '
+                        if (gamer['status'] = 'Canceled' ){
+                            html += 'selected'
+                        }
+                        html += '>Canceled</option> <option name="Finished" data-id="' + gamer['id'] + '" value="Finished"'
+                        if (gamer['status'] = 'Finished' ){
+                            html += 'selected'
+                        }
+                        html += '>Finished</option> </select>'
+                        html += '</td>'
+
+                        html += '<td>'
+                        html += '<a class="Delete_user" data-id ="' + gamer['id'] + '" href="javascript:void(0)">' + '<?php echo text($front, $language, 'table_delete'); ?>' + '</a>'
+                        html += '</td>'
+
+                        html += '</tr>'
+                    });
+                    change(arr, html)
+                    $('.table-body').html(html);
+
                 }
 
             },
@@ -91,6 +195,7 @@
                 },
             success: function (response) {
                 $('.loading-refresh').removeClass('loading-form');
+
             },
             error: function (error) {
 
@@ -120,20 +225,70 @@
                         function() {
                             },
                     success: function (response) {
-
-                        if (response) {
-                            $('.table-body').html(response);
-                        }
                         $('.loading-refresh').removeClass('loading-form');
-                    },
-                    error: function (error) {
+                        let request_data = JSON.parse(response)
+                        if (response) {
+                            change_default()
+                            console.log(request_data)
+                            let data = request_data['games']
+                            let select1 = request_data['disabled1']
+                            let select2 = request_data['disabled2'];
+                            let Prev = request_data['PreviousPage'];
+                            let Next = request_data['NextPage'];
+                            let page = request_data['pagination'];
+                            let Allcount = request_data['AllUsersCount'];
 
-                    }
+                            arr = {
+                                'select1': select1,
+                                'select2': select2,
+                                'Prev': Prev,
+                                'Next': Next,
+                                'page': page,
+                                'Allcount': Allcount,
+                            }
+
+
+                            let html = ''
+
+                            data.forEach(function(gamer) {
+                                html += '<tr>'
+                                html += '<td>' + gamer['id'] + '</td>'
+                                html += '<td>' + gamer['name'] + '</td>'
+                                html += '<td>' + gamer['level'] + '</td>'
+                                html += '<td>' + gamer['prize'] + '</td>'
+                                html += '<td>'
+
+
+
+                                html += ' <select class="status-change form-select form-select-sm"> <option selected="" disabled="">Select a status:</option>'
+                                html += '<option name="Waiting" data-id="' + gamer['id'] + '" value="waiting" selected=""'
+                                if (gamer['status'] = 'waiting' ){
+                                    html += 'selected'
+                                }
+                                html += '>In process</option> <option name="Canceled" data-id="' + gamer['id'] + '" value="Canceled" '
+                                if (gamer['status'] = 'Canceled' ){
+                                    html += 'selected'
+                                }
+                                html += '>Canceled</option> <option name="Finished" data-id="' + gamer['id'] + '" value="Finished"'
+                                if (gamer['status'] = 'Finished' ){
+                                    html += 'selected'
+                                }
+                                html += '>Finished</option> </select>'
+                                html += '</td>'
+
+                                html += '<td>'
+                                html += '<a class="Delete_user" data-id ="' + gamer['id'] + '" href="javascript:void(0)">' + '<?php echo text($front, $language, 'table_delete'); ?>' + '</a>'
+                                html += '</td>'
+
+                                html += '</tr>'
+                            });
+                            change(arr, html)
+                            $('.table-body').html(html);
+
+                        }
+                    },
                 });
             },
-            error: function (error) {
-
-            }
         });
 
     });
@@ -148,9 +303,66 @@
                     $('.table-body').html('<div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
                 },
             success: function (response) {
-
+                let request_data = JSON.parse(response)
                 if (response) {
-                    $('.table-body').html(response);
+                    change_default()
+                    console.log(request_data)
+                    let data = request_data['games']
+                    let select1 = request_data['disabled1']
+                    let select2 = request_data['disabled2'];
+                    let Prev = request_data['PreviousPage'];
+                    let Next = request_data['NextPage'];
+                    let page = request_data['pagination'];
+                    let Allcount = request_data['AllUsersCount'];
+
+                    arr = {
+                        'select1': select1,
+                        'select2': select2,
+                        'Prev': Prev,
+                        'Next': Next,
+                        'page': page,
+                        'Allcount': Allcount,
+                    }
+
+
+                    let html = ''
+
+                    data.forEach(function(gamer) {
+                        html += '<tr>'
+                        html += '<td>' + gamer['id'] + '</td>'
+                        html += '<td>' + gamer['name'] + '</td>'
+                        html += '<td>' + gamer['level'] + '</td>'
+                        html += '<td>' + gamer['prize'] + '</td>'
+                        html += '<td>'
+
+
+
+                        html += ' <select class="status-change form-select form-select-sm"> <option selected="" disabled="">Select a status:</option>'
+                        html += '<option name="Waiting" data-id="' + gamer['id'] + '" value="waiting" selected=""'
+
+                        if (gamer['status'] == 'waiting' ){
+                            html += 'selected'
+                        }
+                        html += '><?php echo text($front, $language, 'table_status_in_process'); ?></option> <option name="Canceled" data-id="' + gamer['id'] + '" value="Canceled" '
+                        if (gamer['status'] == 'Canceled' ){
+                            html += 'selected'
+                        }
+                        html += '><?php echo text($front, $language, 'table_status_canceled'); ?></option> <option name="Finished" data-id="' + gamer['id'] + '" value="Finished"'
+                        if (gamer['status'] == 'Finished' ){
+                            html += 'selected'
+                        }
+                        html += '><?php echo text($front, $language, 'table_status_finished'); ?></option> </select>'
+                        html += '</td>'
+
+                        html += '<td>'
+                        html += '<a class="Delete_user" data-id ="' + gamer['id'] + '" href="javascript:void(0)">' + '<?php echo text($front, $language, 'table_delete'); ?>' + '</a>'
+                        html += '</td>'
+
+                        html += '</tr>'
+                    });
+                    change(arr, html)
+                    $('.table-body').html(html);
+
                 }
             },
         });

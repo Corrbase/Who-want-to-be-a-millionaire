@@ -202,6 +202,11 @@ function view($name,$includes = null ,$view_array = null, $folder = null){
 
 }
 
+function render($data, $name){
+
+        include "View/Render/$name.php";
+}
+
 function text($array, $language, $name){
     foreach ($array as $item => $val){
         if ($val['name'] == $name){

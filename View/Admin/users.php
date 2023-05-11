@@ -1,4 +1,4 @@
-d
+
 <main>
     <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
         <div class="container-xl px-4">
@@ -33,7 +33,7 @@ d
             </div>
             <div>
             </div>
-            <div class="card-body table-body">
+            <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <select name="active" class="m-1 w-25  form-select 2 select-role" aria-label="Default select example">
                         <option selected="" disabled="">Select a role:</option>
@@ -45,7 +45,49 @@ d
                     <a href="<?php echo '/' . $language ; ?>/admin/users/add" class="font-weight-bold btn  btn-outline-success m-1">+</a>
                 </div>
                 <div class="users">
+                    <div class="d-flex align-items-center">
 
+
+                        <a href="javascript:void(0)" type="button" id="ClickToPage" data-id="" class="btn PreviousPage btn-outline-success m-1 ">&lt;</a>
+                        <a href="javascript:void(0)" id="ClickToPage" data-id="" class="btn NextPage btn-outline-success m-1 ">&gt;</a>
+                    </div>
+                    <div class="d-flex">
+
+
+                        <p class="mt-3"><?php
+                            echo text($front, $language, 'table_page');
+                            ?> <span class="page">0</span></p>
+                        <p class="mt-3 m-3"><?php
+                            echo text($front, $language, 'table_count');
+                            ?> <span class="all_count">0</span></p>
+                    </div>
+                    <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            <?php echo text($front, $language, 'table_num' ); ?>
+                        </th>
+                        <th>
+                            <?php echo text($front, $language, 'table_login' ); ?>
+                        </th>
+                        <th>
+                            <?php echo text($front, $language, 'table_name' ); ?>
+                        </th>
+                        <th>
+                            <?php echo text($front, $language, 'table_balance' ); ?>
+                        </th>
+                        <th>
+                            <?php echo text($front, $language, 'table_role' ); ?>
+                        </th>
+                        <th>
+                            <?php echo text($front, $language, 'table_action' ); ?>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="table-body">
+
+                </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -57,7 +99,7 @@ d
 <script>
     $(document).on('change', '.select-role', function (e){
         var b = $(this).find(':selected').attr('data-id');
-        console.log(b)
+
         $.ajax({
             url: "/<?php echo $language; ?>/admin/users/1",
             type: "GET",
@@ -66,13 +108,45 @@ d
             },
             beforeSend:
                 function() {
-                    $('.users').html('<div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
                 },
             success: function (response) {
 
 
                 if (response) {
-                    $('.users').html(response);
+                    let request_data = JSON.parse(response)
+                    if (response) {
+                        change_default()
+                        let data = request_data['users']
+                        let select1 = request_data['disabled1']
+                        let select2 = request_data['disabled2'];
+                        let Prev = request_data['PreviousPage'];
+                        let Next = request_data['NextPage'];
+                        let page = request_data['pagination'];
+                        let Allcount = request_data['AllUsersCount'];
+
+                        arr = {
+                            'select1': select1,
+                            'select2': select2,
+                            'Prev': Prev,
+                            'Next': Next,
+                            'page': page,
+                            'Allcount': Allcount,
+                        }
+                        let html = ''
+                        data.forEach(function(gamer) {
+                            html += '<tr>'
+                            html += '<td>' + gamer.id + '</td>'
+                            html += '<td>' + gamer.login + '</td>'
+                            html += '<td>' + gamer.name + '</td>'
+                            html += '<td>' + gamer.balance + '</td>'
+                            html += '<td>' + gamer.Role + '</td>'
+                            html += '<td><a href="/<?php echo $language?>/admin/user/edit/' + gamer.id + '">Edit</a></td>'
+                            html += '</tr>'
+                        });
+
+                        change(arr, html)
+                        $('.table-body').html(html);
+                    }
                 }
 
             },
@@ -89,21 +163,52 @@ d
             },
             beforeSend:
                 function() {
-                    $('.users').html('<div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
+                    // $('.users').html('<div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
                 },
             success: function (response) {
 
 
                 if (response) {
-                    $('.users').html(response);
+                    let request_data = JSON.parse(response)
+                    if (response) {
+                        change_default()
+                        let data = request_data['users']
+                        let select1 = request_data['disabled1']
+                        let select2 = request_data['disabled2'];
+                        let Prev = request_data['PreviousPage'];
+                        let Next = request_data['NextPage'];
+                        let page = request_data['pagination'];
+                        let Allcount = request_data['AllUsersCount'];
+
+                        arr = {
+                            'select1': select1,
+                            'select2': select2,
+                            'Prev': Prev,
+                            'Next': Next,
+                            'page': page,
+                            'Allcount': Allcount,
+                        }
+                        let html = ''
+                        data.forEach(function(gamer) {
+                            html += '<tr>'
+                            html += '<td>' + gamer.id + '</td>'
+                            html += '<td>' + gamer.login + '</td>'
+                            html += '<td>' + gamer.name + '</td>'
+                            html += '<td>' + gamer.balance + '</td>'
+                            html += '<td>' + gamer.Role + '</td>'
+                            html += '<td><a href="/<?php echo $language?>/admin/user/edit/' + gamer.id + '">Edit</a></td>'
+                            html += '</tr>'
+                        });
+
+                        change(arr, html)
+                        $('.table-body').html(html);
+                    }
                 }
 
             },
         });
     })
     $.ajax({
-
-
         url: "/<?php echo $language; ?>/admin/users/1",
         type: "GET",
         data: {
@@ -111,14 +216,43 @@ d
         },
         beforeSend:
             function() {
-                $('.users').html('<div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
+                // $('.users').html('<div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
             },
         success: function (response) {
+            let request_data = JSON.parse(response)
             if (response) {
-                $('.users').html(response);
+                change_default()
+                let data = request_data['users']
+                let select1 = request_data['disabled1']
+                let select2 = request_data['disabled2'];
+                let Prev = request_data['PreviousPage'];
+                let Next = request_data['NextPage'];
+                let page = request_data['pagination'];
+                let Allcount = request_data['AllUsersCount'];
+
+                arr = {
+                    'select1': select1,
+                    'select2': select2,
+                    'Prev': Prev,
+                    'Next': Next,
+                    'page': page,
+                    'Allcount': Allcount,
+                }
+                let html = ''
+                data.forEach(function(gamer) {
+                    html += '<tr>'
+                    html += '<td>' + gamer.id + '</td>'
+                    html += '<td>' + gamer.login + '</td>'
+                    html += '<td>' + gamer.name + '</td>'
+                    html += '<td>' + gamer.balance + '</td>'
+                    html += '<td>' + gamer.Role + '</td>'
+                    html += '<td><a href="/<?php echo $language?>/admin/user/edit/' + gamer.id + '">Edit</a></td>'
+                    html += '</tr>'
+                });
+
+                change(arr, html)
+                $('.table-body').html(html);
             }
-        },
-        error: function (error) {
         }
     });
 

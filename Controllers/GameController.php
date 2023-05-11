@@ -19,6 +19,7 @@ class GameController{
 
     public function play()
     {
+        $this->checkLogin(getLanguage());
         $language = getLanguage();
         $this->checkplay($language);
 
@@ -105,6 +106,8 @@ class GameController{
     }
 
     public function play_game(){
+
+        $this->checkLogin(getLanguage());
         if (!isset($_SESSION['play'])){
 
             header('Location: /');
@@ -212,8 +215,8 @@ class GameController{
                     echo 'your prize is 1000000';
                     $player = $_SESSION['play_run']['player'];
                     mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', 30, 100000 , 'waiting', 0)");
-                                    unset($_SESSION['play']);
-                unset($_SESSION['play_run']);
+                    unset($_SESSION['play']);
+                    unset($_SESSION['play_run']);
                 }else{
 
                     $NowLevel = array_search(false, $_SESSION['play_run']['level']);
@@ -244,10 +247,15 @@ class GameController{
                         $ajax['next_fond'] = $NextPrize;
                     }
 
-                    $this->game->question_name($question[$language]);
-                    $this->game->random_answers($wrongs, $question['right_answer_' . $language]);
-                    $this->game->bonuses();
-                    $this->game->fond($ajax);
+                    $question_data = [
+                        'wrongs' => $wrongs, 'question' => $question['right_answer_' . $language]
+                    ];
+                    $data = [
+                        'question_name' => $question[$language],
+                        'question_data' => $question_data,
+                        'fond' => $ajax
+                    ];
+                    render($data, 'Questions');
                 }
 
 
@@ -311,6 +319,15 @@ class GameController{
         if (isset($_SESSION['play'])){
 
             header('location: /'. $language .'/play');
+        }
+    }
+
+    public function checkLogin($lang){
+        if (isset($_SESSION['admin_profile']['profile']) == 1) {
+            header("location: /$lang/login");
+        }
+        if (!isset($_SESSION['user_profile']['profile']) == 1) {
+            header("location: /$lang/login");
         }
     }
 

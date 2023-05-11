@@ -99,35 +99,36 @@ $this->check();
 
     public function games_pagination($pagination)
     {
+
         $this->check();
+
         $language = getLanguage();
         $front = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = 'profile' ")->fetch_all(true);
 
-        $login = $_SESSION['user_profile']['name'];
-        $AllGames = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC ");
-        $AllGames = mysqli_num_rows($AllGames);
-        if ($AllGames <= 0){
-            echo text($front, $language, 'no_game');
+        $login = $_SESSION['user_profile']['login'];
+        $AllGames = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE `name` = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC ");
+        if (is_bool($AllGames)){
+            echo json_encode(false);
         }else {
 
 
-            $AllUsers = mysqli_query($this->user->conn, "SELECT * FROM `gamers`  WHERE name = '$login' ");
+            $AllGames = mysqli_query($this->user->conn, "SELECT * FROM `gamers`  WHERE name = '$login' ");
 
-            $AllUsersCount = mysqli_num_rows($AllUsers);
+            $AllGamesCount = mysqli_num_rows($AllGames);
             $page = $pagination['pagination'] - 1;
             $count = $page * 10;
-            if ($AllUsersCount / 10 < 1) {
+            if ($AllGamesCount / 10 < 1) {
 
                 $pages = 1;
                 $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10  ")->fetch_all(true);
 
-            } elseif ($AllUsersCount %10 == 0) {
-                $pages = $AllUsersCount / 10;
+            } elseif ($AllGamesCount % 10 == 0) {
+                $pages = $AllGamesCount / 10;
 
                 $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10 ")->fetch_all(true);
 
-            } elseif ($AllUsersCount % 10 <= 9) {
-                $pages = floor($AllUsersCount / 10) + 1;
+            } elseif ($AllGamesCount % 10 <= 9) {
+                $pages = floor($AllGamesCount / 10) + 1;
                 $a = $pagination['pagination'];
                 if ($pages == $pagination['pagination']) {
                     $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10 ")->fetch_all(true);
@@ -139,7 +140,9 @@ $this->check();
             }
 
             $PreviousPage = $pagination['pagination'] - 1;
+
             $NextPage = $pagination['pagination'] + 1;
+
             if ($PreviousPage < 1) {
                 $disabled1 = 'disabled';
             }
@@ -147,89 +150,20 @@ $this->check();
 
                 $disabled2 = 'disabled';
             }
+            $ajax = [
+                'question' => $questions,
+                'disabled1' => $disabled1,
+                'disabled2' => $disabled2,
+                'PreviousPage' => $PreviousPage,
+                'NextPage' => $NextPage,
+                'AllUsersCount' => $AllGamesCount,
+                'pagination' => $pagination['pagination']
 
-        echo '
-                      <table class="table table-hover">
-                      
-                      <div class="d-flex align-items-center">
-                      
-                    
-                        <a href="javascript:void(0)" type="button" id="ClickToPage" data-id="'. $PreviousPage;
-        echo '"class="btn btn-outline-success m-1 ';
-        echo $disabled1;
-        echo '"';
-        echo '><</a>
-                    <a href="javascript:void(0)" id="ClickToPage" data-id="'. $NextPage;
-        echo '" class="btn  btn-outline-success m-1 ';
-        echo $disabled2;
-        echo'">';
-        echo '></a></div>
-<div class="d-flex">
+            ];
+            echo json_encode($ajax);
 
-
-                    <p class="mt-3">'.text($front, $language, 'table_page').': ' . $pagination['pagination'];
-
-        echo '</p>
-<p class="mt-3 m-3">'.text($front, $language, 'table_all_games').': ' . $AllUsersCount;
-        echo '</p>
-                        <thead>
-                        <tr>
-                            <th>
-                                '.text($front, $language, 'table_id').'
-                            </th>
-                            <th>
-                                '.text($front, $language, 'table_name').'
-                            </th>
-                            <th>
-                               '.text($front, $language, 'table_question').'
-                            </th>
-                            <th>
-                                '.text($front, $language, 'table_prize').'
-                            </th>
-                            <th>
-                                '.text($front, $language, 'table_status').'
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>';
-        foreach ($questions as $gamer) {
-            echo '<tr>';
-            echo '<td>';
-            echo $gamer['id'];
-            echo '</td>';
-
-            echo '<td>';
-            echo $gamer['name'];
-            echo '</td>';
-
-            echo '<td>';
-            echo $gamer['level'];
-            echo '</td>';
-
-            echo '<td>';
-            echo $gamer['prize'];
-            echo '</td>';
-
-            echo '<td>';
-
-            if ($gamer['getted'] == true){echo 'getted';}
-            else if ($gamer['status'] == 'Finished'){
-
-                echo "<button class='btn btn-outline-primary get-money' data-id='". $gamer['id'] ."'>".text($front, $language, 'table_prize_button')." </button>";
-            }else if ($gamer['status'] == 'Canceled'){
-                echo text($front, $language, 'game_status_canceled');
-            }else if ($gamer['status'] == 'waiting') {
-                echo text($front, $language, 'game_status_waiting');
-            }
-            echo '</td>';
-            echo '</tr>';
 
         }
-
-        echo '
-                        </tbody>
-                    </table>
-        ';}
     }
 
     public function get_money($id){
