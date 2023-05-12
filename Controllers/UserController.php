@@ -9,8 +9,9 @@ class UserController{
     }
 
     public function profile(){
-        $this->check();
         $language = getLanguage();
+
+        $this->loginAdmin($language );
 
         $url = substr($_GET['url'], 3);
         $front = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
@@ -26,18 +27,19 @@ class UserController{
 
     public function logout_user()
     {
-$this->check();
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
 
-            unset($_SESSION['user_profile']);
+            $_SESSION = [];
 
-        }}
+        }
+    }
     public function login_user(){
-        $this->checkl();
+        $this->loginAll();
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
-            header('location: /admin/home');
+            header('location: en/admin/home');
         }elseif (isset($_SESSION['user_profile']['profile']) == 1){
-            header('location: /admin/home');
+            header('location: en/admin/home');
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -100,9 +102,9 @@ $this->check();
     public function games_pagination($pagination)
     {
 
-        $this->check();
-
         $language = getLanguage();
+        $this->loginAdmin($language);
+
         $front = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = 'profile' ")->fetch_all(true);
 
         $login = $_SESSION['user_profile']['login'];
@@ -192,21 +194,32 @@ $this->check();
 
     }
 
-    public function check(){
-        if (isset($_SESSION['admin_profile']['profile']) == 1) {
-            header('location: /');
-        }
-        if (!isset($_SESSION['user_profile']['profile']) == 1) {
-            header('location: /');
+
+    private function loginAdmin($lang = null){
+        if ($lang !== null){
+            if (isset($_SESSION['admin_profile']['profile']) == 1) {
+                header("location: /$lang/home");
+            }elseif (!isset($_SESSION['user_profile']['profile']) == 1) {
+                header("location: /$lang/home");
+            }
+        }else if (isset($_SESSION['admin_profile']['profile']) == 1) {
+            header("location: /en/home");
+        }elseif (!isset($_SESSION['user_profile']['profile']) == 1) {
+            header("location: /en/home");
         }
     }
-
-    public function checkl(){
-        if (isset($_SESSION['admin_profile']['profile']) == 1) {
-            header('location: /');
+    private function loginUser(){
+        if (!isset($_SESSION['admin_profile']['profile']) == 1) {
+            dd(1);
+        }elseif (isset($_SESSION['user_profile']['profile']) == 1) {
+            dd(2);
         }
-        if (isset($_SESSION['user_profile']['profile']) == 1) {
-            header('location: /');
+    }
+    private function loginAll(){
+        if (isset($_SESSION['admin_profile']['profile']) == 1) {
+            header("location: /en/home");
+        }elseif (isset($_SESSION['user_profile']['profile']) == 1) {
+            header("location: /en/home");
         }
     }
 

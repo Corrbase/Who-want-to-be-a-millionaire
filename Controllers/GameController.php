@@ -5,14 +5,6 @@ class GameController{
 
     public function __construct($settings)
     {
-        if (isset($_SESSION['admin_profile']['profile']) == 1) {
-
-        }
-        elseif (isset($_SESSION['user_profile']['profile']) == 1) {
-
-        }else{
-            header('location: /login');
-        }
         $this->game = model('Game', $settings);
     }
 
@@ -99,7 +91,7 @@ class GameController{
                 header('location: /'. $language .'/play');
             }
         }else{
-            header('Location: /home');
+            header("Location: $language/home");
         }
 
 

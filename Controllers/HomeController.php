@@ -45,11 +45,13 @@ class HomeController{
     // requests
 
     public function register_request(){
-        $this->checklogin();
+        if($this->CheckLogin())
+            return;
+        $lang = getLanguage();
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
-            header('location: /admin/home');
+            header("location: /$lang/admin/home");
         }elseif (isset($_SESSION['user_profile']['profile']) == 1){
-            header('location: /profile');
+            header("location: /$lang/profile");
         }
         if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 
@@ -151,12 +153,23 @@ class HomeController{
 
 
     public function checklogin()
+
     {
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
             header('location: /');
         }
         if (isset($_SESSION['user_profile']['profile']) == 1) {
             header('location: /');
+        }
+        if (isset($_SESSION['admin_profile']['profile']) == 1) {
+            return false;
+        }else{
+            if ($lang == null){
+                header("location: /en/home");
+            }else{
+                header("location: /$lang/home");
+            }
+            return true;
         }
     }
 

@@ -1,73 +1,74 @@
+# Who Wants to Be a Millionaire?
 
-## This is the `who what to be a millionaire game` laravel template
+This is a simple implementation of the classic TV game show "Who Wants to Be a Millionaire?" using PHP, MySQL, HTML, CSS, and JavaScript.
+
+- Randomly generated questions from a database of thousands of possible questions
+- Three lifelines: "50/50", "Phone a Friend", and "Ask the Audience"
+- 15 levels of increasing difficulty, with corresponding cash prizes
+- High score tracking for each player
+- Admin panel for managing users, questions, and game settings
 
 
+## Requirements
 
-### Prerequisites:
+To run this project, you'll need the following software installed on your computer:
 
-- PHP >= 8.1
-- MySQL >= 10
+> Apache web server <br>
+> PHP 8 or later <br>
+> MySQL 10 or later <br>
+> A web browser <br>
 
-### Installation
+## Installation
 
-- Clone the repository and install the dependencies:
-```bash
-git clone https://github.com/Corrbase/Who-want-to-be-a-millionaire mvc
-cd mvc
+1. Clone this repository to your local machine:
+```sh
+git clone https://github.com/Corrbase/Who-want-to-be-a-millionaire.git
 ```
-### Download OSpanel or xampp
-- download openserver or xampp
-- create domain and select mvc folder
+2. Create a new MySQL database for the project.
 
-### Export the database
-1. Log into phpMyAdmin
-2. Create new database 'mvc'
-3. Click on the Export tab in the top center panel
-4. select [sql file](database.sql)
+3. Import the database schema from the `database.sql` file in the project's root directory.
 
-### Settings
-1. go to [settings](settings.php)
-2. set your database
-   > hostname </br>
-   > username </br>
-   > password </br>
-   > database </br>
-3. homepage by default is '/en/home' 
+4. Edit the `settings.php` file to include your database connection details.
 
-### Admin
+5. Upload the project files to your web server.
 
-1. Go to login page
-   > login - admin </br>
-   > pass - admin </br>
-2. In admin panel you can
-   > See questions </br>
-   > Create question </br>
-   > Edit question's active, difficulty, question </br>
-   > See games </br>
-   > Edit game status or delete it </br>
-   > See users </br>
-   > Add new user </br>
-   > Edit user Role </br>
-   > See game documentation </br>
-3. You can play game as admin
+6. Access the project in your web browser.
 
-### User
+## Usage
 
-1. Go to registration page and register
-2. You can change site language
-3. start the game
-4. end and go to profile
-5. In profile You can get your prize to your balance
-6. You can play infinity times
+Once you have the project up and running, you can use it to play a virtual version of "Who Wants to Be a Millionaire?".
 
-### Game Documentation
+To play the game:
 
-> he game consists of 15 parts, for each correct answer you will receive a sum, if you answer incorrectly, you will lose all your winnings and have to start the game again, you can also stop the game and take the money.
+1. Navigate to the project in your web browser.
+
+2. Click the "Play Now" button on the home page.
+
+3. Answer the questions to the best of your ability.
+
+4. Earn as much money as possible before answering a question incorrectly.
+
+5. Enjoy the thrill of the game!
 
 
+## Admin Panel
+The admin panel provides a user interface for managing users, questions, and game settings. Only authorized administrators have access to the admin panel.
+
+Features:
+- User management: view, edit, and delete user accounts
+- Question management: add, edit, and delete questions from the database
+- Game settings: adjust the lifeline usage and cash prize amounts for each level of difficulty
+- Access control: only authorized administrators can access the admin panel
+
+Login and pass:
+
+> login: admin <br>
+> pass: admin
 
 
-#### author
+## Contributing
 
-- [Corrbase](https://github.com/Corrbase)
+If you find any bugs or issues with the project, feel free to submit an issue on GitHub or fork the project and submit a pull request.
 
+## Author
+Corrbase

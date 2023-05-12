@@ -11,7 +11,8 @@ class AdminController {
 
     public function index(){
 
-        $this->CheckLogin();
+        $language = getLanguage();
+        $this->CheckLogin($language);
 
         $UpToFive = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` WHERE `level` >= 5");
         $AllGames = mysqli_query($this->admin->conn, "SELECT * FROM `gamers`");
@@ -19,7 +20,6 @@ class AdminController {
         $AllGames = mysqli_num_rows($AllGames);
 
 
-        $language = getLanguage();
 
         $url = substr($_GET['url'], 3);
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
@@ -39,13 +39,10 @@ class AdminController {
         ], "Admin");
     }
 
-
-
-
     public function questions()
     {
-        $this->CheckLogin();
         $language = getLanguage();
+        $this->CheckLogin($language);
 
         $url = substr($_GET['url'], 3);
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
@@ -60,8 +57,8 @@ class AdminController {
     }
 
     public function add_user(){
-        $this->CheckLogin();
         $language = getLanguage();
+        $this->CheckLogin($language);
 
         $url = substr($_GET['url'], 3);
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
@@ -75,8 +72,8 @@ class AdminController {
         ], "Admin");
     }
     public function users(){
-        $this->CheckLogin();
         $language = getLanguage();
+        $this->CheckLogin($language);
 
         $url = substr($_GET['url'], 3);
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
@@ -95,9 +92,10 @@ class AdminController {
         if (!is_numeric($pagination['pagination'])){
             header('location: /');
         }
-        $this->CheckLogin();
-        $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `gamers`");
         $language = getLanguage();
+        $this->CheckLogin($language);
+        $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `gamers`");
+
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/gamers' ")->fetch_all(true);
         $AllGamesCount = mysqli_num_rows($AllUsers);
         $page = $pagination['pagination'] -1;
@@ -208,9 +206,8 @@ class AdminController {
         if (!is_numeric($pagination['pagination'])){
             header('location: /');
         }
-        $this->CheckLogin();
-
         $language = getLanguage();
+        $this->CheckLogin($language);
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/questions' ")->fetch_all(true);
         $AllQuestions = mysqli_query($this->admin->conn, "SELECT * FROM `questions`   ");
 
@@ -345,7 +342,8 @@ class AdminController {
     }
     public function admins_pagination($pagination)
     {
-        $this->CheckLogin();
+        $language = getLanguage();
+        $this->CheckLogin($language);
         if (is_numeric($pagination['pagination'])) {
             $language = getLanguage();
             $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/users' ")->fetch_all(true);
@@ -517,8 +515,8 @@ class AdminController {
     }
     public function create_question()
     {
-        $this->CheckLogin();
         $language = getLanguage();
+        $this->CheckLogin($language);
 
         $url = substr($_GET['url'], 3);
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
@@ -534,9 +532,10 @@ class AdminController {
         ], "Admin");
     }
     public function edit_user($id){
-        $this->CheckLogin();
-        $id = $id['id'];
         $language = getLanguage();
+        $this->CheckLogin($language);
+        $id = $id['id'];
+
 
 
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/user/edit' ")->fetch_all(true);
@@ -557,11 +556,11 @@ class AdminController {
     }
     public function edit_question($id)
     {
-        $this->CheckLogin();
+        $language = getLanguage();
+        $this->CheckLogin($language);
         if (!is_numeric($id['id'])){
             header('location: /');
         }
-        $language = getLanguage();
 
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/questions/edit' ")->fetch_all(true);
 
@@ -585,9 +584,8 @@ class AdminController {
     }
     public function documentation()
     {
-        $this->CheckLogin();
-
         $language = getLanguage();
+        $this->CheckLogin($language);
 
         $url = substr($_GET['url'], 3);
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
@@ -600,8 +598,8 @@ class AdminController {
         ], "Admin");
     }
     public function gamers(){
-        $this->CheckLogin();
         $language = getLanguage();
+        $this->CheckLogin($language);
 
         $url = substr($_GET['url'], 3);
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
@@ -620,7 +618,8 @@ class AdminController {
 
     public function logout()
     {
-        $this->CheckLogin();
+        if($this->CheckLogin())
+            return;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->CheckLogin();
             unset($_SESSION['admin_profile']);
@@ -630,7 +629,8 @@ class AdminController {
     }
     public function add_user_request()  {
 
-        $this->CheckLogin();
+        if($this->CheckLogin())
+            return;
         $language = getLanguage();
         $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/users/add' ")->fetch_all(true);
 
@@ -689,7 +689,8 @@ class AdminController {
             }
     }
     public function delete_user($user){
-        $this->CheckLogin();
+        if($this->CheckLogin())
+            return;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $id = $user['id'];
             if (is_numeric($id)){
@@ -711,7 +712,8 @@ class AdminController {
     }
     public function question_edit($id){
 
-        $this->CheckLogin();
+        if($this->CheckLogin())
+            return;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $id = $id['id'];
              $act = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE `id` = $id")->fetch_all(true);
@@ -775,7 +777,8 @@ class AdminController {
     }
     public function user_edit($id){
 
-        $this->CheckLogin();
+        if($this->CheckLogin())
+            return;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if ($_POST){
@@ -824,7 +827,8 @@ class AdminController {
     }
     public function question_create(){
 
-        $this->CheckLogin();
+        if($this->CheckLogin())
+            return;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($_POST){
                 $question_hy = $_POST['question_hy'];
@@ -870,7 +874,8 @@ VALUES (
     }
     public function change_gamer_status($id)
     {
-        $this->CheckLogin();
+        if($this->CheckLogin())
+            return;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $id['id'];
             if (is_numeric($id)) {
@@ -888,19 +893,16 @@ VALUES (
     }
 
 
-    public function CheckLogin($is = null){
-
+    public function CheckLogin($lang = null){
         if (isset($_SESSION['admin_profile']['profile'])) {
-            if ($_SESSION['admin_profile']['profile']== 1 ){
-                if ($is !== null) {
-                    header('location: /');
-                }else{
-
-                }
-            }
-
+            return false;
         }else{
-            header('location: /');
+            if ($lang == null){
+                header("location: /en/home");
+            }else{
+                header("location: /$lang/home");
+            }
+            return true;
         }
     }
 

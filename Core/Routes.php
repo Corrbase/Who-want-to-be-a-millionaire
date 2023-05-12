@@ -9,8 +9,8 @@ $route->add('hy/login', 'HomeController@login');
 $route->add('hy/register', 'HomeController@register');
 $route->add('hy/profile', 'UserController@profile');
 $route->add('hy/user/wins/{pagination}', 'UserController@games_pagination');
-$route->add('hy/home', 'homeCOntroller@home');
-$route->add('hy/game', 'GameController@play');
+$route->add('hy/home', 'homeController@home');
+    $route->add('hy/game', 'GameController@play');
 
 // ---------------------- admin en pages
 $route->add('en/admin/home', 'AdminController@index');
