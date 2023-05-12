@@ -11,7 +11,10 @@ class GameController{
 
     public function play()
     {
-        $this->checkLogin(getLanguage());
+        if (!isset($_SESSION['user_profile'])){
+
+            header("location: /$language/login");
+        }
         $language = getLanguage();
         $this->checkplay($language);
 
@@ -321,6 +324,7 @@ class GameController{
         if (!isset($_SESSION['user_profile']['profile']) == 1) {
             header("location: /$lang/login");
         }
+
     }
 
 }

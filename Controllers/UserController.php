@@ -35,7 +35,8 @@ class UserController{
         }
     }
     public function login_user(){
-        $this->loginAll();
+        if($this->loginAll())
+            return;
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
             header('location: en/admin/home');
         }elseif (isset($_SESSION['user_profile']['profile']) == 1){
@@ -101,101 +102,110 @@ class UserController{
 
     public function games_pagination($pagination)
     {
-
-        $language = getLanguage();
-        $this->loginAdmin($language);
-
-        $front = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = 'profile' ")->fetch_all(true);
-
-        $login = $_SESSION['user_profile']['login'];
-        $AllGames = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE `name` = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC ");
-        if (is_bool($AllGames)){
-            echo json_encode(false);
-        }else {
+    $language = getLanguage();
+    $this->loginAdmin($language);
+        if (is_numeric($pagination['pagination'])){
+            $front = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = 'profile' ")->fetch_all(true);
+            $login = $_SESSION['user_profile']['login'];
+            $AllGames = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE `name` = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC ");
+            if (is_bool($AllGames)){
+                echo json_encode(false);
+            }else {
 
 
-            $AllGames = mysqli_query($this->user->conn, "SELECT * FROM `gamers`  WHERE name = '$login' ");
+                $AllGames = mysqli_query($this->user->conn, "SELECT * FROM `gamers`  WHERE name = '$login' ");
 
-            $AllGamesCount = mysqli_num_rows($AllGames);
-            $page = $pagination['pagination'] - 1;
-            $count = $page * 10;
-            if ($AllGamesCount / 10 < 1) {
+                $AllGamesCount = mysqli_num_rows($AllGames);
+                $page = $pagination['pagination'] - 1;
+                $count = $page * 10;
+                if ($AllGamesCount / 10 < 1) {
 
-                $pages = 1;
-                $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10  ")->fetch_all(true);
+                    $pages = 1;
+                    $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10  ")->fetch_all(true);
 
-            } elseif ($AllGamesCount % 10 == 0) {
-                $pages = $AllGamesCount / 10;
+                } elseif ($AllGamesCount % 10 == 0) {
+                    $pages = $AllGamesCount / 10;
 
-                $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10 ")->fetch_all(true);
-
-            } elseif ($AllGamesCount % 10 <= 9) {
-                $pages = floor($AllGamesCount / 10) + 1;
-                $a = $pagination['pagination'];
-                if ($pages == $pagination['pagination']) {
                     $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10 ")->fetch_all(true);
 
-                } else {
-                    $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10 ")->fetch_all(true);
+                } elseif ($AllGamesCount % 10 <= 9) {
+                    $pages = floor($AllGamesCount / 10) + 1;
+                    $a = $pagination['pagination'];
+                    if ($pages == $pagination['pagination']) {
+                        $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10 ")->fetch_all(true);
 
+                    } else {
+                        $questions = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE name = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC, `id` DESC  LIMIT $count, 10 ")->fetch_all(true);
+
+                    }
                 }
+
+                $PreviousPage = $pagination['pagination'] - 1;
+
+                $NextPage = $pagination['pagination'] + 1;
+
+                if ($PreviousPage < 1) {
+                    $disabled1 = 'disabled';
+                }
+                if ($NextPage > $pages) {
+
+                    $disabled2 = 'disabled';
+                }
+                $ajax = [
+                    'question' => $questions,
+                    'disabled1' => $disabled1,
+                    'disabled2' => $disabled2,
+                    'PreviousPage' => $PreviousPage,
+                    'NextPage' => $NextPage,
+                    'AllUsersCount' => $AllGamesCount,
+                    'pagination' => $pagination['pagination']
+
+                ];
+                echo json_encode($ajax);
+
             }
-
-            $PreviousPage = $pagination['pagination'] - 1;
-
-            $NextPage = $pagination['pagination'] + 1;
-
-            if ($PreviousPage < 1) {
-                $disabled1 = 'disabled';
-            }
-            if ($NextPage > $pages) {
-
-                $disabled2 = 'disabled';
-            }
-            $ajax = [
-                'question' => $questions,
-                'disabled1' => $disabled1,
-                'disabled2' => $disabled2,
-                'PreviousPage' => $PreviousPage,
-                'NextPage' => $NextPage,
-                'AllUsersCount' => $AllGamesCount,
-                'pagination' => $pagination['pagination']
-
-            ];
-            echo json_encode($ajax);
-
-
+        }else{
+            header("location: /$language/profile");
         }
+
     }
 
     public function get_money($id){
-        $this->check();
-        $id = $id['id'];
-        $login = $_SESSION['user_profile']['login'];
-        $game = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE `name` = '$login' AND `id` = '$id'");
-        $game_settings = $game->fetch_all(true);
-        $game = mysqli_num_rows($game);
-        $game_settings = $game_settings[0];
-        if ($game == 1){
-            if ($game_settings['status'] == 'Finished'){
-                $balance = $_SESSION['user_profile']['balance'] + $game_settings['prize'];
-                $_SESSION['user_profile']['balance'] = $balance;
-                mysqli_query($this->user->conn, "UPDATE `users` SET `balance` = $balance WHERE login = '$login'");
-                mysqli_query($this->user->conn, "UPDATE `gamers` SET `getted` = 1 WHERE id = $id");
-                mysqli_query($this->user->conn, "DELETE FROM `gamers` WHERE `getted` = 1;");
+        $language = getLanguage();
+        $this->loginAdmin();
+        if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $id = $id['id'];
+            $login = $_SESSION['user_profile']['login'];
+            $game = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE `name` = '$login' AND `id` = '$id'");
+            $game_settings = $game->fetch_all(true);
+            $game = mysqli_num_rows($game);
+            $game_settings = $game_settings[0];
+            if ($game == 1){
+                if ($game_settings['status'] == 'Finished'){
+                    $balance = $_SESSION['user_profile']['balance'] + $game_settings['prize'];
+                    $_SESSION['user_profile']['balance'] = $balance;
+                    mysqli_query($this->user->conn, "UPDATE `users` SET `balance` = $balance WHERE login = '$login'");
+                    mysqli_query($this->user->conn, "UPDATE `gamers` SET `getted` = 1 WHERE id = $id");
+                    mysqli_query($this->user->conn, "DELETE FROM `gamers` WHERE `getted` = 1;");
 
-                $ajax = true;
-                echo json_encode($ajax);
-            }else{
-                $ajax = false;
-                echo json_encode($ajax);
+                    $ajax = true;
+                    echo json_encode($ajax);
+                }else{
+                    $ajax = false;
+                    echo json_encode($ajax);
+                }
             }
+        }else{
+            header("location: /$language/home");
         }
+
+
 
     }
 
 
     private function loginAdmin($lang = null){
+
         if ($lang !== null){
             if (isset($_SESSION['admin_profile']['profile']) == 1) {
                 header("location: /$lang/home");
@@ -216,10 +226,13 @@ class UserController{
         }
     }
     private function loginAll(){
+
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
             header("location: /en/home");
+            return false;
         }elseif (isset($_SESSION['user_profile']['profile']) == 1) {
             header("location: /en/home");
+            return false;
         }
     }
 

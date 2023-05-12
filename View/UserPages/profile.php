@@ -125,11 +125,11 @@ $front = $view_array['front'];
                             if (gamer['getted'] == true) {
                                 html += 'getted';
                             } else if (gamer['status'] == 'Finished') {
-                                html += "<button class='btn btn-outline-primary get-money' data-id='" + gamer['id'] + "'>" + 'asd' + "</button>";
+                                html += "<button class='btn btn-outline-primary get-money' data-id='" + gamer['id'] + "'>" + '<?php echo text($front, $language, 'table_prize_button'); ?>' + "</button>";
                             } else if (gamer['status'] == 'Canceled') {
-                                html += 'ad';
+                                html += '<?php echo text($front, $language, 'game_status_canceled'); ?>';
                             } else if (gamer['status'] == 'waiting') {
-                                html += 'asd';
+                                html += '<?php echo text($front, $language, 'game_status_waiting'); ?>';
                             }
 
                             html += '</td>';
@@ -150,7 +150,7 @@ $front = $view_array['front'];
         let id = $(this).attr("data-id");
         $.ajax({
             url: "/<?php echo $language;?>/user/get_money/" + id,
-            type: "GET",
+            type: "POST",
             data: {
 
             },
@@ -220,11 +220,11 @@ $front = $view_array['front'];
                             if (gamer['getted'] == true) {
                                 html += 'getted';
                             } else if (gamer['status'] == 'Finished') {
-                                html += "<button class='btn btn-outline-primary get-money' data-id='" + gamer['id'] + "'>" + 'asd' + "</button>";
+                                html += "<button class='btn btn-outline-primary get-money' data-id='" + gamer['id'] + "'>" + '<?php echo text($front, $language, 'table_prize_button'); ?>' + "</button>";
                             } else if (gamer['status'] == 'Canceled') {
-                                html += 'ad';
+                                html += '<?php echo text($front, $language, 'game_status_canceled'); ?>';
                             } else if (gamer['status'] == 'waiting') {
-                                html += 'asd';
+                                html += '<?php echo text($front, $language, 'game_status_waiting'); ?>';
                             }
 
                             html += '</td>';
