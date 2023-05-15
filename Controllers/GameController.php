@@ -11,100 +11,102 @@ class GameController{
 
     public function play()
     {
-        if (!isset($_SESSION['user_profile'])){
-
-            header("location: /$language/login");
-        }
         $language = getLanguage();
-        $this->checkplay($language);
+        if (isset($_SESSION['admin_profile']) || isset($_SESSION['user_profile'])){
+            $this->checkplay($language);
 
-        $url = substr($_GET['url'], 3);
-        $header = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = 'header' ")->fetch_all(true);
-        $front = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
-        view("Play", null, ['front' => $front,'language' => $language, 'header' => $header], 'Game');
+            $url = substr($_GET['url'], 3);
+            $header = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = 'header' ")->fetch_all(true);
+            $front = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
+            view("Play", null, ['front' => $front,'language' => $language, 'header' => $header], 'Game');
+        }elseif (!isset($_SESSION['user_profile'])){
+            header("location: /$language/home");
+        }
     }
 
     public function play_name()
     {
         $language = getLanguage();
-        if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+        if (isset($_SESSION['admin_profile']) || isset($_SESSION['user_profile'])){
+            if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 
-            if (isset($_SESSION['play'])){
+                if (isset($_SESSION['play'])){
 
-                header('location: /'. $language .'/play');
+                    header('location: /'. $language .'/play');
 
+                }else{
+                    $questionsCount = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `active` = 1");
+                    $questions = $questionsCount->fetch_all(true);
+                    $questionsCount = mysqli_num_rows($questionsCount);
+                    $numbers = randomGen(1,$questionsCount,$questionsCount + 1);
+                    $question_numbers = [];
+                    foreach ($numbers as $key=>$value){
+                        array_push($question_numbers, $questions[$value-1]['id']);
+
+                    }
+
+                    $_SESSION['play_run']['player'] = $_SESSION['user_profile']['login'];
+                    if ($_SESSION['play_run']['player'] == ''){
+                        $_SESSION['play_run']['player'] = $_SESSION['admin_profile']['login'];
+                    }
+
+                    $_SESSION['play'] = true;
+                    $_SESSION['play_run']['questions_id'] = $question_numbers;
+
+                    $_SESSION['play_run']['level_prices'] = [
+                        'level_1' => 100,
+                        'level_2' => 200,
+                        'level_3' => 300,
+                        'level_4' => 500,
+                        'level_5' => 1000,
+                        'level_6' => 2000,
+                        'level_7' => 4000,
+                        'level_8' => 8000,
+                        'level_9' => 16000,
+                        'level_10' => 32000,
+                        'level_11' => 64000,
+                        'level_12' => 125000,
+                        'level_13' => 250000,
+                        'level_14' => 500000,
+                        'level_15' => 1000000,
+                    ];
+                    $_SESSION['play_run']['level'] = [
+                        'level_1' => false,
+                        'level_2' => false,
+                        'level_3' => false,
+                        'level_4' => false,
+                        'level_5' => false,
+                        'level_6' => false,
+                        'level_7' => false,
+                        'level_8' => false,
+                        'level_9' => false,
+                        'level_10' => false,
+                        'level_11' => false,
+                        'level_12' => false,
+                        'level_13' => false,
+                        'level_14' => false,
+                        'level_15' => false,
+                    ];
+                    $_SESSION['play_run']['bonus'] = [
+                        '50' => false,
+                        'call_to_friend' => false,
+                        'Voice' => false,
+                    ];
+                    header('location: /'. $language .'/play');
+                }
             }else{
-                $questionsCount = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `active` = 1");
-                $questions = $questionsCount->fetch_all(true);
-                $questionsCount = mysqli_num_rows($questionsCount);
-                $numbers = randomGen(1,$questionsCount,$questionsCount + 1);
-                $question_numbers = [];
-                foreach ($numbers as $key=>$value){
-                    array_push($question_numbers, $questions[$value-1]['id']);
-
-                }
-
-                $_SESSION['play_run']['player'] = $_SESSION['user_profile']['login'];
-                if ($_SESSION['play_run']['player'] == ''){
-                    $_SESSION['play_run']['player'] = $_SESSION['admin_profile']['login'];
-                }
-
-                $_SESSION['play'] = true;
-                $_SESSION['play_run']['questions_id'] = $question_numbers;
-
-                $_SESSION['play_run']['level_prices'] = [
-                    'level_1' => 100,
-                    'level_2' => 200,
-                    'level_3' => 300,
-                    'level_4' => 500,
-                    'level_5' => 1000,
-                    'level_6' => 2000,
-                    'level_7' => 4000,
-                    'level_8' => 8000,
-                    'level_9' => 16000,
-                    'level_10' => 32000,
-                    'level_11' => 64000,
-                    'level_12' => 125000,
-                    'level_13' => 250000,
-                    'level_14' => 500000,
-                    'level_15' => 1000000,
-                ];
-                $_SESSION['play_run']['level'] = [
-                    'level_1' => false,
-                    'level_2' => false,
-                    'level_3' => false,
-                    'level_4' => false,
-                    'level_5' => false,
-                    'level_6' => false,
-                    'level_7' => false,
-                    'level_8' => false,
-                    'level_9' => false,
-                    'level_10' => false,
-                    'level_11' => false,
-                    'level_12' => false,
-                    'level_13' => false,
-                    'level_14' => false,
-                    'level_15' => false,
-                ];
-                $_SESSION['play_run']['bonus'] = [
-                    '50' => false,
-                    'call_to_friend' => false,
-                    'Voice' => false,
-                ];
-                header('location: /'. $language .'/play');
+                header("Location: / $language/home");
             }
         }else{
-            header("Location: $language/home");
+            header("Location: /$language/home");
         }
 
 
     }
 
     public function play_game(){
-
         $this->checkLogin(getLanguage());
         if (!isset($_SESSION['play'])){
-
             header('Location: /');
 
         }
@@ -206,8 +208,7 @@ class GameController{
             if (isset($_SESSION['play_run']))
             {
                 if (array_search(false, $_SESSION['play_run']['level']) == 'level_15'){
-                    echo 'you win ';
-                    echo 'your prize is 1000000';
+                    echo json_encode('you win, your prize is 1000000');
                     $player = $_SESSION['play_run']['player'];
                     mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', 30, 100000 , 'waiting', 0)");
                     unset($_SESSION['play']);
@@ -268,41 +269,46 @@ class GameController{
             if ($exist[$bonus_name] == false) {
                 if ($bonus_name == 'call_to_friend') {
                     $rand = rand(1, 4);
+                    $err = 'Hi ' . $_SESSION['play_run']['player'] . ', i think it is "' . $true . '"';
 
-                    echo 'Hi ' . $_SESSION['play_run']['player'] . ', i think it is "' . $true . '"';
+                    echo json_encode($err);
                     $_SESSION['play_run']['bonus'][$bonus_name] = true;
                 } elseif ($bonus_name == '50') {
                     $randfalse = rand(0,2);
-                    echo 'It is or"' . $true . '" or "' . $false[$randfalse] . '"';
+                    $err = 'It is or "' . $true . '" or "' . $false[$randfalse] . '"';
+                    echo json_encode($err);
                     $_SESSION['play_run']['bonus'][$bonus_name] = true;
                 } elseif ($bonus_name == 'Voice') {
                     $prcnt = rand(50, 100); //  get random number
-
-                    echo $prcnt .' percent of coward voice think that it is'. $true . '"';
+                    $err = $prcnt .' percent of coward voice think that it is "'. $true . '"';
+                    echo json_encode($err);
                     $_SESSION['play_run']['bonus'][$bonus_name] = true;
                 }
             }else{
-                echo 'You cannot use the same bonus twice';
+                $err = 'You cannot use the same bonus twice';
+                    echo json_encode($err);
             }
         }elseif ($language == 'hy'){
             if ($exist[$bonus_name] == false) {
                 if ($bonus_name == 'call_to_friend') {
                     $rand = rand(1, 4);
-
-                    echo 'Բարև ' . $_SESSION['play_run']['player'] . ', ես կարծում եմ դա "' . $true . '"-ն է';
+                    $err = 'Բարև ' . $_SESSION['play_run']['player'] . ', ես կարծում եմ դա "' . $true . '"-ն է';
+                    echo json_encode($err);
                     $_SESSION['play_run']['bonus'][$bonus_name] = true;
                 } elseif ($bonus_name == '50') {
                     $randfalse = rand(0,2);
-                    echo 'Դա կամ "' . $true . '"-ն է կամ էլ "' . $false[$randfalse] . '"-ը';
+                    $err = 'Դա կամ "' . $true . '"-ն է կամ էլ "' . $false[$randfalse] . '"-ը';
+                    echo json_encode($err);
                     $_SESSION['play_run']['bonus'][$bonus_name] = true;
                 } elseif ($bonus_name == 'Voice') {
                     $prcnt = rand(50, 100); //  get random number
-
-                    echo 'Դայլիճի ձայնի  ' . $prcnt .' տոկոսը կարծում է որ դա "'. $true . '"-ն է';
+                    $err = 'Դայլիճի ձայնի  ' . $prcnt .' տոկոսը կարծում է որ դա "'. $true . '"-ն է';
+                    echo json_encode($err);
                     $_SESSION['play_run']['bonus'][$bonus_name] = true;
                 }
             }else{
-                echo 'Դուք չեք կարող օգտագործել նույն բոնուսը երկու անգամ';
+                $err = 'Դուք չեք կարող օգտագործել նույն բոնուսը երկու անգամ';
+                echo json_encode($err);
             }
         }
 
@@ -318,10 +324,9 @@ class GameController{
     }
 
     public function checkLogin($lang){
-        if (isset($_SESSION['admin_profile']['profile']) == 1) {
-            header("location: /$lang/login");
-        }
-        if (!isset($_SESSION['user_profile']['profile']) == 1) {
+        if (isset($_SESSION['admin_profile']['profile']) || isset($_SESSION['user_profile']['profile'])) {
+
+        }else{
             header("location: /$lang/login");
         }
 

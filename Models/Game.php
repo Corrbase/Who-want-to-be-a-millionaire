@@ -8,6 +8,4 @@ class Game extends Core {
     }
 
 
-
-
 }

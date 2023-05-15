@@ -46,7 +46,6 @@ class UserController{
         if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             $login = $_POST['user_login'];
             $pass = $_POST['user_password'];
-            $_SESSION['login_values'] = $login;
 
 
                 if (array_search('', $_POST))

@@ -11,10 +11,7 @@
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="icon" href="/assets/img/logo.png">
     <!-- MDB -->
-    <script
-            type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.1/mdb.min.js"
-    ></script>
+
     <!-- Font Awesome -->
     <link
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"

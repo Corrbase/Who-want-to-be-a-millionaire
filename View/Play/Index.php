@@ -44,6 +44,7 @@
                 $('.loading-refresh').removeClass('loading-form');
                 let request_data = JSON.parse(data)
                 console.log(request_data)
+
                 if (request_data.status == 1){
                     $.ajax({
                         type: "GET",
@@ -111,11 +112,10 @@
                     $('.loading-refresh').addClass('loading-form');
                 },
             success: function(data) {
+                let arr = JSON.parse(data)
                 $('.loading-refresh').removeClass('loading-form');
 
-                $('.bonus_request').text(data);
-
-
+                $('.bonus_request').text(arr);
 
             }
         })
