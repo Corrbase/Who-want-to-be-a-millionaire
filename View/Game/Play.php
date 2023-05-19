@@ -1,6 +1,3 @@
-<?php
-
-?>
 <div class="text-center m-auto w-75">
     <h4 class=" fw-bold mt-3">
         <?php

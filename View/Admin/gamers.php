@@ -152,18 +152,19 @@
 
                         html += ' <select class="status-change form-select form-select-sm"> <option selected="" disabled="">Select a status:</option>'
                         html += '<option name="Waiting" data-id="' + gamer['id'] + '" value="waiting" selected=""'
-                        if (gamer['status'] = 'waiting' ){
+                        console.log(gamer['status'])
+                        if (gamer['status'] == 'waiting' ){
                             html += 'selected'
                         }
-                        html += '>In process</option> <option name="Canceled" data-id="' + gamer['id'] + '" value="Canceled" '
-                        if (gamer['status'] = 'Canceled' ){
+                        html += '><?php echo text($front, $language, 'table_status_in_process'); ?></option> <option name="Canceled" data-id="' + gamer['id'] + '" value="Canceled" '
+                        if (gamer['status'] == 'Canceled' ){
                             html += 'selected'
                         }
-                        html += '>Canceled</option> <option name="Finished" data-id="' + gamer['id'] + '" value="Finished"'
-                        if (gamer['status'] = 'Finished' ){
+                        html += '><?php echo text($front, $language, 'table_status_canceled'); ?></option> <option name="Finished" data-id="' + gamer['id'] + '" value="Finished"'
+                        if (gamer['status'] == 'Finished' ){
                             html += 'selected'
                         }
-                        html += '>Finished</option> </select>'
+                        html += '><?php echo text($front, $language, 'table_status_finished'); ?></option> </select>'
                         html += '</td>'
 
                         html += '<td>'
@@ -229,7 +230,6 @@
                         let request_data = JSON.parse(response)
                         if (response) {
                             change_default()
-                            console.log(request_data)
                             let data = request_data['games']
                             let select1 = request_data['disabled1']
                             let select2 = request_data['disabled2'];
@@ -262,6 +262,7 @@
 
                                 html += ' <select class="status-change form-select form-select-sm"> <option selected="" disabled="">Select a status:</option>'
                                 html += '<option name="Waiting" data-id="' + gamer['id'] + '" value="waiting" selected=""'
+                                console.log(gamer['status'])
                                 if (gamer['status'] = 'waiting' ){
                                     html += 'selected'
                                 }
@@ -306,7 +307,6 @@
                 let request_data = JSON.parse(response)
                 if (response) {
                     change_default()
-                    console.log(request_data)
                     let data = request_data['games']
                     let select1 = request_data['disabled1']
                     let select2 = request_data['disabled2'];
@@ -339,7 +339,7 @@
 
                         html += ' <select class="status-change form-select form-select-sm"> <option selected="" disabled="">Select a status:</option>'
                         html += '<option name="Waiting" data-id="' + gamer['id'] + '" value="waiting" selected=""'
-
+                        console.log(gamer['status'])
                         if (gamer['status'] == 'waiting' ){
                             html += 'selected'
                         }

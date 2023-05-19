@@ -2,10 +2,23 @@
 
 class GameController{
     public $game;
+    public $front = [];
+    public $header = [];
 
     public function __construct($settings)
     {
         $this->game = model('Game', $settings);
+        $url = substr($_GET['url'], 3); // get url and cut language part
+        $arr = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = '$url' OR `url` = 'header' ")->fetch_all(true); // get all language content
+        foreach ($arr as $item=>$key){
+            if ($url == $key['url']){
+                array_push($this->front, $key);
+            } // add to $front front content
+            if ($key['url'] == 'header'){
+
+                array_push($this->header, $key);
+            } // add to $header header and include content
+        }
     }
 
     //
@@ -33,7 +46,7 @@ class GameController{
                 array_push($header, $key);
             }
         }
-        view("Play", null, ['front' => $front,'language' => $language, 'header' => $header], 'Game');
+        view("Play", null, ['front' => $this->front,'language' => $language, 'header' => $this->header], 'Game');
 
     }
 
@@ -102,7 +115,7 @@ class GameController{
         $front = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
 
         // Render the game page with the retrieved data
-        view('index', 'Game', ['front' => $front,'language' => $language], 'Play');
+        view('index', 'Game', ['front' => $this->front,'language' => $language], 'Play');
     }
 
     public function play_gone()
