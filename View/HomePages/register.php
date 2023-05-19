@@ -1,5 +1,5 @@
 <?php
-$front = $view_array['front'];
+
 ?>
         <form id="UserRegisterForm" class="w-25 m-auto pt-5 mt-5" method="POST" action="" enctype="multipart/form-data">
             <div class="mb-3">

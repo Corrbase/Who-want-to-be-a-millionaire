@@ -6,7 +6,6 @@
                 <div class="text-center">
                     <h1 class="text-white">
                         <?php
-                            $front = $view_array['front'];
                             echo text($front, $language, 'title');
                         ?>
                     </h1>
@@ -31,7 +30,7 @@
                                         <div class="small fw-bold text-secondary mb-1"><?php
                                             echo text($front, $language, 'win_up_5');
                                             ?></div>
-                                        <div class="h5"><?php echo $view_array['UpToFive']; ?></div>
+                                        <div class="h5"><?php echo $UpToFive; ?></div>
                                     </div>
                                     <div class="ms-2"><svg class="svg-inline--fa fa-tag fa-2x text-gray-200" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="tag" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M48 32H197.5C214.5 32 230.7 38.74 242.7 50.75L418.7 226.7C443.7 251.7 443.7 292.3 418.7 317.3L285.3 450.7C260.3 475.7 219.7 475.7 194.7 450.7L18.75 274.7C6.743 262.7 0 246.5 0 229.5V80C0 53.49 21.49 32 48 32L48 32zM112 176C129.7 176 144 161.7 144 144C144 126.3 129.7 112 112 112C94.33 112 80 126.3 80 144C80 161.7 94.33 176 112 176z"></path></svg><!-- <i class="fas fa-tag fa-2x text-gray-200"></i> Font Awesome fontawesome.com --></div>
                                 </div>
@@ -49,7 +48,7 @@
                                             echo text($front, $language, 'all_games');
                                             ?>
                                         </div>
-                                        <div class="h5"><?php echo $view_array['AllGames']; ?></div>
+                                        <div class="h5"><?php echo $AllGames; ?></div>
                                     </div>
                                     <div class="ms-2"><svg class="svg-inline--fa fa-arrow-pointer fa-2x text-gray-200" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-pointer" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M318.4 304.5c-3.531 9.344-12.47 15.52-22.45 15.52h-105l45.15 94.82c9.496 19.94 1.031 43.8-18.91 53.31c-19.95 9.504-43.82 1.035-53.32-18.91L117.3 351.3l-75 88.25c-4.641 5.469-11.37 8.453-18.28 8.453c-2.781 0-5.578-.4844-8.281-1.469C6.281 443.1 0 434.1 0 423.1V56.02c0-9.438 5.531-18.03 14.12-21.91C22.75 30.26 32.83 31.77 39.87 37.99l271.1 240C319.4 284.6 321.1 295.1 318.4 304.5z"></path></svg><!-- <i class="fas fa-mouse-pointer fa-2x text-gray-200"></i> Font Awesome fontawesome.com --></div>
                                 </div>

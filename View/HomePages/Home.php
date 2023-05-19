@@ -1,5 +1,5 @@
 <?php
-$front = $view_array['front'];
+
 
 
 ?>

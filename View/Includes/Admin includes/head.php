@@ -28,7 +28,7 @@
         echo text($header, $language, 'main_dashboard');
         ?>
     </a>
-    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="/">
+    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="/<?php echo $language;?>/home">
         <?php
         echo text($header, $language, 'go_to_main_page');
         ?>

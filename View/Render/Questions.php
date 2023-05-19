@@ -15,13 +15,13 @@ call_user_func($functionName, $wrongs, $right);
 echo '<div>
                     <div class="d-flex justify-content-between m-auto mt-2" style="width: 200px" >
                         <div class="">
-                            <button type="button" data-id="call_to_friend"  class=" Bonus rounded-5 btn btn-primary"><i class="fa fa-phone"></i></button>
+                            <button type="button" data-id="call_friend"  class=" Bonus rounded-5 btn btn-primary"><i class="fa fa-phone"></i></button>
                         </div>
                         <div>
-                            <button type="button" data-id="Voice"  class="Bonus rounded-5 btn btn-primary"><i class="fa fa-users"></i></button>
+                            <button type="button" data-id="ask_audience"  class="Bonus rounded-5 btn btn-primary"><i class="fa fa-users"></i></button>
                         </div>
                         <div>
-                            <button type="button" data-id="50"  class="Bonus rounded-5 btn btn-primary fw-bold">%</button>
+                            <button type="button" data-id="fifty_fifty"  class="Bonus rounded-5 btn btn-primary fw-bold">%</button>
                         </div>
                     </div>
                     <div class="text-center bonus_request">

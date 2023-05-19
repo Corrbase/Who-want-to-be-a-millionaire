@@ -187,6 +187,9 @@ function model($name, $settings){
 
 function view($name,$includes = null ,$view_array = null, $folder = null){
 
+    foreach ($view_array as $item=>$key){
+        $$item = $key;
+    }
     if (isset($view_array['language'])){
         $language = $view_array['language'];
     }

@@ -2,24 +2,31 @@
 
 class UserController{
     public $user;
+    public $front = [];
+    public $header = [];
 
     public function __construct($settings)
     {
         $this->user = model('User', $settings);
+        $url = substr($_GET['url'], 3);
+        $arr = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = '$url' OR `url` = 'header' ")->fetch_all(true);
+        foreach ($arr as $item=>$key){
+            if ($url == $key['url']){
+                array_push($this->front, $key);
+            }
+            if ($key['url'] == 'header'){
+
+                array_push($this->header, $key);
+            }
+        }
     }
 
     public function profile(){
         $language = getLanguage();
-
+        $this->checkPlay();
         $this->loginAdmin($language );
 
-        $url = substr($_GET['url'], 3);
-        $front = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
-        $header = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = 'header' ")->fetch_all(true);
-
-
-
-        view("profile", null, ['front' => $front, 'language' => $language, 'header' => $header], 'UserPages');
+        view("profile", null, ['front' => $this->front, 'language' => $language, 'header' => $this->header], 'UserPages');
 
     }
 
@@ -232,6 +239,22 @@ class UserController{
         }elseif (isset($_SESSION['user_profile']['profile']) == 1) {
             header("location: /en/home");
             return false;
+        }
+    }
+
+    private function checkPlay(){
+        $lang = getLanguage();
+        if (isset($_SESSION['admin_profile'])){
+            $login = $_SESSION['admin_profile']['login'];
+        }elseif (isset($_SESSION['user_profile'])){
+            $login = $_SESSION['user_profile']['login'];
+        }else{
+            return true;
+        }
+        $userId = (mysqli_query($this->user->conn, "SELECT * FROM `users` where `login` = '$login'")->fetch_assoc())['id'];
+        $game_session = mysqli_query($this->user->conn, "SELECT * FROM `user_game_session` where `user_id` = $userId ");
+        if ($game_session->num_rows >= 1){
+            header("location: /$lang/play");
         }
     }
 

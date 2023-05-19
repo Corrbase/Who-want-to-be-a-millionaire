@@ -26,7 +26,7 @@
         <div class="card">
             <div class="card-header">
                 <?php
-                $front = $view_array['front'];
+                
                 echo text($front, $language, 'all_games');
                 ?>
             </div>

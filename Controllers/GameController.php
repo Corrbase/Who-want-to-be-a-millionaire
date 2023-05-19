@@ -8,237 +8,248 @@ class GameController{
         $this->game = model('Game', $settings);
     }
 
-
-    public function play()
+    //
+    public function index()
     {
-        $language = getLanguage();
-        if (isset($_SESSION['admin_profile']) || isset($_SESSION['user_profile'])){
-            $this->checkplay($language);
 
-            $url = substr($_GET['url'], 3);
-            $header = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = 'header' ")->fetch_all(true);
-            $front = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
-            view("Play", null, ['front' => $front,'language' => $language, 'header' => $header], 'Game');
-        }elseif (!isset($_SESSION['user_profile'])){
-            header("location: /$language/home");
+        // Get the page language
+        $language = getLanguage();
+        // Check if user is logged
+        $this->checkLogin($language);
+        // Check if the user can play the game
+        $this->checkplay($language);
+
+        // Retrieve language settings and game details from database
+        $url = substr($_GET['url'], 3);
+        $arr = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = 'header' OR url = '$url'")->fetch_all(true);
+        $front = [];
+        $header = [];
+        foreach ($arr as $item=>$key){
+            if ($url == $key['url']){
+                array_push($front, $key);
+            }
+            if ($key['url'] == 'header'){
+
+                array_push($header, $key);
+            }
         }
+        view("Play", null, ['front' => $front,'language' => $language, 'header' => $header], 'Game');
+
     }
 
-    public function play_name()
-    {
-        $language = getLanguage();
-        if (isset($_SESSION['admin_profile']) || isset($_SESSION['user_profile'])){
-            if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 
-                if (isset($_SESSION['play'])){
+    public function play_backend()
+    {
+        // get language
+        $language = getLanguage();
+        $this->checkLogin($language);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+                $login = $this->getLogin();
+                $userId = (mysqli_query($this->game->conn, "SELECT * FROM `users` where `login` = '$login'")->fetch_assoc())['id'];
+                $game_session = mysqli_query($this->game->conn, "SELECT * FROM `user_game_session` where `user_id` = $userId ");
+                if ($game_session){
+                    $game_session = $game_session->fetch_assoc();
+                }
+
+
+                if ($game_session['active'] == 1){
 
                     header('location: /'. $language .'/play');
 
                 }else{
-                    $questionsCount = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `active` = 1");
-                    $questions = $questionsCount->fetch_all(true);
-                    $questionsCount = mysqli_num_rows($questionsCount);
-                    $numbers = randomGen(1,$questionsCount,$questionsCount + 1);
-                    $question_numbers = [];
-                    foreach ($numbers as $key=>$value){
-                        array_push($question_numbers, $questions[$value-1]['id']);
 
+                    $random = time() . chr(rand(65, 90));
+                    $checkRandom = 1;
+                    while (isset($checkRandom)){
+                        $checkRandom = mysqli_query($this->game->conn, "SELECT * FROM `user_game_session` where `game_id` = '$random'")->fetch_assoc();
+                        $random = time() . chr(rand(65, 90));
                     }
-
-                    $_SESSION['play_run']['player'] = $_SESSION['user_profile']['login'];
-                    if ($_SESSION['play_run']['player'] == ''){
-                        $_SESSION['play_run']['player'] = $_SESSION['admin_profile']['login'];
-                    }
-
-                    $_SESSION['play'] = true;
-                    $_SESSION['play_run']['questions_id'] = $question_numbers;
-
-                    $_SESSION['play_run']['level_prices'] = [
-                        'level_1' => 100,
-                        'level_2' => 200,
-                        'level_3' => 300,
-                        'level_4' => 500,
-                        'level_5' => 1000,
-                        'level_6' => 2000,
-                        'level_7' => 4000,
-                        'level_8' => 8000,
-                        'level_9' => 16000,
-                        'level_10' => 32000,
-                        'level_11' => 64000,
-                        'level_12' => 125000,
-                        'level_13' => 250000,
-                        'level_14' => 500000,
-                        'level_15' => 1000000,
-                    ];
-                    $_SESSION['play_run']['level'] = [
-                        'level_1' => false,
-                        'level_2' => false,
-                        'level_3' => false,
-                        'level_4' => false,
-                        'level_5' => false,
-                        'level_6' => false,
-                        'level_7' => false,
-                        'level_8' => false,
-                        'level_9' => false,
-                        'level_10' => false,
-                        'level_11' => false,
-                        'level_12' => false,
-                        'level_13' => false,
-                        'level_14' => false,
-                        'level_15' => false,
-                    ];
-                    $_SESSION['play_run']['bonus'] = [
-                        '50' => false,
-                        'call_to_friend' => false,
-                        'Voice' => false,
-                    ];
+                    $time = date('Y/m/d h:i:s');
+                    mysqli_query($this->game->conn, "INSERT INTO `user_game_session` (`user_id`, `game_id`, `active`, `level`, `created_at`) VALUES ($userId, '$random', 1, 1, '$time')");
+                    mysqli_query($this->game->conn, "INSERT INTO `bonuses`( `active`, `fifty_fifty`, `call_friend`, `ask_audience`, `user_id`) VALUES (1,0,0,0,$userId)");
                     header('location: /'. $language .'/play');
                 }
             }else{
-                header("Location: / $language/home");
+                header("Location: /$language/home");
             }
-        }else{
-            header("Location: /$language/home");
-        }
+
 
 
     }
 
     public function play_game(){
-        $this->checkLogin(getLanguage());
-        if (!isset($_SESSION['play'])){
-            header('Location: /');
+        $language = getLanguage();
+        $this->checkLogin($language);
+        $login = $this->getLogin();
+
+        $userId = (mysqli_query($this->game->conn, "SELECT * FROM `users` where `login` = '$login'")->fetch_assoc())['id'];
+        $game_session = mysqli_query($this->game->conn, "SELECT * FROM `user_game_session` where `user_id` = $userId ");
+        if ($game_session){
+            $game_session = $game_session->fetch_assoc();
+        }
+        if ($game_session['active'] == 0){
+
+            header('location: /'. $language .'/home');
 
         }
+        // Check if user is logged in
+        $this->checkLogin(getLanguage());
+
+        // Retrieve language settings and game details from database
         $language = getLanguage();
         $url = substr($_GET['url'], 3);
 
         $front = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
 
+        // Render the game page with the retrieved data
         view('index', 'Game', ['front' => $front,'language' => $language], 'Play');
     }
 
     public function play_gone()
     {
-        if (!isset($_SESSION['play'])){
-
-            header('Location: /');
-        }
         $language = getLanguage();
+        $this->checkLogin($language);
+        $login = $this->getLogin();
+        $profile = mysqli_query($this->game->conn, "SELECT * FROM `users` where `login` = '$login'")->fetch_assoc();
+        $userId = $profile['id'];
+        $game_session = mysqli_query($this->game->conn, "SELECT * FROM `user_game_session` where `user_id` = $userId ")->fetch_assoc();
+
+        $levels = mysqli_query($this->game->conn, "SELECT * FROM `levels`");
+        $level_price = $levels->fetch_all(true);
+        $levels_conut = $levels->num_rows;
+
+        if ($game_session['active'] == 0){
+            header("Location: /$language/home");
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
 
             $ajax = $_POST;
-            $NowLevel = array_search(false, $_SESSION['play_run']['level']);
-            $NowLevel = explode('_', $NowLevel);
-            $NowLevel = $NowLevel[1];
-            $id = $_SESSION['play_run']['questions_id'][$NowLevel - 1];
+
+
+            $NowLevel = $game_session['level'];
+            $id = $game_session['question_id'];
             $question = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $id")->fetch_all(true);
             $question = $question[0];
             $wrongs = explode(',' , $question['wrong_answer_'. $language]);
             if (isset($ajax['end_game'])){
-                if ($ajax['prize'] == 0){
-                    if ($_SESSION['play_run']['level']['level_1'] === false)
+                mysqli_query($this->game->conn, "DELETE FROM `user_game_session` WHERE `user_id` = '$userId'");
+                mysqli_query($this->game->conn, "DELETE FROM `bonuses` WHERE `user_id` = '$userId'");
+                if ($game_session['level'] === 1){
                     $ajax['end'] = false;
                     echo json_encode($ajax);
-                    unset($_SESSION['play']);
-                    unset($_SESSION['play_run']);
                 }else{
                     $previous_level = $NowLevel - 1;
-                    $level_name = 'level_' . $previous_level;
-                    $prize = $_SESSION['play_run']['level_prices'][$level_name];
-                    $player = $_SESSION['play_run']['player'];
+                    foreach ($levels->fetch_all(true) as $element) {
+                        if ($element['id'] === $previous_level) {
+                            $foundElement = $element;
+                            break;
+                        }
+                    }
+                    foreach ($levels as $item => $val){
+                        if ($val['id'] == $previous_level){
+                            $found = $val;
+                        }
+                    }
+                    $prize = $found['price'];
+                    $login = $profile['login'];
 
-//                    $prize = $_SESSION['play_run']['level_prices'][$previous_level - 1];
 
-                    mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', '$previous_level', $prize, 'waiting', 0)");
+                    mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$login', '$previous_level', $prize, 'waiting', 0)");
+
                     $ajax['end'] = true;
                     $ajax['prize'] = true;
                     echo json_encode($ajax);
-                    unset($_SESSION['play']);
-                    unset($_SESSION['play_run']);
                 }
             }
 
             elseif (isset($ajax['bonus'])){
                 $this->bonus($ajax['bonus'], $question['right_answer_' . $language], $wrongs, $language);
             }else{
+
                 if ($question['right_answer_' . $language] == $ajax['question_ans']){
                     // check is user answer right
-                    $NowLevel = array_search(false, $_SESSION['play_run']['level']);
-                    $_SESSION['play_run']['level'][$NowLevel] = true;
+                    $NowLevel += 1;
+                    mysqli_query($this->game->conn, "UPDATE `user_game_session` SET `level` = '$NowLevel' WHERE `user_id` = $userId");
                     $ajax['status'] = true;
 
                     echo json_encode($ajax);
 
-                }else{
+                }
+                // false answer check if user answer the special answer
+                else{
                     // if user answer false
-                    $player = $_SESSION['play_run']['player'];
-                    if ($_SESSION['play_run']['level']['level_5'] === true){
-                        mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', '$NowLevel', 1000, 'waiting', 0)");
+                    $player = $profile['login'];
+                    $specials = [];
+                    foreach ($levels as $item => $val){
+                        if ($val['special'] == 1){
+                            array_push($specials, $val);
+                        }
+                    }
+                    $activeSpecials = [];
+                    foreach ($specials as $item => $val){
+                        if ($game_session['level'] > $val['name']){
+                            array_push($activeSpecials, $val['name']);
+                        }
+                    }
+                    if ($activeSpecials !== []){
+
+                        foreach ($specials as $element) {
+                            if ($element['id'] === end($activeSpecials)) {
+                                $foundElement = $element;
+                                break;
+                            }
+                        }
+                        $prize = $foundElement['price'];
+                        mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', '$NowLevel', $prize, 'waiting', 0)");
+
                         $ajax['status'] = false;
                         $ajax['prize'] = true;
-                        $ajax['prize_count'] = 1000;
+                        $ajax['prize_count'] = $prize;
                         $ajax['right'] = $question['right_answer_' . $language];
                         echo json_encode($ajax);
-                        unset($_SESSION['play']);
-                        unset($_SESSION['play_run']);
-                    }elseif ($_SESSION['play_run']['level']['level_5'] === true){
-                        mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', '$NowLevel', 32000, 'waiting', 0)");
-                        $ajax['status'] = false;
-                        $ajax['prize'] = true;
-                        $ajax['prize_count'] = 1000;
-                        $ajax['right'] = $question['right_answer_' . $language];
-                        echo json_encode($ajax);
-                        unset($_SESSION['play']);
-                        unset($_SESSION['play_run']);
-                    } else{
+                        mysqli_query($this->game->conn, "DELETE FROM `user_game_session` WHERE `user_id` = '$userId'");
+                    }else {
                         $ajax['status'] = false;
                         $ajax['prize'] = false;
                         $ajax['right'] = $question['right_answer_' . $language];
                         echo json_encode($ajax);
-                        unset($_SESSION['play']);
-                        unset($_SESSION['play_run']);
+                        mysqli_query($this->game->conn, "DELETE FROM `user_game_session` WHERE `user_id` = '$userId'");
                     }
-
                 }
             }
 
-        }else{
-            // get function
-            if (isset($_SESSION['play_run']))
-            {
-                if (array_search(false, $_SESSION['play_run']['level']) == 'level_15'){
+        }
+        // GET request
+        else{
+
+                if ($game_session['level'] > 15){
                     echo json_encode('you win, your prize is 1000000');
-                    $player = $_SESSION['play_run']['player'];
-                    mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$player', 30, 100000 , 'waiting', 0)");
-                    unset($_SESSION['play']);
-                    unset($_SESSION['play_run']);
+                    mysqli_query($this->game->conn, "INSERT INTO `gamers` (`name`, `level`, `prize`, `status`, `getted`) VALUES ('$login', 30, 100000 , 'waiting', 0)");
                 }else{
 
-                    $NowLevel = array_search(false, $_SESSION['play_run']['level']);
-                    $NowLevel = explode('_', $NowLevel);
-                    $NowLevel = $NowLevel[1];
-                    $id = $_SESSION['play_run']['questions_id'][$NowLevel - 1];
-                    $question = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $id")->fetch_all(true);
-                    $question = $question[0];
+
+                    $NowLevel = $game_session['level'];
+
+                    $allQuestions = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `level` = $NowLevel")->fetch_all(true);
+
+                    $question = $allQuestions[array_rand($allQuestions)];
+                    $question_id = $question['id'];
+                    mysqli_query($this->game->conn, "UPDATE `user_game_session` SET `question_id` = '$question_id' WHERE `user_id` = $userId");
                     $wrongs = explode(',' , $question['wrong_answer_' . $language]);
                     $nextLvl = $NowLevel + 1;
 
-                    $nextquestion = mysqli_query($this->game->conn, "SELECT * FROM `questions` WHERE `id` = $id")->fetch_all(true);
-                    $nextquestion = $nextquestion[0];
 
 
-                    $previous_level = $NowLevel - 1;
-                    $Nowlevel_name = 'level_' . $previous_level;
-                    $Nextlevel_name = 'level_' . $NowLevel;
+                    $previous_level = $NowLevel - 2;
 
-                    if ($Nowlevel_name == 'level_0'){
-                        $NextPrize = $_SESSION['play_run']['level_prices'][$Nextlevel_name];
+                    if ($NowLevel -1 == 0){
+                        $NextPrize = $level_price[$NowLevel - 1]['price'];
                         $ajax['now_fond'] = 0;
                         $ajax['next_fond'] = $NextPrize;
                     }else{
-                        $NowPrize = $_SESSION['play_run']['level_prices'][$Nowlevel_name];
-                        $NextPrize = $_SESSION['play_run']['level_prices'][$Nextlevel_name];
+                        $NowPrize = $level_price[$previous_level]['price'];
+                        $NextPrize = $level_price[$NowLevel - 1]['price'];
                         $ajax['now_fond'] = $NowPrize;
                         $ajax['next_fond'] = $NextPrize;
                     }
@@ -256,55 +267,56 @@ class GameController{
 
 
             }
-        }
-
     }
 
-
-
     public function bonus($bonus_name, $true, $false, $language){
-        $exist = $_SESSION['play_run']['bonus'];
+
+        $login = $this->getLogin();
+        $userId = mysqli_query($this->game->conn, "SELECT * FROM `users` where `login` = '$login'");
+        if ($userId){
+            $userId = ($userId->fetch_assoc())['id'];
+        }
+        $bonuses = mysqli_query($this->game->conn, "SELECT * FROM `bonuses` WHERE `user_id` = $userId")->fetch_assoc();
 
         if ($language == 'en'){
-            if ($exist[$bonus_name] == false) {
-                if ($bonus_name == 'call_to_friend') {
+            if ($bonuses[$bonus_name] == 0) {
+                if ($bonus_name == 'call_friend') {
                     $rand = rand(1, 4);
-                    $err = 'Hi ' . $_SESSION['play_run']['player'] . ', i think it is "' . $true . '"';
-
+                    $err = 'Hi ' . $login . ', i think it is "' . $true . '"';
                     echo json_encode($err);
-                    $_SESSION['play_run']['bonus'][$bonus_name] = true;
-                } elseif ($bonus_name == '50') {
+                    mysqli_query($this->game->conn, "UPDATE `bonuses` SET `call_friend`= 1 WHERE `user_id` = $userId");
+                } elseif ($bonus_name == 'fifty_fifty') {
                     $randfalse = rand(0,2);
                     $err = 'It is or "' . $true . '" or "' . $false[$randfalse] . '"';
                     echo json_encode($err);
-                    $_SESSION['play_run']['bonus'][$bonus_name] = true;
-                } elseif ($bonus_name == 'Voice') {
+                    mysqli_query($this->game->conn, "UPDATE `bonuses` SET `fifty_fifty`= 1 WHERE `user_id` = $userId");
+                } elseif ($bonus_name == 'ask_audience') {
                     $prcnt = rand(50, 100); //  get random number
                     $err = $prcnt .' percent of coward voice think that it is "'. $true . '"';
                     echo json_encode($err);
-                    $_SESSION['play_run']['bonus'][$bonus_name] = true;
+                    mysqli_query($this->game->conn, "UPDATE `bonuses` SET `ask_audience`= 1 WHERE `user_id` = $userId");
                 }
             }else{
                 $err = 'You cannot use the same bonus twice';
                     echo json_encode($err);
             }
         }elseif ($language == 'hy'){
-            if ($exist[$bonus_name] == false) {
-                if ($bonus_name == 'call_to_friend') {
+            if ($bonuses[$bonus_name] == 0) {
+                if ($bonus_name == 'call_friend') {
                     $rand = rand(1, 4);
-                    $err = 'Բարև ' . $_SESSION['play_run']['player'] . ', ես կարծում եմ դա "' . $true . '"-ն է';
+                    $err = 'Բարև ' . $login . ', ես կարծում եմ դա "' . $true . '"-ն է';
                     echo json_encode($err);
-                    $_SESSION['play_run']['bonus'][$bonus_name] = true;
-                } elseif ($bonus_name == '50') {
+                    mysqli_query($this->game->conn, "UPDATE `bonuses` SET `call_friend`= 1 WHERE `user_id` = $userId");
+                } elseif ($bonus_name == 'fifty_fifty') {
                     $randfalse = rand(0,2);
                     $err = 'Դա կամ "' . $true . '"-ն է կամ էլ "' . $false[$randfalse] . '"-ը';
                     echo json_encode($err);
-                    $_SESSION['play_run']['bonus'][$bonus_name] = true;
-                } elseif ($bonus_name == 'Voice') {
+                    mysqli_query($this->game->conn, "UPDATE `bonuses` SET `fifty_fifty`= 1 WHERE `user_id` = $userId");
+                } elseif ($bonus_name == 'ask_audience') {
                     $prcnt = rand(50, 100); //  get random number
                     $err = 'Դայլիճի ձայնի  ' . $prcnt .' տոկոսը կարծում է որ դա "'. $true . '"-ն է';
                     echo json_encode($err);
-                    $_SESSION['play_run']['bonus'][$bonus_name] = true;
+                    mysqli_query($this->game->conn, "UPDATE `bonuses` SET `ask_audience`= 1 WHERE `user_id` = $userId");
                 }
             }else{
                 $err = 'Դուք չեք կարող օգտագործել նույն բոնուսը երկու անգամ';
@@ -317,9 +329,16 @@ class GameController{
 
     public function checkplay($language)
     {
-        if (isset($_SESSION['play'])){
+        $login = $this->getLogin();
+        $userId = (mysqli_query($this->game->conn, "SELECT * FROM `users` where `login` = '$login'")->fetch_assoc())['id'];
+        $game_session = mysqli_query($this->game->conn, "SELECT * FROM `user_game_session` where `user_id` = $userId ");
+        if ($game_session){
+            $game_session = $game_session->fetch_assoc();
+        }
+        if ($game_session['active'] == 1){
 
             header('location: /'. $language .'/play');
+
         }
     }
 
@@ -330,6 +349,13 @@ class GameController{
             header("location: /$lang/login");
         }
 
+    }
+
+    private function getLogin(){
+        if ($_SESSION['user_profile'] == ''){
+            return $_SESSION['admin_profile']['login'];
+        }
+        return $_SESSION['user_profile']['login'];
     }
 
 }

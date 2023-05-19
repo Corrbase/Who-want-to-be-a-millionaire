@@ -9,7 +9,7 @@
                         <div class="col-auto mt-4">
                             <h1 class="page-header-title">
                                 <div class="page-header-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div>
-                                <?php $front = $view_array['front'];echo text($front, $language, 'title'); ?>
+                                <?php echo text($front, $language, 'title'); ?>
                             </h1>
                             <div class="page-header-subtitle">Here you can edit you question and save it</div>
                         </div>
@@ -25,7 +25,7 @@
             </div>
         </header>
         <?php
-        $question = $view_array['question'][0];
+        $question = $question[0];
         $wrongs_en = explode(',' , $question['wrong_answer_en']);
         $wrongs_hy = explode(',' , $question['wrong_answer_hy']);
         ?>
@@ -63,7 +63,7 @@
                                     </div>
 
                                 </div>
-                                <div class="english">
+                                <div class="english pb-2">
                                     <h2><?php echo text($front, $language, 'form_english'); ?></h2>
                                     <div class="mb-3">
                                         <label class="small mb-1" for="Question"><?php echo text($front, $language, 'title'); ?></label>
@@ -92,25 +92,54 @@
                                     </div>
 
                                 </div>
-                                <div class="pt-5 pb-2">
-                                    <div class="mb-3">
-                                        <label class="small mb-1"><?php echo text($front, $language, 'select_diff'); ?></label>
-                                        <select name="difficulty" class="form-select" aria-label="Default select example">
-                                            <option selected="" disabled=""><?php echo text($front, $language, 'select_diff_place'); ?></option>
+                                <hr>
 
-                                            <option name="easy" value="easy" selected=""><?php echo text($front, $language, 'select_diff_e'); ?></option>
-                                            <option name="normal" value="normal"><?php echo text($front, $language, 'select_diff_n'); ?></option>
-                                            <option name="hard" value="hard"><?php echo text($front, $language, 'select_diff_h'); ?></option>
-                                        </select>
+                                <div class="pt-3 pb-2">
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <div class="w-100 p-1">
+                                            <label class="small mb-1"><?php echo text($front, $language, 'select_diff'); ?></label>
+                                            <select name="difficulty" class="form-select" aria-label="Default select example">
+                                                <option selected="" disabled=""><?php echo text($front, $language, 'select_diff_place'); ?></option>
+
+                                                <option name="easy" value="easy" selected=""><?php echo text($front, $language, 'select_diff_e'); ?></option>
+                                                <option name="normal" value="normal"><?php echo text($front, $language, 'select_diff_n'); ?></option>
+                                                <option name="hard" value="hard"><?php echo text($front, $language, 'select_diff_h'); ?></option>
+                                            </select>
+                                        </div>
+
+                                        <div class="w-100 p-1">
+                                            <label class="small mb-1"><?php echo text($front, $language, 'select_lvl'); ?></label>
+                                            <select name="level" class="form-select" aria-label="Default select example">
+                                                <option selected="" disabled=""><?php echo text($front, $language, 'select_choose'); ?></option>
+
+                                                <?php
+                                                $a = 1;
+                                                while ($a<= $levels){
+                                                    echo $a;
+                                                    echo "<option name='level' value='$a'";
+                                                    if ($question['level'] == $a){
+                                                        echo "selected";
+                                                    }
+                                                    echo ">$a</option>";
+                                                    $a++;
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+
+
+                                        <div class="w-100 p-1">
+                                            <label class="small mb-1"><?php echo text($front, $language, 'select_active'); ?></label>
+                                            <select name="Active" class="form-select" aria-label="Default select example">
+                                                <option selected="" disabled=""><?php echo text($front, $language, 'select_active_place'); ?></option>
+
+                                                <option name="On" value="1" selected=""><?php echo text($front, $language, 'select_active_on'); ?></option>
+                                                <option name="Off" value="0"><?php echo text($front, $language, 'select_active_off'); ?></option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="small mb-1"><?php echo text($front, $language, 'select_active'); ?></label>
-                                        <select name="Active" class="form-select" aria-label="Default select example">
-                                            <option selected="" disabled=""><?php echo text($front, $language, 'select_active_place'); ?></option>
 
-                                            <option name="On" value="1" selected=""><?php echo text($front, $language, 'select_active_on'); ?></option>
-                                            <option name="Off" value="0"><?php echo text($front, $language, 'select_active_off'); ?></option>
-                                        </select>
                                     </div>
                                 </div>
                                 <!-- Submit button-->
@@ -151,6 +180,9 @@
                     $('.form-accept').text('');
                 }else if(request_data.success === 'error2') {
                     $('.form-errors').text("<?php echo text($front, $language, 'error2'); ?>");
+                    $('.form-accept').text('');
+                }else if(request_data.success === 'error4') {
+                    $('.form-errors').text("<?php echo text($front, $language, 'error4'); ?>");
                     $('.form-accept').text('');
                 }else if(request_data.success === 'success') {
                     $('.form-errors').text("");
