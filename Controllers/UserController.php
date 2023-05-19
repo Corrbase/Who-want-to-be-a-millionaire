@@ -4,6 +4,7 @@ class UserController{
     public $user;
     public $front = [];
     public $header = [];
+    public $login;
 
     public function __construct($settings)
     {
@@ -18,6 +19,9 @@ class UserController{
 
                 array_push($this->header, $key);
             }
+        }
+        if ($_SESSION['user_profile']){
+            $this->login = $_SESSION['user_profile']['login'];
         }
     }
 
@@ -71,19 +75,16 @@ class UserController{
                     } else {
                         $profile_settings = $profile_settings[0];
                         if ($profile_settings['Role'] == 'Admin'){
-                                unset($_SESSION['user_profile']);
 
                                 $_SESSION['admin_profile'] = [
                                     'profile' => 1,
                                     'login' => $login,
-                                    'password' => $pass,
                                 ];
                                 $ajax['success'] = true;
                                 echo json_encode($ajax);
 
                         }else {
                             if ($profile == 1) {
-                                unset($_SESSION['user_profile']);
                                 $_SESSION['user_profile'] = [
                                     'profile' => 1,
                                     'login' => $login,
@@ -93,6 +94,7 @@ class UserController{
                                     'balance' => $profile_settings['balance']
                                 ];
                                 $ajax['success'] = true;
+
 
                                 echo json_encode($ajax);
 
@@ -112,7 +114,7 @@ class UserController{
     $this->loginAdmin($language);
         if (is_numeric($pagination['pagination'])){
             $front = mysqli_query($this->user->conn, "SELECT * FROM `languages`  WHERE url = 'profile' ")->fetch_all(true);
-            $login = $_SESSION['user_profile']['login'];
+            $login  =$this->login;
             $AllGames = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE `name` = '$login' ORDER BY FIELD(status, 'Finished', 'waiting'), `gamers`.`getted` ASC ");
             if (is_bool($AllGames)){
                 echo json_encode(false);

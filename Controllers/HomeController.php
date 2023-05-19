@@ -74,12 +74,13 @@ class HomeController{
                     $ajax['error'] = 'please check form again';
                     echo json_encode($ajax);
                 } else {
-                    $profile = mysqli_query($this->home->conn, "SELECT * FROM `users` WHERE `login` = '$login'"); // get a profile and check user's existing
+                    $profile = mysqli_query($this->home->conn, "SELECT * FROM `users` WHERE `login` = '$login'"); // get profile and check user existing
                     $profile = mysqli_num_rows($profile);
                     if ($profile == 1) {
                         $ajax['error'] = 'This name of user already exists';
                         echo json_encode($ajax);
                     }
+
                     $pass = md5($pass);
 
                     $query = mysqli_query($this->home->conn, "INSERT INTO `users`( `login`, `password`, `name`, `sname`, `age`, `balance`, `Role`) VALUES ('$login','$pass','$name','$sname',$age, 0, 'User')");

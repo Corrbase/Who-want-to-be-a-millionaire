@@ -115,7 +115,7 @@ class GameController{
         $front = mysqli_query($this->game->conn, "SELECT * FROM `languages`  WHERE url = '$url' ")->fetch_all(true);
 
         // Render the game page with the retrieved data
-        view('index', 'Game', ['front' => $this->front,'language' => $language], 'Play');
+        view('index', 'Game', ['front' => $front,'language' => $language], 'Play');
     }
 
     public function play_gone()

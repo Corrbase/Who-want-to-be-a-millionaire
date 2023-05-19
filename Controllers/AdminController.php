@@ -312,6 +312,7 @@ class AdminController {
         ], "Admin");
     }
 
+
     public function documentation()
     {
         $language = getLanguage();
@@ -323,6 +324,7 @@ class AdminController {
             'front' => $this->front,
         ], "Admin");
     }
+
 
     // Requests
 
