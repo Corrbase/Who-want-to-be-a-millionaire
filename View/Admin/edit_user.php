@@ -105,22 +105,28 @@
                 let request_data = JSON.parse(data)
                 $('.loading-refresh').removeClass('loading-form');
 
-                if (request_data.success === 'error1'){
-                    $('.form-errors').text("<?php echo text($front, $language, 'error1'); ?>");
-                    $('.form-accept').text('');
-                }else if(request_data.success === 'error2') {
-                    $('.form-errors').text("<?php echo text($front, $language, 'error2'); ?>");
-                    $('.form-accept').text('');
-                }else if(request_data.success === 'error3') {
-                    $('.form-errors').text("<?php echo text($front, $language, 'error3'); ?>");
-                    $('.form-accept').text('');
-                }else if(request_data.success === 'error4') {
-                    $('.form-errors').text("<?php echo text($front, $language, 'error4'); ?>");
-                    $('.form-accept').text('');
-                }else if(request_data.success === true) {
-                    $('.form-errors').text('');
-                    $('.form-accept').text('<?php echo text($front, $language, 'save_changes'); ?>');
+                switch(request_data.success) {
+                    case 'error1':
+                        $('.form-errors').text("<?php echo text($front, $language, 'error1'); ?>");
+                        $('.form-accept').text('');
+                        break;
+                    case 'error2':
+                        $('.form-errors').text("<?php echo text($front, $language, 'error2'); ?>");
+                        $('.form-accept').text('');
+                        break;
+                    case 'error3':
+                        $('.form-errors').text("<?php echo text($front, $language, 'error3'); ?>");
+                        $('.form-accept').text('');
+                        break;
+                    case 'error4':
+                        $('.form-errors').text("<?php echo text($front, $language, 'error4'); ?>");
+                        $('.form-accept').text('');
+                        break;
+                    case true:
+                        $('.form-errors').text('');
+                        $('.form-accept').text('<?php echo text($front, $language, 'save_changes'); ?>');
                 }
+
             }
         })
 

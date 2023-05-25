@@ -21,32 +21,40 @@ class AdminController {
         }
     }
 
-    public function index(){
+    public function index() // homepage
+    {
 
         $language = getLanguage();
         $this->CheckLogin($language);
 
-        $AllGames = mysqli_query($this->admin->conn, "SELECT * FROM `gamers`");
-        $Arr = $AllGames->fetch_all(true);
-        $UpToFive = 0;
-        foreach ($Arr as $item=>$key){
-            if ($key['level'] >= 5){
-                $UpToFive += 1;
+        $allGames = mysqli_query($this->admin->conn, "SELECT * FROM `gamers`"); // Query to get all games
+        $arr = $allGames->fetch_all(true); // Fetch all rows from the query result as an associative array
+        $UpToFive = 0; // Counter variable to count the number of games with level >= 5
+        foreach ($arr as $item => $key) { // Loop through each game in the array
+            if ($key['level'] >= 5) { // Check if the game's level is greater than or equal to 5
+                $UpToFive += 1; // get
             }
         }
-        $AllGames = mysqli_num_rows($AllGames);
+        $allGames = mysqli_num_rows($allGames); // Get the total number of games
 
-        $top_gamers = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` ORDER BY `prize` DESC LIMIT 5;")->fetch_all(true);
+        $top_gamers = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` ORDER BY `prize` DESC LIMIT 5;")->fetch_all(true); // get top gamers based on the prize, in
 
-        view("dashboard", 'Admin' , [
-            'top_gamers' => $top_gamers,
-            'UpToFive' => $UpToFive,
-            'AllGames' => $AllGames,
-            'Admin' => $_SESSION['admin_profile'],
-            'front' => $this->front,
-            'language' => $language,
-            'header' => $this->header
-        ], "Admin");
+        // Pass the data to the view
+        view(
+            "dashboard", // View name
+            'Admin', // View context
+            [
+                'top_gamers' => $top_gamers, // Top gamers data
+                'UpToFive' => $UpToFive, // Count of games with level >= 5
+                'AllGames' => $allGames, // Total number of games
+                'Admin' => $_SESSION['admin_profile'], // Admin profile data
+                'front' => $this->front, // Front data
+                'language' => $language, // Language data
+                'header' => $this->header // Header data
+            ],
+            "Admin" // Layout name
+        );
+
     }
 
     public function questions()
@@ -62,7 +70,7 @@ class AdminController {
             'front' => $this->front
         ], "Admin");
     }
-    public function question_pagination($pagination)
+    public function questionPagination($pagination)
     {
         if (!is_numeric($pagination['pagination'])){
             header('location: /');
@@ -75,39 +83,25 @@ class AdminController {
         $page = $pagination['pagination'] -1;
         $count = $page * 5;
         $questions = mysqli_query($this->admin->conn, "SELECT * FROM `questions` LIMIT $count, 5 ")->fetch_all(true);
-        if ($AllQuestionsCount %5 == 0){
-
-            $pages = 1;
-
-        }elseif ($AllQuestionsCount/5 == 1){
-            $pages = $AllQuestionsCount/5;
-        }elseif ($AllQuestionsCount%5 <= 4){
-            $pages = floor($AllQuestionsCount/5) + 1;
-        }
-        $PreviousPage = $pagination['pagination'] - 1;
-        $NextPage = $pagination['pagination'] + 1;
-        if ($PreviousPage < 1){
-            $disabled1 = 'disabled';
-        }
-        if ($NextPage > $pages){
-
-            $disabled2 = 'disabled';
+        $paginationInfo = $this->pagination($AllQuestionsCount, $pagination['pagination']);
+        foreach ($paginationInfo as $item=>$key){
+            $$item = $key;
         }
 
         $ajax = [
             'questions' => $questions,
-            'disabled1' => $disabled1,
-            'disabled2' => $disabled2,
+            'btnPrevious' => $btnPrevious,
+            'btnNext' => $btnNext,
             'PreviousPage' => $PreviousPage,
             'NextPage' => $NextPage,
-            'AllQuestionsCount' => $AllQuestionsCount,
+            'AllUsersCount' => $AllUsersCount,
             'pagination' => $pagination['pagination']
 
         ];
         echo json_encode($ajax);
 
     }
-    public function create_question()
+    public function createQuestion()
     {
         $language = getLanguage();
         $this->CheckLogin($language);
@@ -122,7 +116,7 @@ class AdminController {
             'front' => $this->front
         ], "Admin");
     }
-    public function edit_question($id)
+    public function editQuestion($id)
     {
         $language = getLanguage();
         $this->CheckLogin($language);
@@ -163,7 +157,7 @@ class AdminController {
             'front' => $this->front
         ], "Admin");
     }
-    public function users_pagination($pagination)
+    public function usersPagination($pagination)
     {
         $language = getLanguage();
         $this->CheckLogin($language);
@@ -189,27 +183,16 @@ class AdminController {
             } else {
                 $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role' LIMIT $count, 5")->fetch_all(true);
             }
-            if ($AllUsersCount / 5 == 1) {
-                $pages = 1;
-            } elseif ($AllUsersCount % 5 == 0) {
-                $pages = $AllUsersCount / 5;
-            } elseif ($AllUsersCount % 5 <= 4) {
-                $pages = floor($AllUsersCount / 5) + 1;
+
+            $paginationInfo = $this->pagination($AllUsersCount, $pagination['pagination']);
+            foreach ($paginationInfo as $item=>$key){
+                $$item = $key;
             }
 
-            $PreviousPage = $pagination['pagination'] - 1;
-            $NextPage = $pagination['pagination'] + 1;
-            if ($PreviousPage < 1) {
-                $disabled1 = 'disabled';
-            }
-            if ($NextPage > $pages) {
-
-                $disabled2 = 'disabled';
-            }
             $ajax = [
                 'users' => $AllUsers,
-                'disabled1' => $disabled1,
-                'disabled2' => $disabled2,
+                'btnPrevious' => $btnPrevious,
+                'btnNext' => $btnNext,
                 'PreviousPage' => $PreviousPage,
                 'NextPage' => $NextPage,
                 'AllUsersCount' => $AllUsersCount,
@@ -219,7 +202,7 @@ class AdminController {
             echo json_encode($ajax);
         }
     }
-    public function add_user(){
+    public function addUser(){
         $language = getLanguage();
         $this->CheckLogin($language);
 
@@ -231,7 +214,7 @@ class AdminController {
             'front' => $this->front
         ], "Admin");
     }
-    public function edit_user($id){
+    public function editUser($id){
         $language = getLanguage();
         $this->CheckLogin($language);
         $id = $id['id'];
@@ -253,7 +236,7 @@ class AdminController {
         }
     }
 
-    public function gamers_pagination($pagination)
+    public function gamersPagination($pagination)
     {
 
         if (!is_numeric($pagination['pagination'])){
@@ -262,38 +245,22 @@ class AdminController {
         $language = getLanguage();
         $this->CheckLogin($language);
         $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `gamers`");
-        $AllGamesCount = $AllUsers->num_rows;
+        $allGamesCount = $AllUsers->num_rows;
         $page = $pagination['pagination'] -1;
         $count = $page * 5;
         $games = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT $count, 5 ")->fetch_all(true);
-        if ($AllGamesCount /5 <1){
-
-            $pages = 1;
-
-        }elseif ($AllGamesCount%5 == 0){
-            $pages = $AllGamesCount/5;
-
-        }elseif ($AllGamesCount%5 <= 4){
-            $pages = floor($AllGamesCount/5) + 1;
-            $a = $pagination['pagination'];
+        $paginationInfo = $this->pagination($allGamesCount, $pagination['pagination']);
+        foreach ($paginationInfo as $item=>$key){
+            $$item = $key;
         }
 
-        $PreviousPage = $pagination['pagination'] - 1;
-        $NextPage = $pagination['pagination'] + 1;
-        if ($PreviousPage < 1){
-            $disabled1 = 'disabled';
-        }
-        if ($NextPage > $pages){
-
-            $disabled2 = 'disabled';
-        }
         $ajax = [
-            'games' => $games,
-            'disabled1' => $disabled1,
-            'disabled2' => $disabled2,
+            'gamers' => $games,
+            'btnPrevious' => $btnPrevious,
+            'btnNext' => $btnNext,
             'PreviousPage' => $PreviousPage,
             'NextPage' => $NextPage,
-            'AllUsersCount' => $AllGamesCount,
+            'AllUsersCount' => $AllUsersCount,
             'pagination' => $pagination['pagination']
 
         ];
@@ -325,6 +292,37 @@ class AdminController {
         ], "Admin");
     }
 
+    // private functions for this controller
+    private function pagination($AllCount, $page)
+    {
+        switch (true) {
+            case ($AllCount / 5 == 1):
+                $pages = 1;
+                break;
+            case ($AllCount % 5 == 0):
+                $pages = $AllCount / 5;
+                break;
+            case ($AllCount % 5 <= 4):
+                $pages = floor($AllCount / 5) + 1;
+                break;
+        }
+        $PreviousPage = $page - 1;
+        $NextPage = $page + 1;
+        if ($PreviousPage < 1) {
+            $btnPrevious = 'disabled';
+        }
+        if ($NextPage > $pages) {
+
+            $btnNext = 'disabled';
+        }
+        return [
+            'pages' => $pages,
+            'btnPrevious' => $btnPrevious,
+            'btnNext' => $btnNext,
+            'PreviousPage' => $PreviousPage,
+            'NextPage' => $NextPage
+        ];
+    }
 
     // Requests
 
@@ -339,66 +337,67 @@ class AdminController {
             header("location: /admin/home");
         }
     }
-    public function add_user_request()  {
+    public function addUserRequest()  {
 
         if($this->CheckLogin())
             return;
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-
-            if (array_search('',$_POST)){
-                $ajax['success'] = false;
-                echo json_encode($ajax);
-            }else{
-
                 $login = $_POST['login'];
                 $pass = $_POST['password'];
                 $name = $_POST['name'];
                 $sname = $_POST['sname'];
                 $age = $_POST['age'];
                 $role = $_POST['Role'];
-                if($age < 18 || $age >= 100){
-
-                    $ajax['success'] = false;
-                    echo json_encode($ajax);
-
-                }elseif (strlen($name) < 3){
-                    $ajax['success'] = false;
-                    echo json_encode($ajax);
-                }elseif (strlen($login) < 4){
-                    $ajax['success'] = false;
-                    echo json_encode($ajax);
-                }elseif (strlen($pass) < 4){
-                    $ajax['success'] = false;
-                    echo json_encode($ajax);
-                }elseif (strlen($sname) < 3){
-                    $ajax['success'] = false;
-                    echo json_encode($ajax);
-                }elseif ($role == ''){
-
-                    $ajax['success'] = false;
-                    echo json_encode($ajax);
-                }
-                else{
-                    $profile = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE `login` = '$login'");
-
-                    $profile =  mysqli_num_rows($profile);
-                    if ($profile == 1){
-                        $ajax['success'] = false;
+                $balance = $_POST['balance'];
+                switch (true) {
+                    case (strlen($name) < 3 || $name == ''):
+                        $ajax['error1'] = false;
                         echo json_encode($ajax);
-                    }else {
-
-                        $pass = md5($pass);
-                        $query = mysqli_query($this->admin->conn, "INSERT INTO `users`( `login`, `password`, `name`, `sname`, `age`, `balance`, `Role`) VALUES ( '$login', '$pass', '$name', '$sname', $age, 0, '$role' ) ");
-
-                        $ajax['success'] = true;
+                        break;
+                    case (strlen($sname) < 3 || $sname == ''):
+                        $ajax['error2'] = false;
                         echo json_encode($ajax);
-                    }
-                    }
+                        break;
+                    case ($balance == ''):
+                        $ajax['error3'] = false;
+                        echo json_encode($ajax);
+                        break;
+                    case ($age < 18 || $age >= 100 || $age == ''):
+                        $ajax['error4'] = false;
+                        echo json_encode($ajax);
+                        break;
+                    case (strlen($login) < 4 || $login == ''):
+                        $ajax['error5'] = false;
+                        echo json_encode($ajax);
+                        break;
+                    case (strlen($pass) < 4 || $pass == ''):
+                        $ajax['error6'] = false;
+                        echo json_encode($ajax);
+                        break;
+                    case ($role == '' || $role == ''):
+                        $ajax['error7'] = false;
+                        echo json_encode($ajax);
+                        break;
+
+                    default:
+                        $profile = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE `login` = '$login'");
+                        $profile = mysqli_num_rows($profile);
+                        if ($profile == 1) {
+                            $ajax['success'] = false;
+                            echo json_encode($ajax);
+                        }else {
+                            $pass = md5($pass);
+                            $query = mysqli_query($this->admin->conn, "INSERT INTO `users`( `login`, `password`, `name`, `sname`, `age`, `balance`, `Role`) VALUES ( '$login', '$pass', '$name', '$sname', $age, $balance, '$role' ) ");
+
+                            $ajax['success'] = true;
+                            echo json_encode($ajax);
+                        }
                 }
+
             }
     }
-    public function delete_user($user){
+    public function deleteUser($user){
         if($this->CheckLogin())
             return;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -420,52 +419,42 @@ class AdminController {
         }
 
     }
-    public function question_edit($id){
+    public function questionEdit($id){
 
         if($this->CheckLogin())
             return;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $id = $id['id'];
                 $act = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE `id` = $id");
+                if ($act->num_rows == 0){
+                    header("location: /error404");
+                }
                 $oldQuestion = $act->fetch_assoc();
-                $act = $act->fetch_all(true);
-             if ($act[0] == 0){
-                dd('oops');
-            }
             if ($_POST){
-                $question_hy = $_POST['question_hy'];
-                $question_en = $_POST['question_en'];
-                $wrong_answer_1_en = $_POST['wrong_answer_1_en'];
-                $wrong_answer_2_en = $_POST['wrong_answer_2_en'];
-                $wrong_answer_3_en = $_POST['wrong_answer_3_en'];
-                $wrong_answer_1_hy = $_POST['wrong_answer_1_hy'];
-                $wrong_answer_2_hy = $_POST['wrong_answer_2_hy'];
-                $wrong_answer_3_hy = $_POST['wrong_answer_3_hy'];
-                $right_answer_hy = $_POST['right_answer_hy'];
-                $right_answer_en = $_POST['right_answer_en'];
-                $diff = $_POST['difficulty'];
-                $active = $_POST['Active'];
-                $level = $_POST['level'];
-                $oldLevel = ['level'];
+                foreach ($_POST as $item=>$key){
+                    $$item = $key;
+                }
+
+                $oldLevel = $oldQuestion['level'];
                 $actives = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE active = 1 AND `level` = $oldLevel");
-                $actives = mysqli_num_rows($actives);
+                $actives = $actives->num_rows;
 
                 if ($level !== $oldQuestion['level']){
-                    if ($active == 1){
+                    if ($Active == 1){
                         $ajax['success'] = 'error4';
                         echo json_encode($ajax);
                         return false;
                     }
-                }
-                if ($oldQuestion['active'] !== $active){
-                    if ($actives == 1){
-                        if ($active !== 1){
+                }elseif ($oldQuestion['active'] !== $Active){
+                    if ($actives <= 1){
+                        if ($Active == 0){
                             $ajax['success'] = 'error1';
                             echo json_encode($ajax);
                             return false;
                         }
                     }
                 }
+
             }
 
             $wrongs_en = "$wrong_answer_1_en" . ',' . "$wrong_answer_2_en" . ',' . "$wrong_answer_3_en";
@@ -477,8 +466,8 @@ class AdminController {
                        `hy`='$question_hy',
                        `right_answer_hy`='$right_answer_hy',
                        `wrong_answer_hy`='$wrongs_hy',
-                       `difficulty`='$diff',
-                       `active`='$active',
+                       `difficulty`='$difficulty',
+                       `active`='$Active',
                        `en`='$question_en',
                        `right_answer_en`='$right_answer_en',
                        `wrong_answer_en`='$wrongs_en' 
@@ -494,11 +483,9 @@ class AdminController {
                 return false;
 
             }
-        }else{
-
         }
     }
-    public function user_edit($id){
+    public function userEdit($id){
 
         if($this->CheckLogin())
             return;
@@ -548,7 +535,7 @@ class AdminController {
         }else{
         }
     }
-    public function question_create(){
+    public function questionCreate(){
 
         if($this->CheckLogin())
             return;
@@ -595,7 +582,7 @@ VALUES (
         }else{
         }
     }
-    public function change_gamer_status($id)
+    public function changeGamerStatus($id)
     {
         if($this->CheckLogin())
             return;
@@ -615,11 +602,14 @@ VALUES (
         }
     }
 
+
     public function CheckLogin($lang = null){
-        if (isset($_SESSION['admin_profile']['profile'])) {
+        if (isset($_SESSION['admin_profile']['profile'])) // is admin logged in
+        {
             return false;
         }else{
-            if ($lang == null){
+            if ($lang == null) // if lang null go to main english page
+            {
                 header("location: /en/home");
             }else{
                 header("location: /$lang/home");

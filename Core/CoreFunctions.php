@@ -187,19 +187,19 @@ function model($name, $settings){
 
 function view($name,$includes = null ,$view_array = null, $folder = null){
 
-    foreach ($view_array as $item=>$key){
+    foreach ($view_array as $item=>$key){ // foreach and create variables from view_array
         $$item = $key;
     }
     if (isset($view_array['language'])){
-        $language = $view_array['language'];
+        $language = $view_array['language']; // create variable for language
     }
     if (isset($view_array['header'])){
-        $header = $view_array['header'];
+        $header = $view_array['header']; // create variable for includes
     }
     if ($includes == null){
-        include "View/Includes/Includes/main.php";
+        include "View/Includes/Includes/main.php"; // include header footer and other content
     }else{
-        include "View/Includes/$includes includes/main.php";
+        include "View/Includes/$includes includes/main.php"; // include main content
     }
 
 
@@ -219,16 +219,16 @@ function text($array, $language, $name){
 }
 
 function getLanguage(){
-        $url = substr($_GET['url'], 0, 2);
+        $url = substr($_GET['url'], 0, 2); // get url language part
         if ($url == 'en'){
-            $language = 'en';
+            $language = 'en'; // set in variable
         }elseif ($url == 'hy'){
-            $language = 'hy';
+            $language = 'hy';   // set in variable
         }else{
-            $language = 'none';
+            $language = 'none'; //if language is not defined
         }
 
-        return $language;
+        return $language; // return language
     }
 ?>
 

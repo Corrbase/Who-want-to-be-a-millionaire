@@ -112,16 +112,46 @@
             {
                 let request_data = JSON.parse(data)
                 $('.loading-refresh').removeClass('loading-form');
+                    var err = Object.keys(request_data)
+
+
+                    switch (err[0]) {
+                        case 'error1':
+                            $('.form-accept').empty();
+                            $('.form-errors').html('<?php echo text($front, $language, 'error1');?>');
+                            break
+                        case 'error2':
+                            $('.form-accept').empty();
+                            $('.form-errors').html('<?php echo text($front, $language, 'error2');?>');
+                            break
+                        case 'error3':
+                            $('.form-accept').empty();
+                            $('.form-errors').html('<?php echo text($front, $language, 'error3');?>');
+                            break
+                        case 'error4':
+                            $('.form-accept').empty();
+                            $('.form-errors').html('<?php echo text($front, $language, 'error4');?>');
+                            break
+                        case 'error5':
+                            $('.form-accept').empty();
+                            $('.form-errors').html('<?php echo text($front, $language, 'error5');?>');
+                            break
+                        case 'error6':
+                            $('.form-accept').empty();
+                            $('.form-errors').html('<?php echo text($front, $language, 'error6');?>');
+                            break
+                        case 'error7':
+                            $('.form-accept').empty();
+                            $('.form-errors').html('<?php echo text($front, $language, 'error7');?>');
+                            break
+                    }
 
                 if (request_data.success === true){
-                    $('.form-accept').html('<?php echo text($front, $language, 'user_created'); ?>');
+                    $('.form-accept').html('<?php echo text($front, $language, ''); ?>');
                     $('.form-errors').empty();
-                }else if(request_data.success === 123){
+                }else{
                     $('.form-accept').empty();
                     $('.form-errors').html('<?php echo text($front, $language, 'exist_user');    ?>');
-                }else if(request_data.success === false){
-                    $('.form-accept').empty();
-                    $('.form-errors').html('<?php echo text($front, $language, 'please_check');    ?>');
                 }
             }
         });

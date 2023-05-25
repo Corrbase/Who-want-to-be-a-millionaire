@@ -175,19 +175,26 @@
                 let request_data = JSON.parse(data)
                 $('.loading-refresh').removeClass('loading-form');
                 console.log(request_data)
-                if (request_data.success === 'error1'){
-                    $('.form-errors').text("<?php echo text($front, $language, 'error1'); ?>");
-                    $('.form-accept').text('');
-                }else if(request_data.success === 'error2') {
-                    $('.form-errors').text("<?php echo text($front, $language, 'error2'); ?>");
-                    $('.form-accept').text('');
-                }else if(request_data.success === 'error4') {
-                    $('.form-errors').text("<?php echo text($front, $language, 'error4'); ?>");
-                    $('.form-accept').text('');
-                }else if(request_data.success === 'success') {
-                    $('.form-errors').text("");
-                    $('.form-accept').text('<?php echo text($front, $language, 'success'); ?>');
+                switch(request_data.success) {
+                    case 'error1':
+                        $('.form-errors').text("<?php echo text($front, $language, 'error1'); ?>");
+                        $('.form-accept').text('');
+                        break;
+                    case 'error2':
+                        $('.form-errors').text("<?php echo text($front, $language, 'error2'); ?>");
+                        $('.form-accept').text('');
+                        break;
+                    case 'error4':
+                        $('.form-errors').text("<?php echo text($front, $language, 'error4'); ?>");
+                        $('.form-accept').text('');
+                        break;
+                    case 'success':
+                        $('.form-errors').text("");
+                        $('.form-accept').text('<?php echo text($front, $language, 'success'); ?>');
+                        break;
                 }
+
+
             }
         })
 

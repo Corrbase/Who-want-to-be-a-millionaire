@@ -120,17 +120,17 @@
                 if (response) {
                     change_default()
                     console.log(request_data)
-                    let data = request_data['games']
-                    let select1 = request_data['disabled1']
-                    let select2 = request_data['disabled2'];
+                    let data = request_data['gamers']
+                    let btnPrevious = request_data['btnPrevious']
+                    let btnNext = request_data['btnNext'];
                     let Prev = request_data['PreviousPage'];
                     let Next = request_data['NextPage'];
                     let page = request_data['pagination'];
                     let Allcount = request_data['AllUsersCount'];
 
                     arr = {
-                        'select1': select1,
-                        'select2': select2,
+                        'select1': btnPrevious,
+                        'select2': btnNext,
                         'Prev': Prev,
                         'Next': Next,
                         'page': page,
@@ -230,17 +230,17 @@
                         let request_data = JSON.parse(response)
                         if (response) {
                             change_default()
-                            let data = request_data['games']
-                            let select1 = request_data['disabled1']
-                            let select2 = request_data['disabled2'];
+                            let data = request_data['gamers']
+                            let btnPrevious = request_data['btnPrevious']
+                            let btnNext = request_data['btnNext'];
                             let Prev = request_data['PreviousPage'];
                             let Next = request_data['NextPage'];
                             let page = request_data['pagination'];
                             let Allcount = request_data['AllUsersCount'];
 
                             arr = {
-                                'select1': select1,
-                                'select2': select2,
+                                'select1': btnPrevious,
+                                'select2': btnNext,
                                 'Prev': Prev,
                                 'Next': Next,
                                 'page': page,
@@ -307,17 +307,17 @@
                 let request_data = JSON.parse(response)
                 if (response) {
                     change_default()
-                    let data = request_data['games']
-                    let select1 = request_data['disabled1']
-                    let select2 = request_data['disabled2'];
+                    let data = request_data['gamers']
+                    let btnPrevious = request_data['btnPrevious']
+                    let btnNext = request_data['btnNext'];
                     let Prev = request_data['PreviousPage'];
                     let Next = request_data['NextPage'];
                     let page = request_data['pagination'];
                     let Allcount = request_data['AllUsersCount'];
 
                     arr = {
-                        'select1': select1,
-                        'select2': select2,
+                        'select1': btnPrevious,
+                        'select2': btnNext,
                         'Prev': Prev,
                         'Next': Next,
                         'page': page,

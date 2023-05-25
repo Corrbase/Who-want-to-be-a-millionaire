@@ -293,22 +293,26 @@ class GameController{
 
         if ($language == 'en'){
             if ($bonuses[$bonus_name] == 0) {
-                if ($bonus_name == 'call_friend') {
-                    $rand = rand(1, 4);
-                    $err = 'Hi ' . $login . ', i think it is "' . $true . '"';
-                    echo json_encode($err);
-                    mysqli_query($this->game->conn, "UPDATE `bonuses` SET `call_friend`= 1 WHERE `user_id` = $userId");
-                } elseif ($bonus_name == 'fifty_fifty') {
-                    $randfalse = rand(0,2);
-                    $err = 'It is or "' . $true . '" or "' . $false[$randfalse] . '"';
-                    echo json_encode($err);
-                    mysqli_query($this->game->conn, "UPDATE `bonuses` SET `fifty_fifty`= 1 WHERE `user_id` = $userId");
-                } elseif ($bonus_name == 'ask_audience') {
-                    $prcnt = rand(50, 100); //  get random number
-                    $err = $prcnt .' percent of coward voice think that it is "'. $true . '"';
-                    echo json_encode($err);
-                    mysqli_query($this->game->conn, "UPDATE `bonuses` SET `ask_audience`= 1 WHERE `user_id` = $userId");
+                switch ($bonus_name) {
+                    case 'call_friend':
+                        $rand = rand(1, 4);
+                        $err = 'Hi ' . $login . ', i think it is "' . $true . '"';
+                        echo json_encode($err);
+                        mysqli_query($this->game->conn, "UPDATE `bonuses` SET `call_friend`= 1 WHERE `user_id` = $userId");
+                        break;
+                    case 'fifty_fifty':
+                        $randfalse = rand(0,2);
+                        $err = 'It is or "' . $true . '" or "' . $false[$randfalse] . '"';
+                        echo json_encode($err);
+                        mysqli_query($this->game->conn, "UPDATE `bonuses` SET `fifty_fifty`= 1 WHERE `user_id` = $userId");
+                        break;
+                    case 'ask_audience':
+                        $prcnt = rand(50, 100); // get random number
+                        $err = $prcnt .' percent of coward voice think that it is "'. $true . '"';
+                        echo json_encode($err);
+                        mysqli_query($this->game->conn, "UPDATE `bonuses` SET `ask_audience`= 1 WHERE `user_id` = $userId");
                 }
+
             }else{
                 $err = 'You cannot use the same bonus twice';
                     echo json_encode($err);

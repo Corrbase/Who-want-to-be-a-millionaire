@@ -117,16 +117,16 @@
                     if (response) {
                         change_default()
                         let data = request_data['users']
-                        let select1 = request_data['disabled1']
-                        let select2 = request_data['disabled2'];
+                        let btnPrevious = request_data['btnPrevious']
+                        let btnNext = request_data['btnNext'];
                         let Prev = request_data['PreviousPage'];
                         let Next = request_data['NextPage'];
                         let page = request_data['pagination'];
                         let Allcount = request_data['AllUsersCount'];
 
                         arr = {
-                            'select1': select1,
-                            'select2': select2,
+                            'select1': btnPrevious,
+                            'select2': btnNext,
                             'Prev': Prev,
                             'Next': Next,
                             'page': page,
@@ -173,16 +173,16 @@
                     if (response) {
                         change_default()
                         let data = request_data['users']
-                        let select1 = request_data['disabled1']
-                        let select2 = request_data['disabled2'];
+                        let btnPrevious = request_data['btnPrevious']
+                        let btnNext = request_data['btnNext'];
                         let Prev = request_data['PreviousPage'];
                         let Next = request_data['NextPage'];
                         let page = request_data['pagination'];
                         let Allcount = request_data['AllUsersCount'];
 
                         arr = {
-                            'select1': select1,
-                            'select2': select2,
+                            'select1': btnPrevious,
+                            'select2': btnNext,
                             'Prev': Prev,
                             'Next': Next,
                             'page': page,
@@ -223,16 +223,16 @@
             if (response) {
                 change_default()
                 let data = request_data['users']
-                let select1 = request_data['disabled1']
-                let select2 = request_data['disabled2'];
+                let btnPrevious = request_data['btnPrevious']
+                let btnNext = request_data['btnNext'];
                 let Prev = request_data['PreviousPage'];
                 let Next = request_data['NextPage'];
                 let page = request_data['pagination'];
                 let Allcount = request_data['AllUsersCount'];
 
                 arr = {
-                    'select1': select1,
-                    'select2': select2,
+                    'select1': btnPrevious,
+                    'select2': btnNext,
                     'Prev': Prev,
                     'Next': Next,
                     'page': page,

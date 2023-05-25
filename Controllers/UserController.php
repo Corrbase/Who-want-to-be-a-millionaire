@@ -183,7 +183,7 @@ class UserController{
         $this->loginAdmin();
         if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             $id = $id['id'];
-            $login = $_SESSION['user_profile']['login'];
+            $login = $this->login;
             $game = mysqli_query($this->user->conn, "SELECT * FROM `gamers` WHERE `name` = '$login' AND `id` = '$id'");
             $game_settings = $game->fetch_all(true);
             $game = mysqli_num_rows($game);
@@ -236,7 +236,12 @@ class UserController{
     private function loginAll(){
 
         if (isset($_SESSION['admin_profile']['profile']) == 1) {
-            header("location: /en/home");
+            header('location: en/admin/home');
+        }elseif (isset($_SESSION['user_profile']['profile']) == 1){
+            header('location: en/admin/home');
+        }
+        if (isset($_SESSION['admin_profile']['profile']) == 1) {
+            header("location: /en/admin");
             return false;
         }elseif (isset($_SESSION['user_profile']['profile']) == 1) {
             header("location: /en/home");

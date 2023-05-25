@@ -1,5 +1,4 @@
-
-    <main>
+   <main>
         <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
             <div class="container-xl px-4">
                 <div class="page-header-content pt-4">
@@ -92,10 +91,7 @@
             data: {
 
             },
-            beforeSend:
-                function() {
-                    $('.table-body').html('<div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
-                },
+
             success: function (response) {
 
 
@@ -105,15 +101,16 @@
 
                         change_default()
                         let data = request_data['questions']
-                        let select1 = request_data['disabled1']
-                        let select2 = request_data['disabled2'];
+                        let btnPrevious = request_data['btnPrevious']
+                        let btnNext = request_data['btnNext'];
                         let Prev = request_data['PreviousPage'];
                         let Next = request_data['NextPage'];
                         let page = request_data['pagination'];
-                        let Allcount = request_data['AllQuestionsCount'];
+                        let Allcount = request_data['AllUsersCount'];
+
                         arr = {
-                            'select1': select1,
-                            'select2': select2,
+                            'select1': btnPrevious,
+                            'select2': btnNext,
                             'Prev': Prev,
                             'Next': Next,
                             'page': page,
@@ -159,25 +156,22 @@
         data: {
 
         },
-        beforeSend:
-            function() {
-                $('.table-body').html('<div class="loading p-15 m-auto"><img src="/assets/img/loading.gif" alt="" ></div>');
-            },
         success: function (response) {
                 let request_data = JSON.parse(response)
             if (response) {
 
                 change_default()
                 let data = request_data['questions']
-                let select1 = request_data['disabled1']
-                let select2 = request_data['disabled2'];
+                let btnPrevious = request_data['btnPrevious']
+                let btnNext = request_data['btnNext'];
                 let Prev = request_data['PreviousPage'];
                 let Next = request_data['NextPage'];
                 let page = request_data['pagination'];
-                let Allcount = request_data['AllQuestionsCount'];
+                let Allcount = request_data['AllUsersCount'];
+
                 arr = {
-                    'select1': select1,
-                    'select2': select2,
+                    'select1': btnPrevious,
+                    'select2': btnNext,
                     'Prev': Prev,
                     'Next': Next,
                     'page': page,

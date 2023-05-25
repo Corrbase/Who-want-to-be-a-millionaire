@@ -83,8 +83,7 @@
             </button>
 
             <div class="mb-3">
-                <div class="form-error form-label text-danger">
-
+                <div class="text-danger form-errors m-2">
                 </div>
             </div>
         </form>
@@ -113,7 +112,32 @@
                     window.location.replace("/<?php echo $language; ?>/profile");
                 }else {
                     $('.loading-refresh').removeClass('loading-form');
-                    $('.form-error').text(request_data.error);
+                    var err = Object.keys(request_data)
+
+
+                    switch (err[0]) {
+                        case 'error1':
+                            $('.form-errors').html('<?php echo text($front, $language, 'error1');?>');
+                            break
+                        case 'error2':
+                            $('.form-errors').html('<?php echo text($front, $language, 'error2');?>');
+                            break
+                        case 'error3':
+                            $('.form-errors').html('<?php echo text($front, $language, 'error3');?>');
+                            break
+                        case 'error4':
+                            $('.form-errors').html('<?php echo text($front, $language, 'error4');?>');
+                            break
+                        case 'error5':
+                            $('.form-errors').html('<?php echo text($front, $language, 'error5');?>');
+                            break
+                        case 'error6':
+                            $('.form-errors').html('<?php echo text($front, $language, 'error6');?>');
+                            break
+                        case 'error7':
+                            $('.form-errors').html('<?php echo text($front, $language, 'error6');?>');
+                            break
+                    }
                 }
 
 
