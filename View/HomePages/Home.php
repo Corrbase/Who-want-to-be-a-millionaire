@@ -16,7 +16,7 @@
             ?>
         </p>
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
-            <a href="<?php echo '/' . $language ; ?>/game" type="button" class="btn btn-primary btn-lg px-4 me-sm-3">
+            <a href="<?= '/' . $language ; ?>/game" type="button" class="btn btn-primary btn-lg px-4 me-sm-3">
                 <?php
                 echo text($front, $language, 'home_button');
                 ?>

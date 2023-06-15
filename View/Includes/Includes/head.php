@@ -20,6 +20,13 @@
     <!-- MDB -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.1/mdb.min.css" rel="stylesheet"/>
     <script src="/js/notify.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+
+
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
     <style>
         *{
             font-family: 'Noto Sans Armenian', sans-serif;
@@ -28,5 +35,33 @@
 </head>
 
 <body>
+<script>
+    function datatable(className, url, columns){
+        $(document).ready(function() {
+            $(className).DataTable({
+                language: {
+                    "lengthMenu":     "_MENU_",
+                    "search": "<?= text($datatable, $language, 'search' ); ?>",
+                    "searchPlaceholder": "<?= text($datatable, $language, 'search' ); ?>",
+                    "infoEmpty": "<?= text($datatable, $language, 'no_data' ); ?>",
+                    "paginate": {
+                        "previous": "<?= text($datatable, $language, 'previous' ); ?>",
+                        "next": "<?= text($datatable, $language, 'next' ); ?>",
+                    },
+                    "info": "<?= text($datatable, $language, 'page' ); ?>: _PAGE_ <?= text($datatable, $language, 'all_pages' ); ?>: _PAGES_",
+                },
+                'processing': true,
+                'serverSide': true,
+                'pageLength': 5,
+                "lengthMenu": [[5, 10, 25, 50, 100, 200], [5, 10, 25, 50, 100, 200]],
+                'serverMethod': 'post',
+                'ajax': {
+                    'url':url
+                },
+                'columns': columns,
+            });
+        } );
+    }
+</script>
 
 <div class="loading-refresh" style="z-index: 2000"></div>

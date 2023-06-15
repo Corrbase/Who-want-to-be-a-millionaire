@@ -12,18 +12,20 @@
 </footer>
 </div>
 <script>
+
+
     function change(arr, html) {
-        $('.PreviousPage').addClass(arr['select1']);
-        $('.NextPage').addClass(arr['select2']);
-        $('.PreviousPage').attr('data-id',arr['Prev'])
-        $('.NextPage').attr('data-id',arr['Next'])
+        $('.previousPage').addClass(arr['select1']);
+        $('.nextPage').addClass(arr['select2']);
+        $('.previousPage').attr('data-id',arr['Prev'])
+        $('.nextPage').attr('data-id',arr['Next'])
         $('.page').html(arr['page']);
-        $('.all_count').html(arr['Allcount']);
+        $('.all_count').html(arr['allCount']);
     }
     function change_default() {
         $('.table-body').html('');
-        $('.PreviousPage').removeClass('disabled');
-        $('.NextPage').removeClass('disabled');
+        $('.previousPage').removeClass('disabled');
+        $('.nextPage').removeClass('disabled');
         $('.page').html(0);
         $('.all_count').html(0);
     }

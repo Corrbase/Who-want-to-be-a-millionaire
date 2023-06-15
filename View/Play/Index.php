@@ -6,7 +6,7 @@
 <script>
     $.ajax({
         type: "GET",
-        url: '/<?php echo $language?>/play/gone',
+        url: '/<?= $language?>/play/gone',
         // data: function (params){
         //     return{
         //         question_number: question_number,
@@ -30,7 +30,7 @@
         let question_id = $(this)
         $.ajax({
             type: "POST",
-            url: '/<?php echo $language?>/play/gone',
+            url: '/<?= $language?>/play/gone',
             data: {
                 question_num: question_number,
                 question_ans: question_answer
@@ -48,7 +48,7 @@
                 if (request_data.status == 1){
                     $.ajax({
                         type: "GET",
-                        url: '/<?php echo $language?>/play/gone',
+                        url: '/<?= $language?>/play/gone',
                         // data: function (params){
                         //     return{
                         //         question_number: question_number,
@@ -60,7 +60,7 @@
                         {
                             $(".answer-button[data-id=" + request_data.question_num + "]").css('background-color', '#7de051');
                             if (data == 'you win your prize is 1000000'){
-                                window.location.href = "<?php echo $language;?>/home";
+                                window.location.href = "<?= $language;?>/home";
                             }
                             setTimeout(function (){$('.content').html(data);}, 2000)
 
@@ -68,9 +68,9 @@
                     })
                 }else{
                     if (request_data.prize == 1){
-                        var LostWin = '<?php echo text($front, $language, 'game_lost_noprize'); ?> ' + request_data.prize_count;
+                        var LostWin = '<?= text($front, $language, 'game_lost_noprize'); ?> ' + request_data.prize_count;
                     }else {
-                        var LostWin = '<?php echo text($front, $language, 'game_lost_prize'); ?>' ;
+                        var LostWin = '<?= text($front, $language, 'game_lost_prize'); ?>' ;
                     }
                     $.ajax({
                         type: "GET",
@@ -87,7 +87,7 @@
                             $(question_id).css('background-color', '#f65c5c');
                                 $(".answer-button[data-answer='"+request_data.right+"']").css('background-color', '#7de051');
                             
-                            setTimeout(function (){$('.content').html('<h1 class="text-center p-2">' + LostWin + '<a href="/"><?php echo text($front, $language, 'game_main_page_button'); ?></a>  </h1>');}, 2000)
+                            setTimeout(function (){$('.content').html('<h1 class="text-center p-2">' + LostWin + '<a href="/"><?= text($front, $language, 'game_main_page_button'); ?></a>  </h1>');}, 2000)
 
                         }
                     })
@@ -103,7 +103,7 @@
         let bonus_name = $(this).attr("data-id");
         $.ajax({
             type: "POST",
-            url: '/<?php echo $language?>/play/gone',
+            url: '/<?= $language?>/play/gone',
             data: {
                 bonus: bonus_name,
             },
@@ -127,7 +127,7 @@
 
         $.ajax({
             type: "POST",
-            url: '/<?php echo $language?>/play/gone',
+            url: '/<?= $language?>/play/gone',
             data: {
                 end_game: true,
                 prize: prize
@@ -140,9 +140,9 @@
                 $('.loading-refresh').removeClass('loading-form');
                 let request_data = JSON.parse(data)
                 if (request_data.end == false){
-                    $('.content').html('<h1 class="text-center p-2"> <?php echo text($front, $language, 'game_stop_noprize'); ?>  <a href="/"><?php echo text($front, $language, 'game_main_page_button'); ?></a>  </h1>');
+                    $('.content').html('<h1 class="text-center p-2"> <?= text($front, $language, 'game_stop_noprize'); ?>  <a href="/"><?= text($front, $language, 'game_main_page_button'); ?></a>  </h1>');
                 }else {
-                    $('.content').html('<h1 class="text-center p-2"> <?php echo text($front, $language, 'game_stop_prize'); ?> '+prize+'<a href="/"><?php echo text($front, $language, 'game_main_page_button'); ?></a>  </h1>');
+                    $('.content').html('<h1 class="text-center p-2"> <?= text($front, $language, 'game_stop_prize'); ?> '+prize+'<a href="/"><?= text($front, $language, 'game_main_page_button'); ?></a>  </h1>');
                 }
                 $('.bonus_request').text(data);
 

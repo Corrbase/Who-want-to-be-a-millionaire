@@ -1,22 +1,44 @@
 <?php
-class AdminController {
+
+class AdminController
+{
 
     public $admin;
-    public $front = [];
-    public $header = [];
+    public $front = [
+        'front' => [],
+        'header' => [],
+        'datatable' => []
+    ];
 
     public function __construct($settings)
     {
         $this->admin = model('Admin', $settings);
-        $url = substr($_GET['url'], 3);
-        $arr = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' OR `url` = 'admin_header' ")->fetch_all(true);
-        foreach ($arr as $item=>$key){
-            if ($url == $key['url']){
-                array_push($this->front, $key);
+        $url = substr($_GET['urlLanguage'], 3);
+        if (!$url) {
+            $url = substr($_GET['url'], 3);
+        }
+        // $arr is front data from datatable
+        try {
+            $arr = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = '$url' OR `url` = 'admin_header' OR `url` = 'datatable'");
+            if (!$arr){
+                throw new Exception('something goes wrong, wait or refresh the page');
             }
-            if ($key['url'] == 'admin_header'){
-
-                array_push($this->header, $key);
+            $arr = $arr->fetch_all(true);
+        }catch (Exception $e) {
+            dd($e->getMessage());
+        }
+        foreach ($arr as $item => $key) { // foreach front content and add to controller variable
+            switch ($key['url']) {
+                case $url:
+                    array_push($this->front['front'], $key);
+                    break;
+                case 'admin_header':
+                    array_push($this->front['header'], $key);
+                    break;
+                case 'datatable':
+                    array_push($this->front['datatable'], $key);
+                    break;
+                default:
             }
         }
     }
@@ -24,33 +46,44 @@ class AdminController {
     public function index() // homepage
     {
 
-        $language = getLanguage();
-        $this->CheckLogin($language);
+        $language = getLanguage(); // get language
+        $this->checkLogin($language); // check user login
+        $allGames = mysqli_query($this->admin->conn, "SELECT * FROM `games`"); // Query to get all games
 
-        $allGames = mysqli_query($this->admin->conn, "SELECT * FROM `gamers`"); // Query to get all games
         $arr = $allGames->fetch_all(true); // Fetch all rows from the query result as an associative array
-        $UpToFive = 0; // Counter variable to count the number of games with level >= 5
-        foreach ($arr as $item => $key) { // Loop through each game in the array
+        $upToFive = 0; // Counter variable to count the number of games with level >= 5
+        foreach ($arr as $item => $key)
+        { //
             if ($key['level'] >= 5) { // Check if the game's level is greater than or equal to 5
-                $UpToFive += 1; // get
+                $upToFive += 1; // get
             }
         }
-        $allGames = mysqli_num_rows($allGames); // Get the total number of games
+        try {
+            $allGames = mysqli_num_rows($allGames); // Get the total number of games
+            $top_games = mysqli_query($this->admin->conn, "SELECT * FROM `games` ORDER BY `prize` DESC LIMIT 5;"); // get top games based on the prize, in
+            if (!$top_games){
+                throw new Exception('something goes wrong');
+            }elseif (!$allGames){
+                throw new Exception('something goes wrong');
+            }
+        }catch (Exception $e){
+            dd($e->getMessage());
+        }
 
-        $top_gamers = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` ORDER BY `prize` DESC LIMIT 5;")->fetch_all(true); // get top gamers based on the prize, in
+        $top_gamers = $top_games->fetch_all(true);
+
 
         // Pass the data to the view
         view(
             "dashboard", // View name
             'Admin', // View context
             [
-                'top_gamers' => $top_gamers, // Top gamers data
-                'UpToFive' => $UpToFive, // Count of games with level >= 5
-                'AllGames' => $allGames, // Total number of games
+                'top_games' => $top_games, // Top 5 games
+                'ipToFive' => $upToFive, // Count of games with level >= 5
+                'allGames' => $allGames, // Total number of games
                 'Admin' => $_SESSION['admin_profile'], // Admin profile data
                 'front' => $this->front, // Front data
                 'language' => $language, // Language data
-                'header' => $this->header // Header data
             ],
             "Admin" // Layout name
         );
@@ -59,395 +92,383 @@ class AdminController {
 
     public function questions()
     {
-        $language = getLanguage();
-        $this->CheckLogin($language);
+        $language = getLanguage(); // get language
+        $this->checkLogin($language); // check user login
 
 
-        view("questions", 'Admin' , [
+        view("questions", 'Admin', [
             'Admin' => $_SESSION['admin_profile'],
             'language' => $language,
-            'header' => $this->header,
             'front' => $this->front
         ], "Admin");
     }
-    public function questionPagination($pagination)
+
+    public function users()
     {
-        if (!is_numeric($pagination['pagination'])){
-            header('location: /');
-        }
-        $language = getLanguage();
-        $this->CheckLogin($language);
-        $AllQuestions = mysqli_query($this->admin->conn, "SELECT * FROM `questions`");
+        $language = getLanguage();// get language
+        $this->checkLogin($language);// check user login
 
-        $AllQuestionsCount = mysqli_num_rows($AllQuestions);
-        $page = $pagination['pagination'] -1;
-        $count = $page * 5;
-        $questions = mysqli_query($this->admin->conn, "SELECT * FROM `questions` LIMIT $count, 5 ")->fetch_all(true);
-        $paginationInfo = $this->pagination($AllQuestionsCount, $pagination['pagination']);
-        foreach ($paginationInfo as $item=>$key){
-            $$item = $key;
-        }
+        view("users", 'Admin', [
+            'Admin' => $_SESSION['admin_profile'],
+            'language' => $language,
+            'front' => $this->front,
+        ], "Admin");
+    }
 
-        $ajax = [
-            'questions' => $questions,
-            'btnPrevious' => $btnPrevious,
-            'btnNext' => $btnNext,
-            'PreviousPage' => $PreviousPage,
-            'NextPage' => $NextPage,
-            'AllUsersCount' => $AllUsersCount,
-            'pagination' => $pagination['pagination']
+    public function games()
+    {
+        $language = getLanguage();// get language
+        $this->checkLogin($language);// check user login
 
-        ];
-        echo json_encode($ajax);
+        view("games", 'Admin', [
+            'Admin' => $_SESSION['admin_profile'],
+            'language' => $language,
+            'front' => $this->front
+        ], "Admin");
+    }
+
+    public function gamesPagination()
+    {
+
+        $language = getLanguage();// get language
+        $this->checkLogin($language);// check user login
+
+        $this->pagination('games');
 
     }
+
+    public function usersPagination()
+    {
+        $language = getLanguage();// get language
+        $this->checkLogin($language);// check user login
+
+        $this->pagination('users');
+    }
+
+    public function questionPagination()
+    {
+        $language = getLanguage();// get language
+        $this->checkLogin($language);// check user login
+
+        $this->pagination('questions');
+    }
+
     public function createQuestion()
     {
-        $language = getLanguage();
-        $this->CheckLogin($language);
+        $language = getLanguage();// get language
+        $this->checkLogin($language);// check user login
 
-
-
-        $this->CheckLogin();
-        view("create_question", 'Admin' , [
+        $this->checkLogin();
+        view("create_question", 'Admin', [
             'Admin' => $_SESSION['admin_profile'],
             'language' => $language,
-            'header' => $this->header,
             'front' => $this->front
         ], "Admin");
     }
+
     public function editQuestion($id)
     {
-        $language = getLanguage();
-        $this->CheckLogin($language);
-        if (!is_numeric($id['id'])){
+        $language = getLanguage();// get language
+        $this->checkLogin($language);// check user login
+        if (!is_numeric($id['id'])) { // get id from url
             header('location: /');
         }
 
-        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/questions/edit' ")->fetch_all(true);
-
         $id = $id['id'];
-        if (is_numeric($id)){
-            $question = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE `id` = $id")->fetch_all(true);
-            $levels = mysqli_query($this->admin->conn, "SELECT * FROM `levels`")->num_rows;
-            //        $question = mysqli_num_rows($question);
-
-            if ($question){
+        if (is_numeric($id)) {
+            try { // check error
+                $question = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE `id` = $id");
+                $levels = mysqli_query($this->admin->conn, "SELECT * FROM `levels`")->num_rows;
+                if (!$question || !$levels){
+                    throw new Exception('Something goes wrong');
+                }
+                $question = $question->fetch_all(true);
+            }catch (Exception $e){
+                dd($e->getMessage());
+            }
+            if ($question) {
                 view('edit_question', 'Admin', [
                     'question' => $question,
                     'levels' => $levels,
                     'language' => $language,
-                    'header' => $this->header,
-                    'front' => $front
+                    'front' => $this->front
                 ], 'Admin');
             }
-        }else{
+        } else {
             header("Location: /error404");
         }
     }
 
-    public function users(){
-        $language = getLanguage();
-        $this->CheckLogin($language);
-
-        view("users", 'Admin' , [
-            'Admin' => $_SESSION['admin_profile'],
-            'language' => $language,
-            'header' => $this->header,
-            'front' => $this->front
-        ], "Admin");
-    }
-    public function usersPagination($pagination)
+    public function addUser()
     {
-        $language = getLanguage();
-        $this->CheckLogin($language);
-        if (is_numeric($pagination['pagination'])) {
-            $language = getLanguage();
-            $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/users' ")->fetch_all(true);
-            $AllQuestions = mysqli_query($this->admin->conn, "SELECT * FROM `questions`   ");
-
-            $ajax = $_GET;
-            $role = $ajax['role'];
+        $language = getLanguage();// get language
+        $this->checkLogin($language);// check user login
 
 
-            if ($ajax['role'] == 'all') {
-                $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users`");
-            } else {
-                $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role'");
-            }
-            $AllUsersCount = mysqli_num_rows($AllUsers);
-            $page = $pagination['pagination'] - 1;
-            $count = $page * 5;
-            if ($ajax['role'] == 'all') {
-                $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` LIMIT $count, 5 ")->fetch_all(true);
-            } else {
-                $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE Role = '$role' LIMIT $count, 5")->fetch_all(true);
-            }
-
-            $paginationInfo = $this->pagination($AllUsersCount, $pagination['pagination']);
-            foreach ($paginationInfo as $item=>$key){
-                $$item = $key;
-            }
-
-            $ajax = [
-                'users' => $AllUsers,
-                'btnPrevious' => $btnPrevious,
-                'btnNext' => $btnNext,
-                'PreviousPage' => $PreviousPage,
-                'NextPage' => $NextPage,
-                'AllUsersCount' => $AllUsersCount,
-                'pagination' => $pagination['pagination']
-
-            ];
-            echo json_encode($ajax);
-        }
-    }
-    public function addUser(){
-        $language = getLanguage();
-        $this->CheckLogin($language);
-
-
-        view("add_user", 'Admin' , [
+        view("add_user", 'Admin', [
             'Admin' => $_SESSION['admin_profile'],
             'language' => $language,
-            'header' => $this->header,
             'front' => $this->front
         ], "Admin");
     }
-    public function editUser($id){
-        $language = getLanguage();
-        $this->CheckLogin($language);
+
+    public function editUser($id)
+    {
+        $language = getLanguage();// get language
+        $this->checkLogin($language);// check user login
         $id = $id['id'];
 
-
-
-        $front = mysqli_query($this->admin->conn, "SELECT * FROM `languages`  WHERE url = 'admin/user/edit' ")->fetch_all(true);
-        $user = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE `id` = $id")->fetch_all(true);
-
-        if ($user){
-            view('edit_user','Admin', [
-                'user'=>$user,
+        try {
+            $user = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE `id` = $id"); // get user data
+            if (!$user){
+                throw new Exception('Something goes wrong');
+            }
+        }catch(Exception $e){
+            dd($e->getMessage());
+        }
+        $user = $user->fetch_all(true);
+        if ($user) {
+            view('edit_user', 'Admin', [
+                'user' => $user,
                 'language' => $language,
-                'header' => $this->header,
-                'front' => $front
+                'front' => $this->front
             ], 'Admin');
-        }else{
+        } else {
             header('Location: /error404');
         }
-    }
-
-    public function gamersPagination($pagination)
-    {
-
-        if (!is_numeric($pagination['pagination'])){
-            header('location: /');
-        }
-        $language = getLanguage();
-        $this->CheckLogin($language);
-        $AllUsers = mysqli_query($this->admin->conn, "SELECT * FROM `gamers`");
-        $allGamesCount = $AllUsers->num_rows;
-        $page = $pagination['pagination'] -1;
-        $count = $page * 5;
-        $games = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` LIMIT $count, 5 ")->fetch_all(true);
-        $paginationInfo = $this->pagination($allGamesCount, $pagination['pagination']);
-        foreach ($paginationInfo as $item=>$key){
-            $$item = $key;
-        }
-
-        $ajax = [
-            'gamers' => $games,
-            'btnPrevious' => $btnPrevious,
-            'btnNext' => $btnNext,
-            'PreviousPage' => $PreviousPage,
-            'NextPage' => $NextPage,
-            'AllUsersCount' => $AllUsersCount,
-            'pagination' => $pagination['pagination']
-
-        ];
-        echo json_encode($ajax);
-
-    }
-    public function gamers(){
-        $language = getLanguage();
-        $this->CheckLogin($language);
-
-        view("gamers", 'Admin' , [
-            'Admin' => $_SESSION['admin_profile'],
-            'language' => $language,
-            'header' => $this->header,
-            'front' => $this->front
-        ], "Admin");
     }
 
 
     public function documentation()
     {
-        $language = getLanguage();
-        $this->CheckLogin($language);
+        $language = getLanguage();// get language
+        $this->checkLogin($language);// check user login
 
-        view("documentation", 'Admin' , [
+        view("documentation", 'Admin', [
             'language' => $language,
-            'header' => $this->header,
             'front' => $this->front,
         ], "Admin");
     }
 
     // private functions for this controller
-    private function pagination($AllCount, $page)
+    private function pagination($tableName)
     {
-        switch (true) {
-            case ($AllCount / 5 == 1):
-                $pages = 1;
-                break;
-            case ($AllCount % 5 == 0):
-                $pages = $AllCount / 5;
-                break;
-            case ($AllCount % 5 <= 4):
-                $pages = floor($AllCount / 5) + 1;
-                break;
-        }
-        $PreviousPage = $page - 1;
-        $NextPage = $page + 1;
-        if ($PreviousPage < 1) {
-            $btnPrevious = 'disabled';
-        }
-        if ($NextPage > $pages) {
+        $draw = $_POST['draw'];
+        $row = $_POST['start'];
+        $rowperpage = $_POST['length']; // Rows display per page
+        $columnIndex = $_POST['order'][0]['column']; // Column index
+        $columnName = $_POST['columns'][$columnIndex]['data']; // Column name
+        $columnSortOrder = $_POST['order'][0]['dir']; // asc or desc
+        $searchValue = strtolower($_POST['search']['value']); // Search value
 
-            $btnNext = 'disabled';
+        if ($searchValue != '') { // check search value and create variable for search query
+            $searchQuery = "AND ";
+            foreach ($_POST['columns'] as $column) {
+                $data = $column['data'];
+                if ($data !== '') {
+                    $searchQuery .= "$data LIKE '%" . $searchValue . "%' OR ";
+                }
+            }
+            $searchQuery = substr($searchQuery, 0, -3);
         }
-        return [
-            'pages' => $pages,
-            'btnPrevious' => $btnPrevious,
-            'btnNext' => $btnNext,
-            'PreviousPage' => $PreviousPage,
-            'NextPage' => $NextPage
-        ];
+        // Total number of records with filtering
+        try {
+            $query = mysqli_query($this->admin->conn, "SELECT COUNT(*) FROM `$tableName` WHERE 1 " . $searchQuery);
+            if (!$query) {
+                throw new Exception('Error');
+            }
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
+        if ($query->num_rows) {// fetch assoc if query find anything
+            $rows = $query->fetch_assoc();
+        }
+        $totalRows = $rows['COUNT(*)']; // get total row count
+        $query = mysqli_query(
+            $this->admin->conn,
+            "SELECT * FROM `$tableName` 
+                  WHERE 1 " . $searchQuery . "
+                  ORDER BY " . $columnName . " " . $columnSortOrder . " 
+                  LIMIT $row, $rowperpage");
+
+        try {
+            if (!$query) {
+                throw new Exception('Error');
+            }
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
+        $response = array(
+            "draw" => intval($draw),
+            "iTotalRecords" => $totalRows,
+            "iTotalDisplayRecords" => $totalRows,
+            "data" => $query->fetch_all(true)
+        );
+        echo json_encode($response);
+        return true;
     }
 
     // Requests
 
-    public function logout()
+    public function requestLogout()
     {
-        if($this->CheckLogin())
+        if ($this->checkLogin()){
             return;
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $this->CheckLogin();
-            unset($_SESSION['admin_profile']);
-        }else{
+        }elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->checkLogin();
+            session_destroy(); // delete all sessions
+        } else {
             header("location: /admin/home");
         }
     }
-    public function addUserRequest()  {
 
-        if($this->CheckLogin())
+    public function requestAddUserRequest()
+    {
+
+        if ($this->checkLogin())
             return;
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // get data from $_post and create variables
+            $login = $_POST['login'];
+            $pass = $_POST['password'];
+            $name = $_POST['name'];
+            $sname = $_POST['sname'];
+            $age = $_POST['age'];
+            $role = $_POST['role'];
+            $balance = $_POST['balance'];
+            switch (true) { // check and find errors
+                case (strlen($name) < 3 || $name == ''):
+                    $ajax['error1'] = false;
+                    echo json_encode($ajax);
+                    break;
+                case (strlen($sname) < 3 || $sname == ''):
+                    $ajax['error2'] = false;
+                    echo json_encode($ajax);
+                    break;
+                case ($balance == ''):
+                    $ajax['error3'] = false;
+                    echo json_encode($ajax);
+                    break;
+                case ($age < 18 || $age >= 100 || $age == ''):
+                    $ajax['error4'] = false;
+                    echo json_encode($ajax);
+                    break;
+                case (strlen($login) < 4 || $login == ''):
+                    $ajax['error5'] = false;
+                    echo json_encode($ajax);
+                    break;
+                case (strlen($pass) < 4 || $pass == ''):
+                    $ajax['error6'] = false;
+                    echo json_encode($ajax);
+                    break;
+                case ($role == '' || $role == ''):
+                    $ajax['error7'] = false;
+                    echo json_encode($ajax);
+                    break;
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-                $login = $_POST['login'];
-                $pass = $_POST['password'];
-                $name = $_POST['name'];
-                $sname = $_POST['sname'];
-                $age = $_POST['age'];
-                $role = $_POST['Role'];
-                $balance = $_POST['balance'];
-                switch (true) {
-                    case (strlen($name) < 3 || $name == ''):
-                        $ajax['error1'] = false;
-                        echo json_encode($ajax);
-                        break;
-                    case (strlen($sname) < 3 || $sname == ''):
-                        $ajax['error2'] = false;
-                        echo json_encode($ajax);
-                        break;
-                    case ($balance == ''):
-                        $ajax['error3'] = false;
-                        echo json_encode($ajax);
-                        break;
-                    case ($age < 18 || $age >= 100 || $age == ''):
-                        $ajax['error4'] = false;
-                        echo json_encode($ajax);
-                        break;
-                    case (strlen($login) < 4 || $login == ''):
-                        $ajax['error5'] = false;
-                        echo json_encode($ajax);
-                        break;
-                    case (strlen($pass) < 4 || $pass == ''):
-                        $ajax['error6'] = false;
-                        echo json_encode($ajax);
-                        break;
-                    case ($role == '' || $role == ''):
-                        $ajax['error7'] = false;
-                        echo json_encode($ajax);
-                        break;
-
-                    default:
-                        $profile = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE `login` = '$login'");
-                        $profile = mysqli_num_rows($profile);
-                        if ($profile == 1) {
-                            $ajax['success'] = false;
-                            echo json_encode($ajax);
-                        }else {
-                            $pass = md5($pass);
-                            $query = mysqli_query($this->admin->conn, "INSERT INTO `users`( `login`, `password`, `name`, `sname`, `age`, `balance`, `Role`) VALUES ( '$login', '$pass', '$name', '$sname', $age, $balance, '$role' ) ");
-
-                            $ajax['success'] = true;
-                            echo json_encode($ajax);
+                default:
+                    $profile = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE `login` = '$login'");
+                    // get user from users table
+                    try {
+                        if (!$profile){
+                            throw new Exception('something goes wrong');
                         }
-                }
-
+                        $profile = mysqli_num_rows($profile);
+                    }catch (Exception $e){
+                        dd($e->getMessage());
+                    }
+                    if ($profile == 1) {
+                        $ajax['success'] = false;
+                        echo json_encode($ajax);
+                    } else {
+                        $pass = md5($pass);
+                        $query = mysqli_query($this->admin->conn, "INSERT INTO `users`( `login`, `password`, `name`, `sname`, `age`, `balance`, `Role`) VALUES ( '$login', '$pass', '$name', '$sname', $age, $balance, '$role' ) ");
+                        // create new user
+                        try {
+                            if (!$query){
+                                throw new Exception('something goes wrong');
+                            }
+                        }catch (Exception $e){
+                            dd($e->getMessage());
+                        }
+                        $ajax['success'] = true;
+                        echo json_encode($ajax);
+                    }
             }
-    }
-    public function deleteUser($user){
-        if($this->CheckLogin())
-            return;
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $id = $user['id'];
-            if (is_numeric($id)){
-                $gamer = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` WHERE `id` = $id")->fetch_all(true);
 
-                if (sizeof($gamer) == 0){
-                    echo 'user is not find';
-                }
-
-                $result = mysqli_query($this->admin->conn, "DELETE FROM `gamers` WHERE `id` = $id");
-                header("location: /admin/home");
-            }else{
-                header("location: /");
-            }
-        }else{
-            header("location: /admin/home");
         }
-
+        else{
+            error404();
+        }
     }
-    public function questionEdit($id){
 
-        if($this->CheckLogin())
+    public function requestDeleteUser($user)
+    {
+        if ($this->checkLogin())
             return;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                $id = $id['id'];
-                $act = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE `id` = $id");
-                if ($act->num_rows == 0){
-                    header("location: /error404");
+            $id = $user['id'];// get user id from url
+            if (is_numeric($id)) {
+                $result = mysqli_query($this->admin->conn, "DELETE FROM `games` WHERE `id` = $id"); // delete user
+                try {
+                    if (!$result){
+                        throw new Exception('something goes wrong');
+                    }
+                }catch (Exception $e){
+                    dd($e->getMessage());
                 }
-                $oldQuestion = $act->fetch_assoc();
-            if ($_POST){
-                foreach ($_POST as $item=>$key){
+            }
+        } else {
+            error404();
+        }
+    }
+
+    public function requestQuestionEdit($id)
+    {
+
+        if ($this->checkLogin())
+            return;
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $id = $id['id'];
+            $act = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE `id` = $id");
+            // get question from table by id
+            try {
+                if (!$act){
+                    throw new Exception('something goes wrong');
+                }
+            }catch (Exception $e){
+                dd($e->getMessage());
+            }
+            if ($act->num_rows == 0) { // if question dose not exist
+                error404();
+            }
+            $oldQuestion = $act->fetch_assoc();
+            if ($_POST) { // if $_POST not null
+                foreach ($_POST as $item => $key) { // foreach and create variables from array
                     $$item = $key;
                 }
 
                 $oldLevel = $oldQuestion['level'];
-                $actives = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE active = 1 AND `level` = $oldLevel");
-                $actives = $actives->num_rows;
+                $actives = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE active = 1 AND `level` = $oldLevel");// get questions
+                try {
+                    if (!$actives){
+                        throw new Exception('something goes wrong');
+                    }
+                    $actives = $actives->num_rows;
+                }catch (Exception $e){
+                    dd($e->getMessage());
+                }
 
-                if ($level !== $oldQuestion['level']){
-                    if ($Active == 1){
+
+                if ($level !== $oldQuestion['level']) { // check is level changed
+                    if ($active == 1) {
                         $ajax['success'] = 'error4';
                         echo json_encode($ajax);
                         return false;
                     }
-                }elseif ($oldQuestion['active'] !== $Active){
-                    if ($actives <= 1){
-                        if ($Active == 0){
+                } elseif ($oldQuestion['active'] !== $active) {
+                    if ($actives <= 1) {
+                        if ($active == 0) {
                             $ajax['success'] = 'error1';
                             echo json_encode($ajax);
                             return false;
@@ -457,90 +478,120 @@ class AdminController {
 
             }
 
+            // annex wrong answers
             $wrongs_en = "$wrong_answer_1_en" . ',' . "$wrong_answer_2_en" . ',' . "$wrong_answer_3_en";
             $wrongs_hy = "$wrong_answer_1_hy" . ',' . "$wrong_answer_2_hy" . ',' . "$wrong_answer_3_hy";
 
-            if (!array_search('',$_POST)){
-
-                mysqli_query($this->admin->conn, "UPDATE `questions` SET 
+            if (!array_search('', $_POST)) {
+                // update question
+                $query = mysqli_query($this->admin->conn, "UPDATE `questions` SET 
                        `hy`='$question_hy',
                        `right_answer_hy`='$right_answer_hy',
                        `wrong_answer_hy`='$wrongs_hy',
                        `difficulty`='$difficulty',
-                       `active`='$Active',
+                       `active`='$active',
                        `en`='$question_en',
                        `right_answer_en`='$right_answer_en',
                        `wrong_answer_en`='$wrongs_en' 
                    WHERE `id` = $id");
+                try {
+                    if (!$query){
+                        throw new Exception('something goes wrong');
+                    }
+                }catch (Exception $e){
+                    dd($e->getMessage());
+                }
 
-                $ajax['success'] = 'success';
+                $ajax['success'] = 'success'; // send success to front
                 echo json_encode($ajax);
                 return false;
-            }else{
+            } else {
 
-                $ajax['success'] = 'error2';
-                echo json_encode($ajax);
-                return false;
-
-            }
-        }
-    }
-    public function userEdit($id){
-
-        if($this->CheckLogin())
-            return;
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-            if ($_POST){
-                $id = $id['id'];
-                $name = $_POST['name'];
-                $sname = $_POST['sname'];
-                $age = $_POST['age'];
-                $balance = $_POST['balance'];
-                $role = $_POST['Role'];
-                $actives = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE $id = 1");
-                $actives = mysqli_num_rows($actives);
-
-            }
-            $admins = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE `Role` = 'Admin'");
-            $admins = mysqli_num_rows($admins);
-            $user = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE `id` = '$id'")->fetch_all(true);
-            if ($user[0]['login'] == $_SESSION['admin_profile']['login']){
-                $ajax['success'] = 'error1';
-                echo json_encode($ajax);
-                return false;
-            } elseif ($admins <= 1 && $role = 'User'){
-                $ajax['success'] = 'error2';
-                echo json_encode($ajax);
-                return false;
-            } elseif ($age < 18 || $age >105){
-                $ajax['success'] = 'error3';
-                echo json_encode($ajax);
-                return false;
-            }elseif (!array_search('',$_POST)){
-
-                mysqli_query($this->admin->conn, "UPDATE `users` SET `name`= '$name', `sname`= '$sname',  `age`= '$age', `balance`= '$balance', `role` = '$role' WHERE `id` = $id;");
-
-                $ajax['success'] = true;
-                echo json_encode($ajax);
-                return true;
-            }else{
-
-                $ajax['success'] = 'error4';
-
+                $ajax['success'] = 'error2'; // send error to front
                 echo json_encode($ajax);
                 return false;
 
             }
         }else{
+            error404();
         }
     }
-    public function questionCreate(){
 
-        if($this->CheckLogin())
+    public function requestUserEdit($id)
+    {
+
+        if ($this->checkLogin())
+            return;
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') { // is request post
+
+            if ($_POST) {
+                $id = $id['id'];
+                $name = $_POST['name'];
+                $sname = $_POST['sname'];
+                $age = $_POST['age'];
+                $balance = $_POST['balance'];
+                $role = $_POST['role'];
+                $actives = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE $id = 1");
+                $actives = mysqli_num_rows($actives);
+            }// get $_POST data and create variable
+
+            try {
+                $admins = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE `Role` = 'Admin'");
+                $user = mysqli_query($this->admin->conn, "SELECT * FROM `users` WHERE `id` = '$id'")->fetch_all(true); // get user
+                if (!$admins || !$user){
+                    throw new Exception('something goes wrong');
+                }
+                $admins = mysqli_num_rows($admins);
+            }catch (Exception $e){
+                dd($e->getMessage());
+            }
+            // find empty imput and send errors
+            if ($user[0]['login'] == $_SESSION['admin_profile']['login']) {
+                $ajax['success'] = 'error1';
+                echo json_encode($ajax);
+                return false;
+            } elseif ($admins <= 1 && $role = 'User') {
+                $ajax['success'] = 'error2';
+                echo json_encode($ajax);
+                return false;
+            } elseif ($age < 18 || $age > 105) {
+                $ajax['success'] = 'error3';
+                echo json_encode($ajax);
+                return false;
+            } elseif (!array_search('', $_POST)) {
+
+                $query = mysqli_query($this->admin->conn, "UPDATE `users` SET `name`= '$name', `sname`= '$sname',  `age`= '$age', `balance`= '$balance', `Role` = '$role' WHERE `id` = $id;");
+                // update user data
+                try {
+                    if (!$query){
+                        throw new Exception('something goes wrong');
+                    }
+                }catch (Exception $e){
+                    dd($e->getMessage());
+                }
+                $ajax['success'] = true; // send success to front
+                echo json_encode($ajax);
+                return true;
+            } else {
+                $ajax['success'] = 'error4'; // send error to front
+
+                echo json_encode($ajax);
+                return false;
+            }
+        } else {
+            error404();
+        }
+    }
+
+    public function requestQuestionCreate()
+    {
+
+        if ($this->checkLogin())
             return;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if ($_POST){
+            if ($_POST) {
+
+                // get All data from post and create variables
                 $question_hy = $_POST['question_hy'];
                 $question_en = $_POST['question_en'];
                 $wrong_answer_1_en = $_POST['wrong_answer_1_en'];
@@ -553,67 +604,121 @@ class AdminController {
                 $right_answer_en = $_POST['right_answer_en'];
                 $diff = $_POST['difficulty'];
                 $active = $_POST['Active'];
-                $actives = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE active = 1");
-                $actives = mysqli_num_rows($actives);
+                $level = $_POST['level'];
 
+                switch (true) { // find error and send to front
+                    case ($question_hy == ''):
+                        $ajax['error1'] = true;
+                        echo json_encode($ajax);
+                        break;
+                    case ($question_en == ''):
+                        $ajax['error2'] = true;
+                        echo json_encode($ajax);
+                        break;
+                    case ($wrong_answer_1_en == '' || $wrong_answer_2_en == '' || $wrong_answer_3_en == '' ):
+                        $ajax['error3'] = true;
+                        echo json_encode($ajax);
+                        break;
+                    case ($wrong_answer_1_hy == '' || $wrong_answer_2_hy == '' || $wrong_answer_3_hy == ''):
+                        $ajax['error4'] = true;
+                        echo json_encode($ajax);
+                        break;
+                    case ($right_answer_hy == '' || $right_answer_en == ''):
+                        $ajax['error5'] = true;
+                        echo json_encode($ajax);
+                        break;
+
+                    case ($level >= 15):
+                        $ajax['error7'] = true;
+                        echo json_encode($ajax);
+                        break;
+                }
+                try {
+                    $actives = mysqli_query($this->admin->conn, "SELECT * FROM `questions` WHERE active = 1");
+                    if (!$actives){
+                        throw new Exception('something goes wrong');
+                        $actives = mysqli_num_rows($actives);
+                    }
+                }catch (Exception $e){
+                    dd($e->getMessage());
+                }
+
+                // annex wrong answers
                 $wrongs_en = "$wrong_answer_1_en" . ',' . "$wrong_answer_2_en" . ',' . "$wrong_answer_3_en";
                 $wrongs_hy = "$wrong_answer_1_hy" . ',' . "$wrong_answer_2_hy" . ',' . "$wrong_answer_3_hy";
 
-                if (!array_search('',$_POST)){
+                if (!array_search('', $_POST)) {
 
-                    mysqli_query($this->admin->conn, "INSERT INTO `questions`(`hy`, `right_answer_hy`, `wrong_answer_hy`, `difficulty`, `active`, `en`, `right_answer_en`, `wrong_answer_en`) 
-VALUES (
-    '$question_hy',
-        '$right_answer_hy',
-        '$wrongs_hy',
-        '$diff',
-        '$active',
-        '$question_en',
-        '$right_answer_en',
-        '$wrongs_en')");
-
-                    return true;
-                }else{
-
-                    echo 0;
+                    try {
+                        $query = mysqli_query($this->admin->conn, "INSERT INTO `questions`(`hy`, `right_answer_hy`, `wrong_answer_hy`, `difficulty`, `active`, `en`, `right_answer_en`, `wrong_answer_en`, `level`) 
+                        VALUES (
+                            '$question_hy',
+                                '$right_answer_hy',
+                                '$wrongs_hy',
+                                '$diff',
+                                '$active',
+                                '$question_en',
+                                '$right_answer_en',
+                                '$wrongs_en',
+                                '$level')");
+                        if (!$query){
+                            throw new Exception('something goes wrong');
+                        }
+                    }catch (Exception $e){
+                        dd($e->getMessage());
+                    }
+                    $ajax['success'] = true; // send success to front
+                    echo json_encode($ajax);
+                } else {
                     return false;
                 }
             }
-        }else{
+        } else {
+            error404();
         }
     }
-    public function changeGamerStatus($id)
+
+    public function requestChangeGameStatus($id)
     {
-        if($this->CheckLogin())
+        if ($this->checkLogin()) {// check login
             return;
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        }else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $id['id'];
             if (is_numeric($id)) {
 
-                $question = mysqli_query($this->admin->conn, "SELECT * FROM `gamers` WHERE `id` = $id")->fetch_all(true);
-                //        $question = mysqli_num_rows($question);
-                $Val = $_POST['value'];
+                try {
+                    $question = mysqli_query($this->admin->conn, "SELECT * FROM `games` WHERE `id` = $id")->fetch_all(true);
+                    //        $question = mysqli_num_rows($question);
+                    $status = $_POST['value'];
+                    if (!$question){
+                        throw new Exception('something goes wrong');
+                    }
+                }catch (Exception $e){
+                    dd($e->getMessage());
+                }
                 if ($question) {
-                    mysqli_query($this->admin->conn, "Update `gamers` SET `status` = '$Val' WHERE `id` = $id");
+                    try {
+                        $query = mysqli_query($this->admin->conn, "Update `games` SET `status` = '$status' WHERE `id` = $id"); // update game status by id
+                        if (!$query){
+                            throw new Exception('something goes wrong');
+                        }
+                    }catch (Exception $e){
+                        dd($e->getMessage());
+                    }
                 }
             } else {
-                header('location: /');
+                error404();
             }
         }
     }
 
-
-    public function CheckLogin($lang = null){
-        if (isset($_SESSION['admin_profile']['profile'])) // is admin logged in
+    public function checkLogin($lang = 'en')
+    {
+        if (isset($_SESSION['admin_profile'])) // is admin logged in
         {
             return false;
-        }else{
-            if ($lang == null) // if lang null go to main english page
-            {
-                header("location: /en/home");
-            }else{
-                header("location: /$lang/home");
-            }
+        } else {
+            header("location: /$lang/home");
             return true;
         }
     }

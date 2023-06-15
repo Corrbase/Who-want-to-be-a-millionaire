@@ -12,9 +12,46 @@
     <script data-search-pseudo-elements defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js" crossorigin="anonymous"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+
+    <script src="/js/scripts.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
 </head>
 <body class="nav-fixed">
-
+<script>
+    function datatable(className, url, columns){
+        $(document).ready(function() {
+            $(className).DataTable({
+                language: {
+                    "lengthMenu":     "_MENU_",
+                    "search": "<?= text($datatable, $language, 'search' ); ?>",
+                    "searchPlaceholder": "<?= text($datatable, $language, 'search' ); ?>",
+                    "infoEmpty": "<?= text($datatable, $language, 'no_data' ); ?>",
+                    "paginate": {
+                        "previous": "<?= text($datatable, $language, 'previous' ); ?>",
+                        "next": "<?= text($datatable, $language, 'next' ); ?>",
+                    },
+                    "info": "<?= text($datatable, $language, 'page' ); ?>: _PAGE_ <?= text($datatable, $language, 'all_pages' ); ?>: _PAGES_",
+                },
+                'processing': true,
+                'serverSide': true,
+                'pageLength': 5,
+                "lengthMenu": [[5, 10, 25, 50, 100, 200], [5, 10, 25, 50, 100, 200]],
+                'serverMethod': 'post',
+                'ajax': {
+                    'url':url
+                },
+                'columns': columns,
+            });
+        } );
+    }
+</script>
 <div class="loading-refresh" style="z-index: 2000"></div>
 <nav class="topnav navbar navbar-expand shadow justify-content-between justify-content-sm-start navbar-light bg-white" id="sidenavAccordion">
     <!-- Sidenav Toggle Button-->
@@ -23,12 +60,12 @@
     <!-- * * Tip * * You can use text or an image for your navbar brand.-->
     <!-- * * * * * * When using an image, we recommend the SVG format.-->
     <!-- * * * * * * Dimensions: Maximum height: 32px, maximum width: 240px-->
-    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="<?php echo '/' . $language ; ?>/admin/home">
+    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="<?= '/' . $language ; ?>/admin/home">
         <?php
         echo text($header, $language, 'main_dashboard');
         ?>
     </a>
-    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="/<?php echo $language;?>/home">
+    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="/<?= $language;?>/home">
         <?php
         echo text($header, $language, 'go_to_main_page');
         ?>
@@ -43,7 +80,7 @@
                 <h6 class="dropdown-header d-flex align-items-center">
                     <img class="dropdown-user-img" src="/assets/img/illustrations/profiles/profile-1.png">
                     <div class="dropdown-user-details">
-                        <div class="dropdown-user-details-name"><?php echo $_SESSION['admin_profile']['login'] ?></div>
+                        <div class="dropdown-user-details-name"><?= $_SESSION['admin_profile']['login'] ?></div>
                     </div>
                 </h6>
                 <div class="dropdown-divider"></div>
@@ -57,7 +94,7 @@
                         var pathname = window.location.pathname
                         let url = pathname.slice(3);
                         console.log(url)
-                        let language = '<?php echo $language?>'
+                        let language = '<?= $language?>'
                         if (language == 'hy'){
                             newurl = '/en' + url
                         }else {
@@ -90,7 +127,7 @@
                     $('.loading-refresh').addClass('loading-form');
                 },
             success: function(data) {
-                window.location.replace("/<?php echo $language;?>/login");
+                window.location.replace("/<?= $language;?>/login");
             }
         })
     })

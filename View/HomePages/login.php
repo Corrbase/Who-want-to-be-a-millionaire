@@ -55,19 +55,31 @@
                 function() {
                     $('.loading-refresh').addClass('loading-form');
                 },
-            success: function(data)
+            success: function(response)
             {
 
-                let request_data = JSON.parse(data)
-                if (request_data.success === true){
+                var response = JSON.parse(response);
 
-                    window.location.replace("/<?php echo $language;?>/admin/home");
-                }else{
+                if (response.success === true){
+                    window.location.replace("/<?= $language; ?>/profile");
+                }else {
                     $('.loading-refresh').removeClass('loading-form');
-                    console.log(request_data.error)
-                    $('.form-errors').html(request_data.error);
+                    var keys = Object.keys(response)
+                    switch (keys[0]) {
+                        case 'error1':
+                            $('.form-errors').html('<?= text($front, $language, 'error1');?>');
+                            break;
+                        case 'error2':
+                            $('.form-errors').html('<?= text($front, $language, 'error2');?>');
+                            break;
+                        case 'success':
+                            location.reload();
+                            break;
+                    }
 
                 }
+
+
             }
         })
 

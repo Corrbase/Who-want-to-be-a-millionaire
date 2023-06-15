@@ -35,9 +35,9 @@ class Route {
 
             if (file_exists('Controllers/' . $file[0] . '.php')){
 
-                $Controller = $file[0];
+                $controller = $file[0];
                 include "Controllers/" . $file[0] . '.php';
-                $cont = new $Controller($this->settings);
+                $cont = new $controller($this->settings);
                 if (method_exists($cont, $file[1])){
                     $cont->{$file[1]}();
                 }else{
@@ -66,7 +66,6 @@ class Route {
         preg_match_all("/(?<={).+?(?=})/", $route, $paramMatches);
 
         //if the route does not contain any param call simpleRoute();
-
         if(empty($paramMatches[0])){
             $this->simpleRoute($file,$route);
             return;
@@ -90,6 +89,7 @@ class Route {
         //exploding route address
         $uri = explode("/", $route);
 
+
         //will store index number where {?} parameter is required in the $route
         $indexNum = [];
 
@@ -99,7 +99,6 @@ class Route {
                 $indexNum[] = $index;
             }
         }
-
         //exploding request uri string to array to get
         //the exact index number value of parameter from $_REQUEST['url']
         $reqUrl = explode("/", $reqUrl);
@@ -123,12 +122,14 @@ class Route {
 
         //converting array to sting
         $reqUrl = implode("/",$reqUrl);
+        $url = str_replace('/{.*}', '', $reqUrl);
 
         //replace all / with \/ for reg expression
         //regex to match route is ready !
         $reqUrl = str_replace("/", '\\/', $reqUrl);
-
         //now matching route with regex
+
+
         if(preg_match("/$reqUrl/", $route))
         {
 
@@ -136,18 +137,19 @@ class Route {
 
             $arg_name = explode("/", $route);
             $arg = explode("/", $_REQUEST['url']);
+
             foreach ($indexNum as $item){
                 $arg_name[$item] = trim($arg_name[$item], '{}');
                 $args[$arg_name[$item]] =  trim($arg[$item], '{}'); ;
-
             }
+            $_GET['urlLanguage'] = $url;
 
             $file = explode('@', $file);
             if (file_exists('Controllers/' . $file[0] . '.php')){
 
-                $Controller = $file[0];
-                include "Controllers/" . $Controller . '.php';
-                $cont = new $Controller($this->settings);
+                $controller = $file[0];
+                include "Controllers/" . $controller . '.php';
+                $cont = new $controller($this->settings);
                 if (method_exists($cont, $file[1])){
                     $cont->{$file[1]}($args);
                 }else{
@@ -190,11 +192,10 @@ function view($name,$includes = null ,$view_array = null, $folder = null){
     foreach ($view_array as $item=>$key){ // foreach and create variables from view_array
         $$item = $key;
     }
-    if (isset($view_array['language'])){
-        $language = $view_array['language']; // create variable for language
-    }
-    if (isset($view_array['header'])){
-        $header = $view_array['header']; // create variable for includes
+    if (isset($view_array['front'])){
+        $header = $view_array['front']['header']; // create variable for includes
+        $front = $view_array['front']['front']; // create variable for includes
+        $datatable = $view_array['front']['datatable']; // create variable for includes
     }
     if ($includes == null){
         include "View/Includes/Includes/main.php"; // include header footer and other content
@@ -230,6 +231,11 @@ function getLanguage(){
 
         return $language; // return language
     }
+
+function error404()
+{
+    header('location: /error404');
+}
 ?>
 
 

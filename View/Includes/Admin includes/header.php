@@ -22,13 +22,13 @@
                         </a>
                         <div class="collapse" id="collapseDashboards" data-bs-parent="#accordionSidenav">
                             <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                                <a class="nav-link" href="<?php echo '/' . $language ; ?>/admin/gamers">
+                                <a class="nav-link" href="<?= '/' . $language ; ?>/admin/games">
                                     <?php
                                     echo text($header, $language, 'menu_game_chapter_games');
                                     ?>
                                 </a>
     <!--                            <a class="nav-link" href="dashboard-2.html">Admins</a>-->
-                                <a class="nav-link" href="<?php echo '/' . $language ; ?>/admin/questions">
+                                <a class="nav-link" href="<?= '/' . $language ; ?>/admin/questions">
                                     <?php
                                     echo text($header, $language, 'menu_game_chapter_questions');
                                     ?>
@@ -47,7 +47,7 @@
                         </a>
                         <div class="collapse" id="collapseAdmin" data-bs-parent="#accordionSidenav">
                             <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                                <a class="nav-link" href="<?php echo '/' . $language ; ?>/admin/documentation">
+                                <a class="nav-link" href="<?= '/' . $language ; ?>/admin/documentation">
                                     <?php
 
                                     echo text($header, $language, 'menu_admint_chapter_documentation');
@@ -55,7 +55,7 @@
                                 </a>
                             </nav>
                             <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                                <a class="nav-link" href="<?php echo '/' . $language ; ?>/admin/users">
+                                <a class="nav-link" href="<?= '/' . $language ; ?>/admin/users">
                                     <?php
                                     echo text($header, $language, 'menu_admint_chapter_users');
                                     ?>
@@ -69,7 +69,7 @@
             <!-- Sidenav Footer-->
             <div class="sidenav-footer">
                 <div class="sidenav-footer-content">
-                    <div class="sidenav-footer-title"><?php echo text($header, $language, 'menu_admint_chapter_admin_name');echo ' ' . $_SESSION['admin_profile']['login'] ?></div>
+                    <div class="sidenav-footer-title"><?= text($header, $language, 'menu_admint_chapter_admin_name');echo ' ' . $_SESSION['admin_profile']['login'] ?></div>
                 </div>
             </div>
         </nav>
